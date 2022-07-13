@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TopMovies</string>
+    <string name="textview_rank_title">rank:</string>
+    <string name="textview_year_title">year:</string>
 </resources>
