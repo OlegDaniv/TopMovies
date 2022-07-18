@@ -13,17 +13,17 @@ interface ApiServer {
     fun getAllMovies(): Call<MovieObject>
 
     companion object {
-        var ApiService: ApiServer? = null
+        var apiServer: ApiServer? = null
 
         fun getInstance(): ApiServer {
-            if (ApiService == null) {
+            if (apiServer == null) {
                 val retrofit = Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
-                ApiService = retrofit.create(ApiServer::class.java)
+                apiServer = retrofit.create(ApiServer::class.java)
             }
-            return ApiService!!
+            return apiServer!!
         }
     }
 }
