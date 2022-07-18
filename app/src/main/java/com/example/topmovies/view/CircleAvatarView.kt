@@ -23,25 +23,23 @@ class CircleAvatarView @JvmOverloads constructor(
 
     init {
         setLayerType(LAYER_TYPE_SOFTWARE, null)
-
         if (attributeSet != null) {
-            val ta =
+            val typedArray =
                 context.obtainStyledAttributes(attributeSet, R.styleable.CircleAvatarView, 0, 0)
             try {
-                text = ta.getString(R.styleable.CircleAvatarView_text) ?: ""
+                text = typedArray.getString(R.styleable.CircleAvatarView_text) ?: ""
                 imageBitmap = BitmapFactory.decodeResource(
-                    context.resources, ta.getResourceId(
+                    context.resources, typedArray.getResourceId(
                         R.styleable.CircleAvatarView_src, R.drawable.empty_avatar
                     )
                 )
             } finally {
-                ta.recycle()
+                typedArray.recycle()
             }
         }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         val desiredWidth = (200 * destiny).toInt()
         val desiredHeight = (200 * destiny).toInt()
         val resolveWidth = resolveSize(desiredWidth, widthMeasureSpec)

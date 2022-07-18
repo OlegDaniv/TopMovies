@@ -14,9 +14,9 @@ import com.example.topmovies.unit.IMAGE_SIZE
 import com.example.topmovies.unit.REPLACE_AFTER
 
 class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MainViewHolder>() {
-    var movies = mutableListOf<Movie>()
+    var movies = listOf<Movie>()
     fun setMovieList(movies: List<Movie>) {
-        this.movies = movies.toMutableList()
+        this.movies = movies
         notifyDataSetChanged()
     }
 
