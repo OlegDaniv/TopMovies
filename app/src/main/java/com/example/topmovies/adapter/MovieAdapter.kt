@@ -8,57 +8,65 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.example.topmovies.R
 import com.example.topmovies.databinding.ItemLayoutBinding
 import com.example.topmovies.model.Movie
 import com.example.topmovies.unit.IMAGE_SIZE
 import com.example.topmovies.unit.REPLACE_AFTER
 
 class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MainViewHolder>() {
-    var movies = listOf<Movie>()
+
+    private var movies = listOf<Movie>()
+
     fun setMovieList(movies: List<Movie>) {
         this.movies = movies
-        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemLayoutBinding.inflate(inflater, parent, false)
+        val binding = ItemLayoutBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
+        )
         return MainViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        holder.bind(position)
+        holder.bind(position, movies)
     }
 
     override fun getItemCount(): Int {
         return movies.size
     }
 
-    inner class MainViewHolder(private val binding: ItemLayoutBinding) :
+    class MainViewHolder(private val binding: ItemLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         private fun resizeImage(image: String): String {
             return image.replaceAfter(REPLACE_AFTER, IMAGE_SIZE)
         }
 
-        fun bind(position: Int) {
+        fun bind(position: Int, movies: List<Movie>) {
             val movie = movies[position]
-            val movieImageResize = resizeImage(movie.image)
+
             binding.apply {
                 textviewMovieName.text = movie.title
                 textviewMovieRankName.text = movie.rank
                 textviewMovieYearName.text = movie.year
                 circleAvatarView.addLetterInCircleAvatar(movie.title)
-            }
-            Glide.with(binding.circleAvatarView).asBitmap().load(movieImageResize)
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(
-                        resource: Bitmap, transition: Transition<in Bitmap>?
-                    ) {
-                        binding.circleAvatarView.changeAvatarImage(resource)
-                    }
+                Glide.with(circleAvatarView)
+                    .asBitmap()
+                    .load(resizeImage(movie.image))
+                    .error(R.drawable.empty_image)
+                    .into(object : CustomTarget<Bitmap>() {
 
-                    override fun onLoadCleared(placeholder: Drawable?) {}
-                })
+                        override fun onResourceReady(
+                            resource: Bitmap, transition: Transition<in Bitmap>?
+                        ) {
+                            circleAvatarView.changeAvatarImage(resource)
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {}
+                    })
+            }
         }
     }
 }

@@ -13,13 +13,26 @@ class CircleAvatarView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
     defStyleRes: Int = 0
 ) : View(context, attributeSet, defStyleAttr, defStyleRes) {
-    private var positionHeight: Float = 0.0f
-    private var positionWidth = 0.0f
-    private var radius: Float = 0.0f
-    private var text: String = ""
+
+    private lateinit var text: String
     private lateinit var imageBitmap: Bitmap
-    private var diameter: Int = 0
-    private val destiny = context.resources.displayMetrics.density
+    private var radius = 0.0f
+    private val destiny by lazy { resources.displayMetrics.density }
+    private val paintForCircle = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val paintForBitmap = Paint().apply {
+        isAntiAlias = true
+        style = Paint.Style.FILL
+        xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+    }
+    private val paintForText = Paint().apply {
+        isAntiAlias = true
+        color = Color.argb(170, 255, 255, 255)
+        textAlign = Paint.Align.CENTER
+        xfermode = PorterDuffXfermode(PorterDuff.Mode.LIGHTEN)
+    }
+    private val bitmapRect = RectF()
+    private val dstRect = RectF()
+    private val mMatrix = Matrix()
 
     init {
         setLayerType(LAYER_TYPE_SOFTWARE, null)
@@ -29,9 +42,15 @@ class CircleAvatarView @JvmOverloads constructor(
             try {
                 text = typedArray.getString(R.styleable.CircleAvatarView_text) ?: ""
                 imageBitmap = BitmapFactory.decodeResource(
-                    context.resources, typedArray.getResourceId(
-                        R.styleable.CircleAvatarView_src, R.drawable.empty_avatar
+                    resources, typedArray.getResourceId(
+                        R.styleable.CircleAvatarView_src, R.drawable.empty_image
                     )
+                )
+                bitmapRect.set(
+                    0f,
+                    0f,
+                    imageBitmap.width.toFloat() / 2,
+                    imageBitmap.height.toFloat() / 2
                 )
             } finally {
                 typedArray.recycle()
@@ -48,38 +67,13 @@ class CircleAvatarView @JvmOverloads constructor(
     }
 
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
-        positionWidth = (width / 2).toFloat()
-        positionHeight = (height / 2).toFloat()
-        diameter = min(width, height)
-        radius = diameter / 2.0f
-        imageBitmap = getResizedBitmap(imageBitmap, diameter, diameter)
-    }
-
-    private fun getResizedBitmap(imageBitmap: Bitmap, width: Int, height: Int): Bitmap {
-        val matrix = Matrix()
-        val src = RectF(0f, 0f, imageBitmap.width.toFloat(), imageBitmap.height.toFloat())
-        val dts = RectF(0f, 0f, width.toFloat(), height.toFloat())
-        matrix.setRectToRect(src, dts, Matrix.ScaleToFit.FILL)
-        return Bitmap.createBitmap(
-            imageBitmap, 0, 0, imageBitmap.width, imageBitmap.height, matrix, true
-        )
-    }
-
-    private val srcPaint = Paint().apply {
-        isAntiAlias = true
-        style = Paint.Style.FILL
-        xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-    }
-    private val dtsPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val textPaint = Paint().apply {
-        isAntiAlias = true
-        xfermode = PorterDuffXfermode(PorterDuff.Mode.LIGHTEN)
-        color = Color.argb(170, 255, 255, 255)
-        textAlign = Paint.Align.CENTER
+        super.onSizeChanged(width, height, oldWidth, oldHeight)
+        radius = min(width.toFloat(), height.toFloat()) / 2
+        dstRect.set(0f, 0f, width.toFloat() / 2, height.toFloat() / 2)
     }
 
     private fun positionLatter(height: Float): Float {
-        return height - ((textPaint.descent() + textPaint.ascent()) / 2)
+        return height - ((paintForText.descent() + paintForText.ascent()) / 2)
     }
 
     fun addLetterInCircleAvatar(name: String) {
@@ -87,19 +81,20 @@ class CircleAvatarView @JvmOverloads constructor(
         invalidate()
     }
 
-    fun changeAvatarImage(resource: Bitmap) {
-        imageBitmap = getResizedBitmap(resource, diameter, diameter)
+    fun changeAvatarImage(orgBitmap: Bitmap) {
+        imageBitmap = orgBitmap
+        bitmapRect.set(0f, 0f, imageBitmap.width.toFloat() / 2, imageBitmap.height.toFloat() / 2)
         invalidate()
     }
 
     override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
+        mMatrix.setRectToRect(bitmapRect, dstRect, Matrix.ScaleToFit.END)
+        paintForText.textSize = radius * 2
         canvas?.apply {
-            drawARGB(0, 0, 0, 0)
-            drawCircle(positionWidth, positionHeight, radius, dtsPaint)
-            drawBitmap(imageBitmap, positionWidth - radius, positionHeight - radius, srcPaint)
-            textPaint.textSize = diameter.toFloat()
-            drawText(text, positionWidth, positionLatter(positionHeight), textPaint)
+            drawARGB(0, 255, 255, 255)
+            drawCircle(dstRect.right, dstRect.bottom, radius, paintForCircle)
+            drawBitmap(imageBitmap, mMatrix, paintForBitmap)
+            drawText(text, dstRect.right, positionLatter(dstRect.bottom), paintForText)
         }
     }
 }

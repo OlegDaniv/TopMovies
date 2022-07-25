@@ -13,7 +13,7 @@ interface ApiServer {
     fun getAllMovies(): Call<MovieObject>
 
     companion object {
-        var apiServer: ApiServer? = null
+        private var apiServer: ApiServer? = null
 
         fun getInstance(): ApiServer {
             if (apiServer == null) {

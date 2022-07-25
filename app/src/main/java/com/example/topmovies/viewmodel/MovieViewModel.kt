@@ -10,10 +10,13 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class MovieViewModel constructor(private val repository: MovieRepository) : ViewModel() {
+
     val movieList = MutableLiveData<List<Movie>>()
     val errorMessage = MutableLiveData<String>()
+
     fun getAllMovies() {
         val response = repository.getAllMovies()
+
         response.enqueue(object : Callback<MovieObject> {
             override fun onResponse(call: Call<MovieObject>, response: Response<MovieObject>) {
                 movieList.postValue(response.body()?.items)
