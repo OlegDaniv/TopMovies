@@ -21,7 +21,6 @@ class CircleAvatarView @JvmOverloads constructor(
     private val paintForCircle = Paint(Paint.ANTI_ALIAS_FLAG)
     private val paintForBitmap = Paint().apply {
         isAntiAlias = true
-        style = Paint.Style.FILL
         xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
     }
     private val paintForText = Paint().apply {
