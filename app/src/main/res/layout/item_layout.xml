@@ -1,63 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/layout_margin"
     android:layout_marginTop="@dimen/layout_margin"
     android:layout_marginEnd="@dimen/layout_margin"
-    android:background="@color/mint_macaron">
+    app:cardBackgroundColor="@color/mint_macaron"
+    app:cardCornerRadius="@dimen/item_cardView_corner_radius"
+    app:cardElevation="5dp"
+    app:cardMaxElevation="5dp"
+    app:contentPadding="10dp"
+    app:contentPaddingBottom="10dp">
 
-    <TextView
-        android:id="@+id/textview_rank_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textview_movie_name"
-        android:layout_toEndOf="@id/circle_avatar_view"
-        android:text="@string/textview_rank_title"
-        android:textSize="@dimen/small_text"
-        android:textStyle="bold" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textview_movie_rank_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textview_movie_name"
-        android:layout_toEndOf="@id/textview_rank_title"
-        android:textSize="@dimen/small_text" />
+        <TextView
+            android:id="@+id/textview_rank_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textview_movie_name"
+            android:layout_toEndOf="@id/circle_avatar_view"
+            android:text="@string/textview_rank_title"
+            android:textColor="@color/fresh_ivy_Green"
+            android:textSize="@dimen/small_text"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textview_movie_rank_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textview_movie_name"
+            android:layout_toEndOf="@id/textview_rank_title"
+            android:textColor="@color/fresh_ivy_Green"
+            android:textSize="@dimen/small_text" />
 
 
-    <TextView
-        android:id="@+id/textview_movie_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/circle_avatar_view"
-        android:textSize="@dimen/text_size"
-        android:textStyle="bold|italic" />
+        <TextView
+            android:id="@+id/textview_movie_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/circle_avatar_view"
+            android:textColor="@color/fresh_ivy_Green"
+            android:textSize="@dimen/text_size"
+            android:textStyle="bold|italic" />
 
-    <TextView
-        android:id="@+id/textview_movie_year_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textview_rank_title"
-        android:layout_marginTop="@dimen/view_margin"
-        android:layout_toEndOf="@id/circle_avatar_view"
-        android:text="@string/textview_year_title"
-        android:textSize="@dimen/small_text"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/textview_movie_year_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textview_rank_title"
+            android:layout_marginTop="@dimen/view_margin"
+            android:layout_toEndOf="@id/circle_avatar_view"
+            android:text="@string/textview_year_title"
+            android:textColor="@color/fresh_ivy_Green"
+            android:textSize="@dimen/small_text"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/textview_movie_year_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textview_movie_rank_name"
-        android:layout_marginTop="@dimen/view_margin"
-        android:layout_toEndOf="@id/textview_movie_year_title"
-        android:textSize="@dimen/small_text" />
+        <TextView
+            android:id="@+id/textview_movie_year_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textview_movie_rank_name"
+            android:layout_marginTop="@dimen/view_margin"
+            android:layout_toEndOf="@id/textview_movie_year_title"
+            android:textColor="@color/fresh_ivy_Green"
+            android:textSize="@dimen/small_text" />
 
-    <com.example.topmovies.view.CircleAvatarView
-        android:id="@+id/circle_avatar_view"
-        android:layout_width="@dimen/circle_avatar_view_width"
-        android:layout_height="@dimen/circle_avatar_view_height"
-        android:layout_alignParentStart="true"
-        android:layout_margin="@dimen/view_margin" />
-</RelativeLayout>
+        <com.example.topmovies.view.CircleAvatarView
+            android:id="@+id/circle_avatar_view"
+            android:layout_width="@dimen/circle_avatar_view_width"
+            android:layout_height="@dimen/circle_avatar_view_height"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="@dimen/view_margin"
+            android:layout_marginTop="@dimen/view_margin"
+            android:layout_marginEnd="@dimen/view_margin"
+            android:layout_marginBottom="@dimen/view_margin" />
+
+    </RelativeLayout>
+</com.google.android.material.card.MaterialCardView>

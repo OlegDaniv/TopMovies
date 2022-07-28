@@ -16,8 +16,12 @@ class CircleAvatarView @JvmOverloads constructor(
 
     private lateinit var text: String
     private lateinit var imageBitmap: Bitmap
+    private var viewCenter = 0.0f
     private var radius = 0.0f
     private val destiny by lazy { resources.displayMetrics.density }
+    private val bitmapRect = RectF()
+    private val dstRect = RectF()
+    private val mMatrix = Matrix()
     private val paintForCircle = Paint(Paint.ANTI_ALIAS_FLAG)
     private val paintForBitmap = Paint().apply {
         isAntiAlias = true
@@ -29,9 +33,6 @@ class CircleAvatarView @JvmOverloads constructor(
         textAlign = Paint.Align.CENTER
         xfermode = PorterDuffXfermode(PorterDuff.Mode.LIGHTEN)
     }
-    private val bitmapRect = RectF()
-    private val dstRect = RectF()
-    private val mMatrix = Matrix()
 
     init {
         setLayerType(LAYER_TYPE_SOFTWARE, null)
@@ -44,12 +45,6 @@ class CircleAvatarView @JvmOverloads constructor(
                     resources, typedArray.getResourceId(
                         R.styleable.CircleAvatarView_src, R.drawable.empty_image
                     )
-                )
-                bitmapRect.set(
-                    0f,
-                    0f,
-                    imageBitmap.width.toFloat() / 2,
-                    imageBitmap.height.toFloat() / 2
                 )
             } finally {
                 typedArray.recycle()
@@ -67,8 +62,10 @@ class CircleAvatarView @JvmOverloads constructor(
 
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
         super.onSizeChanged(width, height, oldWidth, oldHeight)
-        radius = min(width.toFloat(), height.toFloat()) / 2
-        dstRect.set(0f, 0f, width.toFloat() / 2, height.toFloat() / 2)
+        viewCenter = min(width.toFloat(), height.toFloat()) / 2
+        radius = viewCenter
+        paintForText.textSize = min(width.toFloat(), height.toFloat())
+        dstRect.set(0f, 0f, width.toFloat(), height.toFloat())
     }
 
     private fun positionLatter(height: Float): Float {
@@ -82,18 +79,17 @@ class CircleAvatarView @JvmOverloads constructor(
 
     fun changeAvatarImage(orgBitmap: Bitmap) {
         imageBitmap = orgBitmap
-        bitmapRect.set(0f, 0f, imageBitmap.width.toFloat() / 2, imageBitmap.height.toFloat() / 2)
+        bitmapRect.set(0f, 0f, imageBitmap.width.toFloat(), imageBitmap.height.toFloat())
+        mMatrix.setRectToRect(bitmapRect, dstRect, Matrix.ScaleToFit.CENTER)
         invalidate()
     }
 
     override fun onDraw(canvas: Canvas?) {
-        mMatrix.setRectToRect(bitmapRect, dstRect, Matrix.ScaleToFit.END)
-        paintForText.textSize = radius * 2
         canvas?.apply {
             drawARGB(0, 255, 255, 255)
-            drawCircle(dstRect.right, dstRect.bottom, radius, paintForCircle)
+            drawCircle(viewCenter, viewCenter, radius, paintForCircle)
             drawBitmap(imageBitmap, mMatrix, paintForBitmap)
-            drawText(text, dstRect.right, positionLatter(dstRect.bottom), paintForText)
+            drawText(text, viewCenter, positionLatter(viewCenter), paintForText)
         }
     }
 }

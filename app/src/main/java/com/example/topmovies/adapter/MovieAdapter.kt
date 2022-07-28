@@ -29,6 +29,18 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MainViewHolder>() {
         return MainViewHolder(binding)
     }
 
+    override fun onBindViewHolder(
+        holder: MainViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        if (payloads.isNotEmpty()) {
+            holder.bind(position, movies)
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+        }
+    }
+
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
         holder.bind(position, movies)
     }

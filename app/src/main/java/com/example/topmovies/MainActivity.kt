@@ -12,21 +12,23 @@ import com.example.topmovies.viewmodel.MovieViewModel
 
 class MainActivity : AppCompatActivity() {
 
-    private val adapter = MovieAdapter()
+    private val movieAdapter = MovieAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ActivityMainBinding.inflate(layoutInflater).apply {
             setContentView(root)
-            recyclerview.layoutManager = LinearLayoutManager(this@MainActivity)
-            recyclerview.adapter = adapter
+            recyclerview.apply {
+                layoutManager = LinearLayoutManager(this@MainActivity)
+                adapter = movieAdapter
+            }
         }
         ViewModelProvider(this, ModelFactory(MovieRepository()))[MovieViewModel::class.java]
             .apply {
                 movieList.observe(this@MainActivity) {
-                    adapter.apply {
+                    movieAdapter.apply {
                         setMovieList(it)
-                        notifyItemRangeChanged(0, it.size)
+                        notifyItemRangeChanged(0, it.size, setMovieList(it))
                     }
                 }
                 getAllMovies()
