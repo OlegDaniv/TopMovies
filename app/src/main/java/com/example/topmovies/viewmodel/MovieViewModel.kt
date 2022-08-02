@@ -14,6 +14,10 @@ class MovieViewModel constructor(private val repository: MovieRepository) : View
     val movieList = MutableLiveData<List<Movie>>()
     val errorMessage = MutableLiveData<String>()
 
+    init {
+        getAllMovies()
+    }
+
     fun getAllMovies() {
         val response = repository.getAllMovies()
 

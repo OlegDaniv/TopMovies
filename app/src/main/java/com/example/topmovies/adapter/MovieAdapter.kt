@@ -29,20 +29,8 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MainViewHolder>() {
         return MainViewHolder(binding)
     }
 
-    override fun onBindViewHolder(
-        holder: MainViewHolder,
-        position: Int,
-        payloads: MutableList<Any>
-    ) {
-        if (payloads.isNotEmpty()) {
-            holder.bind(position, movies)
-        } else {
-            super.onBindViewHolder(holder, position, payloads)
-        }
-    }
-
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        holder.bind(position, movies)
+        holder.bind(movies[position])
     }
 
     override fun getItemCount(): Int {
@@ -56,8 +44,17 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MainViewHolder>() {
             return image.replaceAfter(REPLACE_AFTER, IMAGE_SIZE)
         }
 
-        fun bind(position: Int, movies: List<Movie>) {
-            val movie = movies[position]
+        private val avatarCustomTarget = object : CustomTarget<Bitmap>() {
+            override fun onResourceReady(
+                resource: Bitmap, transition: Transition<in Bitmap>?
+            ) {
+                binding.circleAvatarView.changeAvatarImage(resource)
+            }
+
+            override fun onLoadCleared(placeholder: Drawable?) {}
+        }
+
+        fun bind(movie: Movie) {
 
             binding.apply {
                 textviewMovieName.text = movie.title
@@ -68,16 +65,8 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MainViewHolder>() {
                     .asBitmap()
                     .load(resizeImage(movie.image))
                     .error(R.drawable.empty_image)
-                    .into(object : CustomTarget<Bitmap>() {
-
-                        override fun onResourceReady(
-                            resource: Bitmap, transition: Transition<in Bitmap>?
-                        ) {
-                            circleAvatarView.changeAvatarImage(resource)
-                        }
-
-                        override fun onLoadCleared(placeholder: Drawable?) {}
-                    })
+                    .skipMemoryCache(true)
+                    .into(avatarCustomTarget)
             }
         }
     }

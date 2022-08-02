@@ -16,22 +16,28 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityMainBinding.inflate(layoutInflater).apply {
+        val binding = ActivityMainBinding.inflate(layoutInflater).apply {
             setContentView(root)
             recyclerview.apply {
                 layoutManager = LinearLayoutManager(this@MainActivity)
                 adapter = movieAdapter
             }
         }
-        ViewModelProvider(this, ModelFactory(MovieRepository()))[MovieViewModel::class.java]
-            .apply {
-                movieList.observe(this@MainActivity) {
-                    movieAdapter.apply {
-                        setMovieList(it)
-                        notifyItemRangeChanged(0, it.size, setMovieList(it))
+        val movieViewModel =
+            ViewModelProvider(this, ModelFactory(MovieRepository()))[MovieViewModel::class.java]
+                .apply {
+                    movieList.observe(this@MainActivity) {
+                        movieAdapter.apply {
+                            setMovieList(it)
+                            notifyItemRangeChanged(0, it.size)
+                        }
                     }
                 }
-                getAllMovies()
+        binding.swipeRefresh.apply {
+            setOnRefreshListener {
+                movieViewModel.getAllMovies()
+                isRefreshing = false
             }
+        }
     }
 }
