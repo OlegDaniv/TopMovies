@@ -22,52 +22,47 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MainViewHolder>() {
         this.movies = movies
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
-        val binding = ItemLayoutBinding.inflate(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MainViewHolder(
+        ItemLayoutBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
-        return MainViewHolder(binding)
-    }
+    )
 
-    override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MainViewHolder, position: Int) =
         holder.bind(movies[position])
-    }
 
-    override fun getItemCount(): Int {
-        return movies.size
-    }
+    override fun getItemCount() = movies.size
 
-    class MainViewHolder(private val binding: ItemLayoutBinding) :
+    class MainViewHolder(
+        private val binding: ItemLayoutBinding
+    ) :
         RecyclerView.ViewHolder(binding.root) {
-
-        private fun resizeImage(image: String): String {
-            return image.replaceAfter(REPLACE_AFTER, IMAGE_SIZE)
-        }
 
         private val avatarCustomTarget = object : CustomTarget<Bitmap>() {
             override fun onResourceReady(
                 resource: Bitmap, transition: Transition<in Bitmap>?
             ) {
-                binding.circleAvatarView.changeAvatarImage(resource)
+                binding.circleAvatarView.setAvatarImage(resource)
             }
 
             override fun onLoadCleared(placeholder: Drawable?) {}
         }
 
         fun bind(movie: Movie) {
-
             binding.apply {
                 textviewMovieName.text = movie.title
                 textviewMovieRankName.text = movie.rank
                 textviewMovieYearName.text = movie.year
-                circleAvatarView.addLetterInCircleAvatar(movie.title)
+                circleAvatarView.setLabel(movie.title)
                 Glide.with(circleAvatarView)
                     .asBitmap()
-                    .load(resizeImage(movie.image))
+                    .load(resizeImage(movie.imageUrl))
                     .error(R.drawable.empty_image)
-                    .skipMemoryCache(true)
                     .into(avatarCustomTarget)
             }
         }
+
+        private fun resizeImage(image: String) =
+            image.replaceAfter(REPLACE_AFTER, IMAGE_SIZE)
     }
 }

@@ -12,31 +12,40 @@ import com.example.topmovies.viewmodel.MovieViewModel
 
 class MainActivity : AppCompatActivity() {
 
-    private val movieAdapter = MovieAdapter()
+    private val movieAdapter by lazy { MovieAdapter() }
+
+    private val movieViewModel by lazy {
+        ViewModelProvider(
+            this,
+            ModelFactory(MovieRepository())
+        )[MovieViewModel::class.java]
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityMainBinding.inflate(layoutInflater).apply {
+        setupUI()
+        setupViewModel()
+    }
+
+    private fun setupViewModel() {
+        movieViewModel.movieList.observe(this@MainActivity) {
+            movieAdapter.apply {
+                setMovieList(it)
+                notifyItemRangeChanged(0, it.size)
+            }
+        }
+    }
+
+    private fun setupUI() {
+        ActivityMainBinding.inflate(layoutInflater).apply {
             setContentView(root)
             recyclerview.apply {
                 layoutManager = LinearLayoutManager(this@MainActivity)
                 adapter = movieAdapter
             }
-        }
-        val movieViewModel =
-            ViewModelProvider(this, ModelFactory(MovieRepository()))[MovieViewModel::class.java]
-                .apply {
-                    movieList.observe(this@MainActivity) {
-                        movieAdapter.apply {
-                            setMovieList(it)
-                            notifyItemRangeChanged(0, it.size)
-                        }
-                    }
-                }
-        binding.swipeRefresh.apply {
-            setOnRefreshListener {
+            swipeRefresh.setOnRefreshListener {
                 movieViewModel.getAllMovies()
-                isRefreshing = false
+                swipeRefresh.isRefreshing = false
             }
         }
     }

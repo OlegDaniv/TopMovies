@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="text_size">16sp</dimen>
-    <dimen name="small_text">12sp</dimen>
-    <dimen name="layout_margin">10dp</dimen>
+    <dimen name="item_textview_def_text_size">16sp</dimen>
+    <dimen name="item_textview_small_text_size">12sp</dimen>
+    <dimen name="layout_margin">12dp</dimen>
     <dimen name="circle_avatar_view_width">100dp</dimen>
     <dimen name="circle_avatar_view_height">100dp</dimen>
     <dimen name="view_margin">6dp</dimen>
-    <dimen name="item_cardView_corner_radius">25dp</dimen>
+    <dimen name="item_cardView_corner_radius">24dp</dimen>
+    <dimen name="item_card_view_elevation">6dp</dimen>
+    <dimen name="item_card_view_max_elevation">6dp</dimen>
+    <dimen name="item_card_view_content_padding">12dp</dimen>
+    <dimen name="item_card_view_padding_bottom">12dp</dimen>
 
 </resources>

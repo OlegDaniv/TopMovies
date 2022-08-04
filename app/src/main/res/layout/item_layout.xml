@@ -8,10 +8,10 @@
     android:layout_marginEnd="@dimen/layout_margin"
     app:cardBackgroundColor="@color/mint_macaron"
     app:cardCornerRadius="@dimen/item_cardView_corner_radius"
-    app:cardElevation="5dp"
-    app:cardMaxElevation="5dp"
-    app:contentPadding="10dp"
-    app:contentPaddingBottom="10dp">
+    app:cardElevation="@dimen/item_card_view_elevation"
+    app:cardMaxElevation="@dimen/item_card_view_max_elevation"
+    app:contentPadding="@dimen/item_card_view_content_padding"
+    app:contentPaddingBottom="@dimen/item_card_view_padding_bottom">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -25,7 +25,7 @@
             android:layout_toEndOf="@id/circle_avatar_view"
             android:text="@string/textview_rank_title"
             android:textColor="@color/fresh_ivy_Green"
-            android:textSize="@dimen/small_text"
+            android:textSize="@dimen/item_textview_small_text_size"
             android:textStyle="bold" />
 
         <TextView
@@ -35,7 +35,7 @@
             android:layout_below="@id/textview_movie_name"
             android:layout_toEndOf="@id/textview_rank_title"
             android:textColor="@color/fresh_ivy_Green"
-            android:textSize="@dimen/small_text" />
+            android:textSize="@dimen/item_textview_small_text_size" />
 
 
         <TextView
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/circle_avatar_view"
             android:textColor="@color/fresh_ivy_Green"
-            android:textSize="@dimen/text_size"
+            android:textSize="@dimen/item_textview_def_text_size"
             android:textStyle="bold|italic" />
 
         <TextView
@@ -56,7 +56,7 @@
             android:layout_toEndOf="@id/circle_avatar_view"
             android:text="@string/textview_year_title"
             android:textColor="@color/fresh_ivy_Green"
-            android:textSize="@dimen/small_text"
+            android:textSize="@dimen/item_textview_small_text_size"
             android:textStyle="bold" />
 
         <TextView
@@ -67,7 +67,7 @@
             android:layout_marginTop="@dimen/view_margin"
             android:layout_toEndOf="@id/textview_movie_year_title"
             android:textColor="@color/fresh_ivy_Green"
-            android:textSize="@dimen/small_text" />
+            android:textSize="@dimen/item_textview_small_text_size" />
 
         <com.example.topmovies.view.CircleAvatarView
             android:id="@+id/circle_avatar_view"

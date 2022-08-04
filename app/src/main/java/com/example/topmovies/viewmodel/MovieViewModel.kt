@@ -1,5 +1,6 @@
 package com.example.topmovies.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.topmovies.model.Movie
@@ -11,23 +12,20 @@ import retrofit2.Response
 
 class MovieViewModel constructor(private val repository: MovieRepository) : ViewModel() {
 
-    val movieList = MutableLiveData<List<Movie>>()
-    val errorMessage = MutableLiveData<String>()
+    private val _movieList = MutableLiveData<List<Movie>>()
+    val movieList: LiveData<List<Movie>> = _movieList
 
     init {
         getAllMovies()
     }
 
     fun getAllMovies() {
-        val response = repository.getAllMovies()
-
-        response.enqueue(object : Callback<MovieObject> {
+        repository.getAllMovies().enqueue(object : Callback<MovieObject> {
             override fun onResponse(call: Call<MovieObject>, response: Response<MovieObject>) {
-                movieList.postValue(response.body()?.items)
+                _movieList.postValue(response.body()?.items)
             }
 
             override fun onFailure(call: Call<MovieObject>, t: Throwable) {
-                errorMessage.postValue(t.message)
             }
         })
     }
