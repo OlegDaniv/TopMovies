@@ -16,15 +16,20 @@ class CircleAvatarView @JvmOverloads constructor(
     defStyleRes: Int = 0
 ) : View(context, attributeSet, defStyleAttr, defStyleRes) {
 
-    private lateinit var label: String
-    private lateinit var imageBitmap: Bitmap
-    private var viewCenter by notNull<Float>()
+    private var axisY by notNull<Int>()
+    private var axisX by notNull<Int>()
     private var radius by notNull<Float>()
     private val density by lazy { resources.displayMetrics.density }
+    private var imageBitmap: Bitmap? = null
     private val bitmapRect by lazy { RectF() }
     private val destinationRect by lazy { RectF() }
     private val bitmapMatrix by lazy { Matrix() }
-    private val circlePaint by lazy { Paint(Paint.ANTI_ALIAS_FLAG) }
+    private lateinit var label: String
+    private val circlePaint by lazy {
+        Paint().apply {
+            isAntiAlias = true
+        }
+    }
     private val bitmapPaint by lazy {
         Paint().apply {
             isAntiAlias = true
@@ -49,12 +54,19 @@ class CircleAvatarView @JvmOverloads constructor(
                 label = typedArray.getString(R.styleable.CircleAvatarView_text) ?: ""
                 imageBitmap = BitmapFactory.decodeResource(
                     resources, typedArray.getResourceId(
-                        R.styleable.CircleAvatarView_src, R.drawable.empty_image
+                        R.styleable.CircleAvatarView_src, 0
                     )
                 )
+                if (imageBitmap != null) setMatrix()
             } finally {
                 typedArray.recycle()
             }
+        }
+    }
+
+    private fun setMatrix() {
+        if (!destinationRect.isEmpty) {
+            bitmapMatrix.setRectToRect(bitmapRect, destinationRect, Matrix.ScaleToFit.CENTER)
         }
     }
 
@@ -67,19 +79,19 @@ class CircleAvatarView @JvmOverloads constructor(
     }
 
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
-        viewCenter = min(width.toFloat(), height.toFloat()) / 2
-        radius = viewCenter
+        axisX = width
+        axisY = height
+        radius = min(width, height) / 2f
         labelPaint.textSize = min(width.toFloat(), height.toFloat())
         destinationRect.set(0f, 0f, width.toFloat(), height.toFloat())
-        bitmapMatrix.setRectToRect(bitmapRect, destinationRect, Matrix.ScaleToFit.CENTER)
+        setMatrix()
     }
 
     override fun onDraw(canvas: Canvas) {
         canvas.apply {
-            drawARGB(0, 255, 255, 255)
-            drawCircle(viewCenter, viewCenter, radius, circlePaint)
-            drawBitmap(imageBitmap, bitmapMatrix, bitmapPaint)
-            drawText(label, viewCenter, positionLabel(viewCenter), labelPaint)
+            drawCircle(axisX / 2f, axisY / 2f, radius, circlePaint)
+            imageBitmap?.let { drawBitmap(it, bitmapMatrix, bitmapPaint) }
+            drawText(label, axisX / 2f, setHeightLabel(axisY / 2f), labelPaint)
         }
     }
 
@@ -90,14 +102,12 @@ class CircleAvatarView @JvmOverloads constructor(
 
     fun setAvatarImage(orgBitmap: Bitmap) {
         imageBitmap = orgBitmap
-        bitmapRect.set(0f, 0f, imageBitmap.width.toFloat(), imageBitmap.height.toFloat())
-        if (!destinationRect.isEmpty) {
-            bitmapMatrix.setRectToRect(bitmapRect, destinationRect, Matrix.ScaleToFit.CENTER)
-            invalidate()
-        }
+        bitmapRect.set(0f, 0f, imageBitmap!!.width.toFloat(), imageBitmap!!.height.toFloat())
+        setMatrix()
+        invalidate()
     }
 
-    private fun positionLabel(height: Float): Float {
+    private fun setHeightLabel(height: Float): Float {
         return height - ((labelPaint.descent() + labelPaint.ascent()) / 2)
     }
 }

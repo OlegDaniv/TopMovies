@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.example.topmovies.R
 import com.example.topmovies.databinding.ItemLayoutBinding
 import com.example.topmovies.model.Movie
 import com.example.topmovies.unit.IMAGE_SIZE
@@ -57,7 +56,6 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MainViewHolder>() {
                 Glide.with(circleAvatarView)
                     .asBitmap()
                     .load(resizeImage(movie.imageUrl))
-                    .error(R.drawable.empty_image)
                     .into(avatarCustomTarget)
             }
         }
