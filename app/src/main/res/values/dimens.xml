@@ -11,18 +11,5 @@
     <dimen name="item_card_view_max_elevation">6dp</dimen>
     <dimen name="item_card_view_content_padding">12dp</dimen>
     <dimen name="item_card_view_padding_bottom">12dp</dimen>
-    <dimen name="movie_detailed_image_margin_top">8dp</dimen>
-    <dimen name="movie_detailed_title_description_margin_start">12dp</dimen>
-    <dimen name="movie_detailed_title_description_margin_top">8dp</dimen>
-    <dimen name="movie_detailed_title_description_text_size_large">16sp</dimen>
-    <dimen name="movie_detailed_description_text_margin_start">12dp</dimen>
-    <dimen name="movie_detailed_description_text_margin_top">6dp</dimen>
-    <dimen name="movie_detailed_description_text_margin_end">12dp</dimen>
-    <dimen name="movie_detailed_description_movie_name">18sp</dimen>
-    <dimen name="activity_detailed_rating_number_margin">8dp</dimen>
-    <dimen name="movie_detailed_genres_margin_top">8dp</dimen>
-    <dimen name="movie_detailed_genres_margin_end">8dp</dimen>
-    <dimen name="movie_detailed_date_release_title_margin_top">8dp</dimen>
-    <dimen name="movie_detailed_date_release_margin_end">8dp</dimen>
 
 </resources>

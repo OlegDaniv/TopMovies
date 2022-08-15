@@ -19,15 +19,3 @@ data class Movie(
     val imDbRating: String,
     val imDbRatingCount: String
 )
-
-data class MovieDetailed(
-    val title: String,
-    val year: String,
-    val plot: String,
-    @SerializedName("image")
-    val imageUrl: String,
-    val releaseDate: String,
-    val runtimeStr: String,
-    val genres: String,
-    val imDbRating: String,
-)
