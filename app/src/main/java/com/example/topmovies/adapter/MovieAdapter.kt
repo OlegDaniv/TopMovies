@@ -13,7 +13,8 @@ import com.example.topmovies.model.Movie
 import com.example.topmovies.unit.IMAGE_SIZE
 import com.example.topmovies.unit.REPLACE_AFTER
 
-class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MainViewHolder>() {
+class MovieAdapter(private val onItemClickListener: OnItemClickListener) :
+    RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
     private var movies = listOf<Movie>()
 
@@ -21,26 +22,23 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MainViewHolder>() {
         this.movies = movies
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MainViewHolder(
-        ItemLayoutBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
-        )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MovieViewHolder(
+        ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+        onItemClickListener
     )
 
-    override fun onBindViewHolder(holder: MainViewHolder, position: Int) =
+    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) =
         holder.bind(movies[position])
 
     override fun getItemCount() = movies.size
 
-    class MainViewHolder(
-        private val binding: ItemLayoutBinding
-    ) :
-        RecyclerView.ViewHolder(binding.root) {
+    class MovieViewHolder(
+        private val binding: ItemLayoutBinding, onItemClickListener: OnItemClickListener,
+    ) : RecyclerView.ViewHolder(binding.root) {
 
+        private val click = onItemClickListener
         private val avatarCustomTarget = object : CustomTarget<Bitmap>() {
-            override fun onResourceReady(
-                resource: Bitmap, transition: Transition<in Bitmap>?
-            ) {
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                 binding.circleAvatarView.setAvatarImage(resource)
             }
 
@@ -58,9 +56,16 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MainViewHolder>() {
                     .load(resizeImage(movie.imageUrl))
                     .into(avatarCustomTarget)
             }
+            itemView.setOnClickListener {
+                click.onClickItem(movie.id)
+            }
         }
 
         private fun resizeImage(image: String) =
             image.replaceAfter(REPLACE_AFTER, IMAGE_SIZE)
+    }
+
+    interface OnItemClickListener {
+        fun onClickItem(movieId: String)
     }
 }

@@ -10,7 +10,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MovieViewModel constructor(private val repository: MovieRepository) : ViewModel() {
+class MovieListViewModel constructor(private val repository: MovieRepository) : ViewModel() {
 
     private val _movieList = MutableLiveData<List<Movie>>()
     val movieList: LiveData<List<Movie>> = _movieList
@@ -25,8 +25,7 @@ class MovieViewModel constructor(private val repository: MovieRepository) : View
                 _movieList.postValue(response.body()?.items)
             }
 
-            override fun onFailure(call: Call<MovieObject>, t: Throwable) {
-            }
+            override fun onFailure(call: Call<MovieObject>, t: Throwable) {}
         })
     }
 }
