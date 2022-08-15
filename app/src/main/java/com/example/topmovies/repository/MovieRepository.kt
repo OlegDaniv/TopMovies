@@ -5,4 +5,5 @@ import com.example.topmovies.retrofit.ApiServer
 class MovieRepository constructor(private val apiServer: ApiServer = ApiServer.getInstance()) {
 
     fun getAllMovies() = apiServer.getAllMovies()
+    fun getMovieDetailed(movieId: String) = apiServer.getMovieDetailed(movieId)
 }
