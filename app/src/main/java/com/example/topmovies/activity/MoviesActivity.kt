@@ -34,10 +34,9 @@ class MoviesActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-   moviesViewModel.movies.observe(this) {
+        moviesViewModel.movies.observe(this) {
             moviesAdapter.apply {
                 setMovieList(it)
-                notifyItemRangeChanged(0, it.size)
             }
         }
     }

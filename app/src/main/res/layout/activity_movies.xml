@@ -9,7 +9,5 @@
         android:id="@+id/recyclerview_movies_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background_peach"
         tools:listitem="@layout/item_layout" />
-
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

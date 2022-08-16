@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -21,6 +22,7 @@ class MovieAdapter(private val onItemClickListener: (String) -> Unit) :
 
     fun setMovieList(movies: List<Movie>) {
         this.movies = movies
+        notifyItemRangeChanged(0, movies.size)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MovieViewHolder(
@@ -55,14 +57,10 @@ class MovieAdapter(private val onItemClickListener: (String) -> Unit) :
                 textviewItemLayoutPreviousRankNumber.text = movie.rankUpDown
                 when (movie.rankUpDown.first()) {
                     '+' -> textviewItemLayoutPreviousRankNumber.setTextColor(
-                        itemView.resources.getColor(
-                            R.color.text_rank_up
-                        )
+                        ContextCompat.getColor(itemView.context, R.color.text_rank_up)
                     )
                     '-' -> textviewItemLayoutPreviousRankNumber.setTextColor(
-                        itemView.resources.getColor(
-                            R.color.text_rank_down
-                        )
+                        ContextCompat.getColor(itemView.context, R.color.text_rank_down)
                     )
                 }
                 circleAvatarViewItemLayoutMovieImage.setLabel(movie.title)

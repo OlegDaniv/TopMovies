@@ -16,4 +16,6 @@
     <color name="button_color_tanager_turquoise">#8FDDE7</color>
     <color name="text_rank_up">#43A047</color>
     <color name="text_rank_down">#E53935</color>
+    <color name="rosewater">#FFC2C7</color>
+    <color name="raspberry">#D43D68</color>
 </resources>
