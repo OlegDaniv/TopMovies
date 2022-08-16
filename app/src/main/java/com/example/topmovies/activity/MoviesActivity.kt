@@ -6,34 +6,36 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.topmovies.adapter.MovieAdapter
-import com.example.topmovies.databinding.ActivityListMoviesBinding
+import com.example.topmovies.databinding.ActivityMoviesBinding
 import com.example.topmovies.repository.MovieRepository
 import com.example.topmovies.unit.INTENT_KEY
-import com.example.topmovies.viewmodel.MovieListViewModel
 import com.example.topmovies.viewmodel.MovieModelFactory
+import com.example.topmovies.viewmodel.MoviesViewModel
 
-class MoviesListActivity : AppCompatActivity(), MovieAdapter.OnItemClickListener {
-
-    private val movieListAdapter by lazy { MovieAdapter(this) }
-    private val movieListViewModel by lazy {
+class MoviesActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMoviesBinding
+    private val moviesAdapter by lazy { MovieAdapter { id -> onClickItem(id) } }
+    private val moviesViewModel by lazy {
         ViewModelProvider(
             this, MovieModelFactory(MovieRepository())
-        )[MovieListViewModel::class.java]
+        )[MoviesViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMoviesBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setupUI()
         setupViewModel()
     }
 
-    override fun onClickItem(movieId: String) {
-        openDetailedActivity(movieId)
+    private fun onClickItem(movieId: String) {
+        startMovieDetailsActivity(movieId)
     }
 
     private fun setupViewModel() {
-        movieListViewModel.movieList.observe(this) {
-            movieListAdapter.apply {
+   moviesViewModel.movies.observe(this) {
+            moviesAdapter.apply {
                 setMovieList(it)
                 notifyItemRangeChanged(0, it.size)
             }
@@ -41,21 +43,20 @@ class MoviesListActivity : AppCompatActivity(), MovieAdapter.OnItemClickListener
     }
 
     private fun setupUI() {
-        ActivityListMoviesBinding.inflate(layoutInflater).apply {
-            setContentView(root)
-            recyclerview.apply {
+        binding.apply {
+            recyclerviewMoviesActivity.apply {
                 layoutManager = LinearLayoutManager(context)
-                adapter = movieListAdapter
+                adapter = moviesAdapter
             }
             swipeRefresh.setOnRefreshListener {
-                movieListViewModel.getAllMovies()
+                moviesViewModel.getAllMovies()
                 swipeRefresh.isRefreshing = false
             }
         }
     }
 
-    private fun openDetailedActivity(movieId: String) {
-        Intent(this, MovieDetailedActivity()::class.java).apply {
+    private fun startMovieDetailsActivity(movieId: String) {
+        Intent(this, MovieDetailsActivity()::class.java).apply {
             putExtra(INTENT_KEY, movieId)
             startActivity(this)
         }

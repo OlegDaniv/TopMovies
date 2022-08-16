@@ -20,7 +20,7 @@ data class Movie(
     val imDbRatingCount: String
 )
 
-data class MovieDetailed(
+data class MovieDetails(
     val title: String,
     val year: String,
     val plot: String,

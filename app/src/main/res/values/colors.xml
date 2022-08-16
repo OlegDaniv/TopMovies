@@ -8,5 +8,12 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="mint_macaron">#B0F3EC</color>
-    <color name="fresh_ivy_Green">#00695C</color>
+    <color name="text_color_fresh_ivy_green">#00695C</color>
+    <color name="background_peach">#FBE5C8</color>
+    <color name="background_spearmint">#B6E5D8</color>
+    <color name="text_color_roxy_brown">#795548</color>
+    <color name="text_color_arabic_coffee">#6D4C41</color>
+    <color name="button_color_tanager_turquoise">#8FDDE7</color>
+    <color name="text_rank_up">#43A047</color>
+    <color name="text_rank_down">#E53935</color>
 </resources>

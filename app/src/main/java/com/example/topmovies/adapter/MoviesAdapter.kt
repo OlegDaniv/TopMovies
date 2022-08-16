@@ -8,12 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.example.topmovies.R
 import com.example.topmovies.databinding.ItemLayoutBinding
 import com.example.topmovies.model.Movie
 import com.example.topmovies.unit.IMAGE_SIZE
 import com.example.topmovies.unit.REPLACE_AFTER
 
-class MovieAdapter(private val onItemClickListener: OnItemClickListener) :
+class MovieAdapter(private val onItemClickListener: (String) -> Unit) :
     RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
     private var movies = listOf<Movie>()
@@ -33,13 +34,14 @@ class MovieAdapter(private val onItemClickListener: OnItemClickListener) :
     override fun getItemCount() = movies.size
 
     class MovieViewHolder(
-        private val binding: ItemLayoutBinding, onItemClickListener: OnItemClickListener,
+        private val binding: ItemLayoutBinding,
+        onItemClickListener: (String) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private val click = onItemClickListener
         private val avatarCustomTarget = object : CustomTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                binding.circleAvatarView.setAvatarImage(resource)
+                binding.circleAvatarViewItemLayoutMovieImage.setAvatarImage(resource)
             }
 
             override fun onLoadCleared(placeholder: Drawable?) {}
@@ -47,25 +49,34 @@ class MovieAdapter(private val onItemClickListener: OnItemClickListener) :
 
         fun bind(movie: Movie) {
             binding.apply {
-                textviewMovieName.text = movie.title
-                textviewMovieRankName.text = movie.rank
-                textviewMovieYearName.text = movie.year
-                circleAvatarView.setLabel(movie.title)
-                Glide.with(circleAvatarView)
+                textviewItemLayoutMovieName.text = movie.title
+                textviewItemLayoutRankNumber.text = movie.rank
+                textviewItemLayoutYearNumber.text = movie.year
+                textviewItemLayoutPreviousRankNumber.text = movie.rankUpDown
+                when (movie.rankUpDown.first()) {
+                    '+' -> textviewItemLayoutPreviousRankNumber.setTextColor(
+                        itemView.resources.getColor(
+                            R.color.text_rank_up
+                        )
+                    )
+                    '-' -> textviewItemLayoutPreviousRankNumber.setTextColor(
+                        itemView.resources.getColor(
+                            R.color.text_rank_down
+                        )
+                    )
+                }
+                circleAvatarViewItemLayoutMovieImage.setLabel(movie.title)
+                Glide.with(circleAvatarViewItemLayoutMovieImage)
                     .asBitmap()
                     .load(resizeImage(movie.imageUrl))
                     .into(avatarCustomTarget)
             }
             itemView.setOnClickListener {
-                click.onClickItem(movie.id)
+                click(movie.id)
             }
         }
 
         private fun resizeImage(image: String) =
             image.replaceAfter(REPLACE_AFTER, IMAGE_SIZE)
-    }
-
-    interface OnItemClickListener {
-        fun onClickItem(movieId: String)
     }
 }

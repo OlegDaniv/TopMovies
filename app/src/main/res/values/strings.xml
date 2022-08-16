@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">TopMovies</string>
-    <string name="textview_rank_title">Rank:</string>
-    <string name="textview_year_title">Year:</string>
-    <string name="main_button_start">Let Start</string>
-    <string name="detailed_activity_title_description">Description</string>
+    <string name="item_layout_rank_title">Rank:</string>
+    <string name="item_layout_year_title">Year:</string>
+    <string name="main_activity_button_start">Let Start</string>
+    <string name="movie_details_description_title">Description</string>
+    <string name="movie_details_rating_title">Rating</string>
+    <string name="movie_details_genres_title">Genres</string>
+    <string name="movie_details_date_release_title">Release</string>
     <string name="image_movie_description">movie_image</string>
-    <string name="movie_detailed_rating_title">Rating</string>
-    <string name="movie_detailed_genres_title_text">Genres</string>
-    <string name="movie_detailed_date_release_title_text">Release</string>
 </resources>
