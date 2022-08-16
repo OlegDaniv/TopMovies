@@ -6,9 +6,6 @@
     <dimen name="max_elevation_card_view">8dp</dimen>
     <dimen name="margin_all_small">8dp</dimen>
     <dimen name="margin_all_medium">12dp</dimen>
-    <dimen name="text_size_all_small">12sp</dimen>
-    <dimen name="text_size_all_medium">16sp</dimen>
-    <dimen name="text_size_all_large">18sp</dimen>
     <dimen name="corner_radius_item_layout">24dp</dimen>
     <dimen name="width_item_layout_circle_avatar_view">100dp</dimen>
     <dimen name="height_item_layout_circle_avatar_view">100dp</dimen>
