@@ -82,7 +82,6 @@
         style="@style/text_small.roxy_brown.serif"
         android:layout_marginTop="@dimen/margin_all_small"
         android:text="@string/movie_details_genres_title"
-        android:textColor="@color/text_color_roxy_brown"
         app:layout_constraintStart_toStartOf="@+id/guideline_movie_details"
         app:layout_constraintTop_toBottomOf="@id/textview_movie_details_date_release_title" />
 
@@ -94,7 +93,6 @@
         style="@style/text_small.roxy_brown.serif"
         android:layout_marginEnd="@dimen/margin_all_small"
         android:gravity="end"
-        android:textColor="@color/text_color_roxy_brown"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textview_movie_details_genres_title"
         app:layout_constraintTop_toTopOf="@id/textview_movie_details_genres_title" />
@@ -117,7 +115,6 @@
         android:layout_marginStart="@dimen/margin_all_small"
         android:layout_marginEnd="@dimen/margin_all_small"
         android:gravity="end"
-        android:textColor="@color/text_color_roxy_brown"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textview_movie_details_date_release_title"
         app:layout_constraintTop_toTopOf="@id/textview_movie_details_date_release_title" />
