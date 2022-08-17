@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="text_small">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="text_small.fresh_ivy_green">
+        <item name="android:textColor">@color/text_color_fresh_ivy_green</item>
+    </style>
+
+    <style name="text_small.fresh_ivy_green.bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="text_medium">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="text_medium.fresh_ivy_green.bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="text_medium.fresh_ivy_green">
+        <item name="android:textColor">@color/text_color_fresh_ivy_green</item>
+    </style>
+
+    <style name="text_medium.roxy_brown">
+        <item name="android:textColor">@color/text_color_roxy_brown</item>
+    </style>
+
+    <style name="text_small.roxy_brown">
+        <item name="android:textColor">@color/text_color_roxy_brown</item>
+    </style>
+
+    <style name="text_medium.roxy_brown.bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="text_medium.roxy_brown.bold.serif">
+        <item name="android:typeface">serif</item>
+    </style>
+
+    <style name="text_small.roxy_brown.serif">
+        <item name="android:typeface">serif</item>
+    </style>
+
+    <style name="text_large">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="text_large.roxy_brown">
+        <item name="android:textColor">@color/text_color_roxy_brown</item>
+    </style>
+
+    <style name="text_large.roxy_brown.bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="text_large.roxy_brown.bold.serif">
+        <item name="android:typeface">serif</item>
+    </style>
+
+</resources>

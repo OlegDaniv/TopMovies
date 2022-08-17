@@ -1,8 +1,9 @@
 package com.example.topmovies.repository
 
-import com.example.topmovies.retrofit.ApiServer
+import com.example.topmovies.retrofit.MoviesApi
 
-class MovieRepository constructor(private val apiServer: ApiServer = ApiServer.getInstance()) {
+class MovieRepository constructor(private val movieApi: MoviesApi = MoviesApi.getInstance()) {
 
-    fun getAllMovies() = apiServer.getAllMovies()
+    fun getMovies() = movieApi.getMovies()
+    fun getMovieDetails(movieId: String) = movieApi.getMovieDetails(movieId)
 }
