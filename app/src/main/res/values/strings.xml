@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TopMovies</string>
+    <string name="app_name">Top Movies</string>
     <string name="item_layout_rank_title">Rank:</string>
     <string name="item_layout_year_title">Year:</string>
     <string name="main_activity_button_start">Let\'s Start</string>
