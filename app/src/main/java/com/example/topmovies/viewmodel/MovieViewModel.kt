@@ -4,18 +4,23 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.topmovies.model.Movie
 import com.example.topmovies.model.MovieDetails
+import com.example.topmovies.model.MovieObject
 import com.example.topmovies.repository.MovieRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MovieDetailsViewModel constructor(private val repository: MovieRepository) : ViewModel() {
+class MovieViewModel constructor(private val repository: MovieRepository) : ViewModel() {
 
+    private val _movies = MutableLiveData<List<Movie>>()
+    val movies: LiveData<List<Movie>> = _movies
     private val _movieDetails = MutableLiveData<MovieDetails>()
     val movieDetails: LiveData<MovieDetails> = _movieDetails
 
     fun getMovieDetails(movieId: String) {
+        Log.e("css", "getMovieDetails")
         repository.getMovieDetails(movieId).enqueue(object :
             Callback<MovieDetails> {
             override fun onResponse(call: Call<MovieDetails>, response: Response<MovieDetails>) {
@@ -23,6 +28,19 @@ class MovieDetailsViewModel constructor(private val repository: MovieRepository)
             }
 
             override fun onFailure(call: Call<MovieDetails>, throwable: Throwable) {
+                Log.e("getAllMovie onFailure", " ${throwable.message}")
+            }
+        })
+    }
+
+    fun getAllMovies() {
+        Log.e("css", "getAllMovies")
+        repository.getMovies().enqueue(object : Callback<MovieObject> {
+            override fun onResponse(call: Call<MovieObject>, response: Response<MovieObject>) {
+                _movies.postValue(response.body()?.items)
+            }
+
+            override fun onFailure(call: Call<MovieObject>, throwable: Throwable) {
                 Log.e("getAllMovie onFailure", " ${throwable.message}")
             }
         })
