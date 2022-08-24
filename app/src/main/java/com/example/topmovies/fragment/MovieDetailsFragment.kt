@@ -1,20 +1,19 @@
-package com.example.topmovies.activity
+package com.example.topmovies.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
-import com.example.topmovies.MainActivity
 import com.example.topmovies.databinding.FragmentDetailsMovieBinding
 import com.example.topmovies.repository.MovieRepository
-import com.example.topmovies.unit.FRAGMENT_KEY
 import com.example.topmovies.viewmodel.MovieModelFactory
 import com.example.topmovies.viewmodel.MovieViewModel
 
-class MovieDetailsFragment : Fragment() {
+const val FRAGMENT_KEY = "movieID"
+
+class MovieDetailsFragment : BaseFragment() {
     private lateinit var binding: FragmentDetailsMovieBinding
     private val movieId: String by lazy { arguments?.getString(FRAGMENT_KEY) ?: "" }
     private val viewModelMovieDetailsFragment by viewModels<MovieViewModel> {
@@ -41,14 +40,9 @@ class MovieDetailsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        toolBarBridge?.showUpButton()
         setupUI()
         loadMovieDetailsById()
-        showUpButton()
-    }
-
-    private fun showUpButton() {
-        val activity = activity as MainActivity?
-        activity?.showUpButton()
     }
 
     private fun setupUI() {

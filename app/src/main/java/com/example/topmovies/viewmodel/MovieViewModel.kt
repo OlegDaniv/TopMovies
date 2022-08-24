@@ -1,6 +1,5 @@
 package com.example.topmovies.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,29 +19,23 @@ class MovieViewModel constructor(private val repository: MovieRepository) : View
     val movieDetails: LiveData<MovieDetails> = _movieDetails
 
     fun getMovieDetails(movieId: String) {
-        Log.e("css", "getMovieDetails")
         repository.getMovieDetails(movieId).enqueue(object :
             Callback<MovieDetails> {
             override fun onResponse(call: Call<MovieDetails>, response: Response<MovieDetails>) {
                 _movieDetails.postValue(response.body())
             }
 
-            override fun onFailure(call: Call<MovieDetails>, throwable: Throwable) {
-                Log.e("getAllMovie onFailure", " ${throwable.message}")
-            }
+            override fun onFailure(call: Call<MovieDetails>, throwable: Throwable) {}
         })
     }
 
     fun getAllMovies() {
-        Log.e("css", "getAllMovies")
         repository.getMovies().enqueue(object : Callback<MovieObject> {
             override fun onResponse(call: Call<MovieObject>, response: Response<MovieObject>) {
                 _movies.postValue(response.body()?.items)
             }
 
-            override fun onFailure(call: Call<MovieObject>, throwable: Throwable) {
-                Log.e("getAllMovie onFailure", " ${throwable.message}")
-            }
+            override fun onFailure(call: Call<MovieObject>, throwable: Throwable) {}
         })
     }
 }

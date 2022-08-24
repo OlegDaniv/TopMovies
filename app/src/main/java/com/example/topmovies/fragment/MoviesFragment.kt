@@ -1,13 +1,11 @@
-package com.example.topmovies.activity
+package com.example.topmovies.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.topmovies.MainActivity
 import com.example.topmovies.R
 import com.example.topmovies.adapter.MovieAdapter
 import com.example.topmovies.databinding.FragmentMoviesBinding
@@ -15,7 +13,7 @@ import com.example.topmovies.repository.MovieRepository
 import com.example.topmovies.viewmodel.MovieModelFactory
 import com.example.topmovies.viewmodel.MovieViewModel
 
-class MoviesFragment : Fragment() {
+class MoviesFragment : BaseFragment() {
     private lateinit var binding: FragmentMoviesBinding
     private val moviesAdapter by lazy { MovieAdapter { id -> onClickItem(id) } }
     private val moviesViewModel by viewModels<MovieViewModel> {
@@ -38,25 +36,18 @@ class MoviesFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        toolBarBridge?.hideUpButton()
         setupUI()
         setupViewModel()
-        hideUpButton()
-    }
-
-    private fun hideUpButton() {
-        val activity = activity as MainActivity?
-        activity?.hideUpButton()
     }
 
     private fun onClickItem(movieId: String) {
-        startMovieDetailsActivity(movieId)
+        startMovieDetailsFragment(movieId)
     }
 
     private fun setupViewModel() {
         moviesViewModel.apply {
-            if (moviesViewModel.movies.value == null) {
-                getAllMovies()
-            }
+            if (moviesViewModel.movies.value == null) getAllMovies()
             movies.observe(viewLifecycleOwner) {
                 moviesAdapter.apply {
                     setMovieList(it)
@@ -78,7 +69,7 @@ class MoviesFragment : Fragment() {
         }
     }
 
-    private fun startMovieDetailsActivity(movieId: String) {
+    private fun startMovieDetailsFragment(movieId: String) {
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragment_container_view, MovieDetailsFragment.newInstance(movieId))
             .addToBackStack("movieList")

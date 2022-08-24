@@ -4,10 +4,11 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.example.topmovies.activity.MoviesFragment
 import com.example.topmovies.databinding.ActivityMainBinding
+import com.example.topmovies.fragment.MoviesFragment
+import com.example.topmovies.fragment.ToolBarBridge
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ToolBarBridge {
     private var isLoading = true
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,11 +40,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun showUpButton() {
+    override fun showUpButton() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    fun hideUpButton() {
+    override fun hideUpButton() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
 
