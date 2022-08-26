@@ -3,6 +3,7 @@ package com.example.topmovies.activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.topmovies.adapter.MovieAdapter
@@ -20,8 +21,12 @@ class MoviesActivity : AppCompatActivity() {
             this, MovieModelFactory(MovieRepository())
         )[MoviesViewModel::class.java]
     }
+    var isLoading = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen().apply {
+            setKeepOnScreenCondition { isLoading }
+        }
         super.onCreate(savedInstanceState)
         binding = ActivityMoviesBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -39,6 +44,7 @@ class MoviesActivity : AppCompatActivity() {
                 setMovieList(it)
             }
         }
+        isLoading = false
     }
 
     private fun setupUI() {

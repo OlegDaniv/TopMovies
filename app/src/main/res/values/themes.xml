@@ -14,4 +14,10 @@
         <!-- Customize your theme here. -->
         <item name="android:colorBackground">@color/background_peach</item>
     </style>
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_logo_white</item>
+        <item name="windowSplashScreenBackground">@color/background_peach</item>
+        <item name="postSplashScreenTheme">@style/Theme.TopMovies</item>
+    </style>
 </resources>
