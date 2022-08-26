@@ -10,5 +10,10 @@
     <string name="image_movie_description">Movie image</string>
     <string name="item_layout_previous_rank_title">Previous rank:</string>
     <string name="logo_image_in_tool_bar">logo_image_in_tool_bar</string>
-    <string name="button_to_favourite_movies">button_to_favourite_movies</string>
+    <string name="dialog_message">"this is the besst app "</string>
+    <string name="dialog_title">About</string>
+    <string name="menu_title_about">about</string>
+    <string name="nav_menu_title_top_movie">top movies</string>
+    <string name="nav_menu_title_favorite">favorite</string>
+    <string name="item_description_favorite_button">Favorite button</string>
 </resources>

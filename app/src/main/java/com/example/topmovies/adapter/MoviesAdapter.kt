@@ -1,5 +1,6 @@
 package com.example.topmovies.adapter
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import com.example.topmovies.databinding.ItemLayoutBinding
 import com.example.topmovies.model.Movie
 import com.example.topmovies.unit.IMAGE_SIZE
 import com.example.topmovies.unit.REPLACE_AFTER
+import com.example.topmovies.unit.SHARED_PREFERENCE_NAME_FAVORITE
 
 class MovieAdapter(private val onItemClickListener: (String) -> Unit) :
     RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
@@ -50,7 +52,7 @@ class MovieAdapter(private val onItemClickListener: (String) -> Unit) :
         }
 
         fun bind(movie: Movie) {
-            binding.apply {
+            this.binding.apply {
                 textviewItemLayoutMovieName.text = movie.title
                 textviewItemLayoutRankNumber.text = movie.rank
                 textviewItemLayoutYearNumber.text = movie.year
@@ -68,11 +70,52 @@ class MovieAdapter(private val onItemClickListener: (String) -> Unit) :
                     .asBitmap()
                     .load(resizeImage(movie.imageUrl))
                     .into(avatarCustomTarget)
+                imageButtonItemFavoriteIcon.setImageResource(getIsFavorite(movie.id))
             }
-            itemView.setOnClickListener {
-                click(movie.id)
+            itemView.setOnClickListener { click(movie.id) }
+            clickFavorite(movie)
+        }
+
+        private fun clickFavorite(movie: Movie) {
+            binding.imageButtonItemFavoriteIcon.apply {
+                setOnClickListener {
+                    if (readState(movie.id)) {
+                        savePreferenceState(movie.id, false)
+                        setImageResource(R.drawable.ic_filled_star)
+                    } else {
+                        removePreferenceState(movie.id)
+                        setImageResource(R.drawable.ic_unfilled_star)
+                    }
+                }
             }
         }
+
+        private fun getIsFavorite(id: String): Int {
+            val isFavorite = readState(id)
+            return if (isFavorite) {
+                R.drawable.ic_unfilled_star
+            } else {
+                R.drawable.ic_filled_star
+            }
+        }
+
+        private fun removePreferenceState(id: String) {
+            val favoritePreference = initializeSharedPreference(SHARED_PREFERENCE_NAME_FAVORITE)
+            favoritePreference.edit().remove(id).apply()
+        }
+
+        private fun savePreferenceState(id: String, favorite: Boolean) {
+            val favoritePreference = initializeSharedPreference(SHARED_PREFERENCE_NAME_FAVORITE)
+            favoritePreference.edit().putBoolean(id, favorite).apply()
+        }
+
+        private fun readState(id: String): Boolean {
+            val sharedPreferences = initializeSharedPreference(SHARED_PREFERENCE_NAME_FAVORITE)
+            return sharedPreferences.getBoolean(id, true)
+        }
+
+        private fun initializeSharedPreference(name: String) =
+            itemView.context.getSharedPreferences(name, Context.MODE_PRIVATE)
 
         private fun resizeImage(image: String) =
             image.replaceAfter(REPLACE_AFTER, IMAGE_SIZE)

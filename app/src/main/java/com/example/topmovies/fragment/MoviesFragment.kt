@@ -20,12 +20,6 @@ class MoviesFragment : BaseFragment() {
         MovieModelFactory(MovieRepository())
     }
 
-    companion object {
-        fun newInstance(): MoviesFragment {
-            return MoviesFragment()
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -71,7 +65,7 @@ class MoviesFragment : BaseFragment() {
 
     private fun startMovieDetailsFragment(movieId: String) {
         parentFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container_view, MovieDetailsFragment.newInstance(movieId))
+            .replace(R.id.fragment_main_activity, MovieDetailsFragment.newInstance(movieId))
             .addToBackStack("movieList")
             .commit()
     }

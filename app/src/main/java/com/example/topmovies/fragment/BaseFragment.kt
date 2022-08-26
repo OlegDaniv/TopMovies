@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 
 abstract class BaseFragment : Fragment() {
-    private val TAG = BaseFragment::class.simpleName
+    private val className = BaseFragment::class.simpleName
     var toolBarBridge: ToolBarBridge? = null
 
     override fun onAttach(context: Context) {
@@ -13,7 +13,7 @@ abstract class BaseFragment : Fragment() {
         try {
             toolBarBridge = requireActivity() as ToolBarBridge
         } catch (e: Exception) {
-            Log.e(TAG, "${e.message}")
+            Log.e(className, "${e.message}")
         }
     }
 }

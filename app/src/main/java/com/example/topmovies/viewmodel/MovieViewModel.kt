@@ -1,8 +1,10 @@
 package com.example.topmovies.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.topmovies.fragment.BaseFragment
 import com.example.topmovies.model.Movie
 import com.example.topmovies.model.MovieDetails
 import com.example.topmovies.model.MovieObject
@@ -17,6 +19,7 @@ class MovieViewModel constructor(private val repository: MovieRepository) : View
     val movies: LiveData<List<Movie>> = _movies
     private val _movieDetails = MutableLiveData<MovieDetails>()
     val movieDetails: LiveData<MovieDetails> = _movieDetails
+    private val className = BaseFragment::class.simpleName
 
     fun getMovieDetails(movieId: String) {
         repository.getMovieDetails(movieId).enqueue(object :
@@ -25,7 +28,9 @@ class MovieViewModel constructor(private val repository: MovieRepository) : View
                 _movieDetails.postValue(response.body())
             }
 
-            override fun onFailure(call: Call<MovieDetails>, throwable: Throwable) {}
+            override fun onFailure(call: Call<MovieDetails>, throwable: Throwable) {
+                Log.e(className, "${throwable.message}")
+            }
         })
     }
 
@@ -35,7 +40,9 @@ class MovieViewModel constructor(private val repository: MovieRepository) : View
                 _movies.postValue(response.body()?.items)
             }
 
-            override fun onFailure(call: Call<MovieObject>, throwable: Throwable) {}
+            override fun onFailure(call: Call<MovieObject>, throwable: Throwable) {
+                Log.e(className, "${throwable.message}")
+            }
         })
     }
 }

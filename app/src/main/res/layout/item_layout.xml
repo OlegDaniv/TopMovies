@@ -42,7 +42,9 @@
             style="@style/text_medium.fresh_ivy_green.bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/circle_avatar_view_item_layout_movie_image" />
+            android:layout_toEndOf="@id/circle_avatar_view_item_layout_movie_image"
+
+            />
 
         <TextView
             android:id="@+id/textview_item_layout_year_title"
@@ -93,5 +95,17 @@
             android:layout_marginTop="@dimen/margin_all_small"
             android:layout_marginEnd="@dimen/margin_all_small"
             android:layout_marginBottom="@dimen/margin_all_small" />
+
+        <ImageButton
+            android:id="@+id/image_button_item_favorite_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/circle_avatar_view_item_layout_movie_image"
+            android:layout_alignParentEnd="true"
+            android:background="@color/background_spearmint"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:src="@drawable/ic_unfilled_star"
+            android:contentDescription="@string/item_description_favorite_button" />
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>
