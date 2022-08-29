@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.topmovies.R
 import com.example.topmovies.adapter.MovieAdapter
@@ -64,9 +66,9 @@ class MoviesFragment : BaseFragment() {
     }
 
     private fun startMovieDetailsFragment(movieId: String) {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.fragment_main_activity, MovieDetailsFragment.newInstance(movieId))
-            .addToBackStack("movieList")
-            .commit()
+        findNavController().navigate(
+            R.id.action_navigation_top_movies_to_navigation_movie_details,
+            bundleOf(MovieDetailsFragment.FRAGMENT_KEY to movieId)
+        )
     }
 }

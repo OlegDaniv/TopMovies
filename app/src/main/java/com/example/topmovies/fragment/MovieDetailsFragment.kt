@@ -11,23 +11,15 @@ import com.example.topmovies.repository.MovieRepository
 import com.example.topmovies.viewmodel.MovieModelFactory
 import com.example.topmovies.viewmodel.MovieViewModel
 
-const val FRAGMENT_KEY = "movieID"
 
 class MovieDetailsFragment : BaseFragment() {
     private lateinit var binding: FragmentDetailsMovieBinding
-    private val movieId: String by lazy { arguments?.getString(FRAGMENT_KEY) ?: "" }
     private val viewModelMovieDetailsFragment by viewModels<MovieViewModel> {
         MovieModelFactory(MovieRepository())
     }
 
     companion object {
-        fun newInstance(movieId: String): MovieDetailsFragment {
-            return MovieDetailsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(FRAGMENT_KEY, movieId)
-                }
-            }
-        }
+        const val FRAGMENT_KEY = "movieID"
     }
 
     override fun onCreateView(
@@ -40,9 +32,10 @@ class MovieDetailsFragment : BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val movieId = requireArguments().getString(FRAGMENT_KEY)
         toolBarBridge?.showUpButton()
         setupUI()
-        loadMovieDetailsById()
+        movieId?.let { loadMovieDetailsById(it) }
     }
 
     private fun setupUI() {
@@ -59,7 +52,7 @@ class MovieDetailsFragment : BaseFragment() {
         }
     }
 
-    private fun loadMovieDetailsById() {
+    private fun loadMovieDetailsById(movieId: String) {
         viewModelMovieDetailsFragment.getMovieDetails(movieId)
     }
 }
