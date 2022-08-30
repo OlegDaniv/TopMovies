@@ -7,37 +7,24 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar_main_activity"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/tool_bar_main_activity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        app:elevation="0dp"
+        android:background="@color/background_peach"
+        android:minHeight="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/tool_bar_main_activity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/background_peach"
-                android:minHeight="?attr/actionBarSize"
-                app:title="@string/app_name" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center_horizontal"
-                android:contentDescription="@string/logo_image_in_tool_bar"
-                android:src="@drawable/ic_logo_toolbar" />
-        </RelativeLayout>
-    </com.google.android.material.appbar.AppBarLayout>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/logo_image_in_tool_bar"
+            android:src="@drawable/ic_logo_toolbar" />
+    </androidx.appcompat.widget.Toolbar>
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -59,7 +46,7 @@
         app:layout_constraintBottom_toTopOf="@id/button_nav_view_main_activity"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar_main_activity"
+        app:layout_constraintTop_toBottomOf="@id/tool_bar_main_activity"
         app:navGraph="@navigation/fragment_navigation"
         tools:layout="@layout/fragment_movies" />
 </androidx.constraintlayout.widget.ConstraintLayout>

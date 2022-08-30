@@ -1,6 +1,5 @@
 package com.example.topmovies.adapter
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -13,9 +12,8 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.topmovies.R
 import com.example.topmovies.databinding.ItemLayoutBinding
 import com.example.topmovies.model.Movie
-import com.example.topmovies.unit.IMAGE_SIZE
-import com.example.topmovies.unit.REPLACE_AFTER
-import com.example.topmovies.unit.SHARED_PREFERENCE_NAME_FAVORITE
+import com.example.topmovies.preferences.SharedPref
+import com.example.topmovies.unit.*
 
 class MovieAdapter(private val onItemClickListener: (String) -> Unit) :
     RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
@@ -42,7 +40,11 @@ class MovieAdapter(private val onItemClickListener: (String) -> Unit) :
         onItemClickListener: (String) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        private val click = onItemClickListener
+        private val setOnItemClick = onItemClickListener
+        private val sharedPref by lazy {
+            SharedPref(itemView.context,
+                SHARED_PREFERENCE_NAME_FAVORITE)
+        }
         private val avatarCustomTarget = object : CustomTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                 binding.circleAvatarViewItemLayoutMovieImage.setAvatarImage(resource)
@@ -52,72 +54,51 @@ class MovieAdapter(private val onItemClickListener: (String) -> Unit) :
         }
 
         fun bind(movie: Movie) {
-            this.binding.apply {
+            binding.apply {
                 textviewItemLayoutMovieName.text = movie.title
                 textviewItemLayoutRankNumber.text = movie.rank
                 textviewItemLayoutYearNumber.text = movie.year
                 textviewItemLayoutPreviousRankNumber.text = movie.rankUpDown
-                when (movie.rankUpDown.first()) {
-                    '+' -> textviewItemLayoutPreviousRankNumber.setTextColor(
-                        ContextCompat.getColor(itemView.context, R.color.text_rank_up)
-                    )
-                    '-' -> textviewItemLayoutPreviousRankNumber.setTextColor(
-                        ContextCompat.getColor(itemView.context, R.color.text_rank_down)
-                    )
-                }
                 circleAvatarViewItemLayoutMovieImage.setLabel(movie.title)
                 Glide.with(circleAvatarViewItemLayoutMovieImage)
                     .asBitmap()
                     .load(resizeImage(movie.imageUrl))
                     .into(avatarCustomTarget)
-                imageButtonItemFavoriteIcon.setImageResource(getIsFavorite(movie.id))
+                imageButtonItemFavoriteIcon.setImageResource(movieIsFavorite(movie.id))
+                setRankUpDownColor(movie.rankUpDown)
             }
-            itemView.setOnClickListener { click(movie.id) }
-            clickFavorite(movie)
+            itemView.setOnClickListener { setOnItemClick(movie.id) }
+            setOnClickListenerFavoriteButton(movie.id)
         }
 
-        private fun clickFavorite(movie: Movie) {
-            binding.imageButtonItemFavoriteIcon.apply {
-                setOnClickListener {
-                    if (readState(movie.id)) {
-                        savePreferenceState(movie.id, false)
-                        setImageResource(R.drawable.ic_filled_star)
-                    } else {
-                        removePreferenceState(movie.id)
-                        setImageResource(R.drawable.ic_unfilled_star)
+        private fun setRankUpDownColor(rankUpDown: String) {
+            binding.textviewItemLayoutPreviousRankNumber.setTextColor(
+                ContextCompat.getColor(itemView.context,
+                    when (rankUpDown.first()) {
+                        RANK_UP -> R.color.text_rank_up
+                        RANK_DOWN -> R.color.text_rank_down
+                        else -> R.color.text_color_fresh_ivy_green
                     }
+                ))
+        }
+
+        private fun setOnClickListenerFavoriteButton(id: String) {
+            binding.imageButtonItemFavoriteIcon.setOnClickListener {
+                if (sharedPref.movieIsFavorite(id)) {
+                    sharedPref.saveFavoriteMovie(id, false)
+                    binding.imageButtonItemFavoriteIcon.setImageResource(R.drawable.ic_filled_star)
+                } else {
+                    sharedPref.removeFavoriteMovie(id)
+                    binding.imageButtonItemFavoriteIcon.setImageResource(R.drawable.ic_unfilled_star)
                 }
             }
         }
 
-        private fun getIsFavorite(id: String): Int {
-            val isFavorite = readState(id)
-            return if (isFavorite) {
-                R.drawable.ic_unfilled_star
-            } else {
-                R.drawable.ic_filled_star
-            }
+        private fun movieIsFavorite(id: String): Int {
+            return if (sharedPref.movieIsFavorite(id)) R.drawable.ic_unfilled_star
+            else R.drawable.ic_filled_star
         }
 
-        private fun removePreferenceState(id: String) {
-            val favoritePreference = initializeSharedPreference(SHARED_PREFERENCE_NAME_FAVORITE)
-            favoritePreference.edit().remove(id).apply()
-        }
-
-        private fun savePreferenceState(id: String, favorite: Boolean) {
-            val favoritePreference = initializeSharedPreference(SHARED_PREFERENCE_NAME_FAVORITE)
-            favoritePreference.edit().putBoolean(id, favorite).apply()
-        }
-
-        private fun readState(id: String): Boolean {
-            val sharedPreferences = initializeSharedPreference(SHARED_PREFERENCE_NAME_FAVORITE)
-            return sharedPreferences.getBoolean(id, true)
-        }
-
-        private fun initializeSharedPreference(name: String) =
-            itemView.context.getSharedPreferences(name, Context.MODE_PRIVATE)
-
-        private fun resizeImage(image: String) =
-            image.replaceAfter(REPLACE_AFTER, IMAGE_SIZE)
+        private fun resizeImage(image: String) = image.replaceAfter(REPLACE_AFTER, IMAGE_SIZE)
     }
 }
