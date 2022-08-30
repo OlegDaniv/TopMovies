@@ -9,11 +9,15 @@
     <string name="movie_details_date_release_title">Release</string>
     <string name="image_movie_description">Movie image</string>
     <string name="item_layout_previous_rank_title">Previous rank:</string>
-    <string name="logo_image_in_tool_bar">logo_image_in_tool_bar</string>
-    <string name="dialog_message">"this is the besst app "</string>
-    <string name="dialog_title">About</string>
-    <string name="menu_title_about">about</string>
-    <string name="nav_menu_title_top_movie">top movies</string>
-    <string name="nav_menu_title_favorite">favorite</string>
+    <string name="menu_title_about">About</string>
+    <string name="nav_menu_title_top_movie">Top movies</string>
+    <string name="nav_menu_title_favorite">Favorite</string>
     <string name="item_description_favorite_button">Favorite button</string>
+    <string name="nav_fragment_label_top_movies">Top movies</string>
+    <string name="nav_fragment_label_movie_details">Movie details</string>
+    <string name="nav_fragment_label_favorite_movies">Favorite movies</string>
+    <string name="about_dialog_fragment_title">About</string>
+    <string name="about_dialog_fragment_message">This app show top 100 movies</string>
+    <string name="about_dialog_fragment_button_title">ok</string>
+    <string name="main_activity_dialog_tag">about dialog</string>
 </resources>

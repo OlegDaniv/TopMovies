@@ -3,7 +3,6 @@ package com.example.topmovies
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.fragment.NavHostFragment
@@ -11,10 +10,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.topmovies.databinding.ActivityMainBinding
-import com.example.topmovies.fragment.ToolBarBridge
+import com.example.topmovies.fragment.AboutDialogFragment
+import com.example.topmovies.fragment.ToolbarBridge
 
 
-class MainActivity : AppCompatActivity(), ToolBarBridge {
+class MainActivity : AppCompatActivity(), ToolbarBridge {
     private var isLoading = true
     private lateinit var binding: ActivityMainBinding
 
@@ -48,15 +48,16 @@ class MainActivity : AppCompatActivity(), ToolBarBridge {
                 true
             }
             R.id.about -> {
-                setToast()
+                setDialog()
                 true
             }
             else -> false
         }
     }
 
-    private fun setToast() {
-        Toast.makeText(this, "the best app", Toast.LENGTH_LONG).show()
+    private fun setDialog() {
+        AboutDialogFragment().show(supportFragmentManager,
+            getString(R.string.main_activity_dialog_tag))
     }
 
     override fun onBackPressed() {
@@ -81,7 +82,7 @@ class MainActivity : AppCompatActivity(), ToolBarBridge {
     private fun setupToolBar() {
         setSupportActionBar(binding.toolBarMainActivity)
         supportActionBar?.apply {
-            setDisplayShowTitleEnabled(false)
+            setDisplayShowTitleEnabled(true)
         }
     }
 }

@@ -2,6 +2,7 @@ package com.example.topmovies.adapter
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -15,35 +16,46 @@ import com.example.topmovies.model.Movie
 import com.example.topmovies.preferences.SharedPref
 import com.example.topmovies.unit.*
 
-class MovieAdapter(private val onItemClickListener: (String) -> Unit) :
-    RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
+class FavoriteMoviesAdapter(private val recyclerviewClickInterface: RecyclerviewClickInterface) :
+    RecyclerView.Adapter<FavoriteMoviesAdapter.FavoriteMoviesViewHolder>() {
+    private val onClick = recyclerviewClickInterface
+    private var favoriteMovies = mutableListOf<Movie>()
 
-    private var movies = listOf<Movie>()
-
-    fun setMovieList(movies: List<Movie>) {
-        this.movies = movies
+    fun setFavoriteMovies(movies: MutableList<Movie>) {
+        favoriteMovies = movies
         notifyItemRangeChanged(0, movies.size)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MovieViewHolder(
-        ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false),
-        onItemClickListener
-    )
+    private fun removeMovie(movie: Movie) {
+        val d = favoriteMovies.indexOf(movie)
+        favoriteMovies.toMutableList().removeAt(1)
+        notifyItemRemoved(1)
+    }
 
-    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) =
-        holder.bind(movies[position])
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteMoviesViewHolder {
+        val binding = ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return FavoriteMoviesViewHolder(binding, onClick, ::removeMovie)
+    }
 
-    override fun getItemCount() = movies.size
+    override fun onBindViewHolder(holder: FavoriteMoviesViewHolder, position: Int) {
+        holder.bind(favoriteMovies[position])
+    }
 
-    class MovieViewHolder(
-        private val binding: ItemLayoutBinding,
-        onItemClickListener: (String) -> Unit,
+
+    override fun getItemCount() = favoriteMovies.size
+
+
+    class FavoriteMoviesViewHolder(
+        private val binding: ItemLayoutBinding, d: RecyclerviewClickInterface,
+        val fff: (Movie) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
-
-        private val setOnItemClick = onItemClickListener
+        val s = binding.imageButtonItemFavoriteIcon
+        private val d = d
         private val sharedPref by lazy {
             SharedPref(itemView.context, SHARED_PREFERENCE_NAME_FAVORITE)
         }
+
+        private fun resizeImage(image: String) = image.replaceAfter(REPLACE_AFTER, IMAGE_SIZE)
         private val avatarCustomTarget = object : CustomTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                 binding.circleAvatarViewItemLayoutMovieImage.setAvatarImage(resource)
@@ -66,8 +78,15 @@ class MovieAdapter(private val onItemClickListener: (String) -> Unit) :
                 imageButtonItemFavoriteIcon.setImageResource(movieIsFavorite(movie.id))
                 setRankUpDownColor(movie.rankUpDown)
             }
-            itemView.setOnClickListener { setOnItemClick(movie.id) }
-            setOnClickListenerFavoriteButton(movie.id)
+            itemView.setOnClickListener {
+                d.onItemClick(movie.id)
+            }
+
+            binding.imageButtonItemFavoriteIcon.setOnClickListener {
+                fff(movie)
+                sharedPref.removeFavoriteMovie(movie.id)
+            }
+
         }
 
         private fun setRankUpDownColor(rankUpDown: String) {
@@ -81,23 +100,9 @@ class MovieAdapter(private val onItemClickListener: (String) -> Unit) :
                 ))
         }
 
-        private fun setOnClickListenerFavoriteButton(id: String) {
-            binding.imageButtonItemFavoriteIcon.setOnClickListener {
-                if (sharedPref.movieIsFavorite(id)) {
-                    sharedPref.saveFavoriteMovie(id, false)
-                    binding.imageButtonItemFavoriteIcon.setImageResource(R.drawable.ic_filled_star)
-                } else {
-                    sharedPref.removeFavoriteMovie(id)
-                    binding.imageButtonItemFavoriteIcon.setImageResource(R.drawable.ic_unfilled_star)
-                }
-            }
-        }
-
         private fun movieIsFavorite(id: String): Int {
             return if (sharedPref.movieIsFavorite(id)) R.drawable.ic_unfilled_star
             else R.drawable.ic_filled_star
         }
-
-        private fun resizeImage(image: String) = image.replaceAfter(REPLACE_AFTER, IMAGE_SIZE)
     }
 }

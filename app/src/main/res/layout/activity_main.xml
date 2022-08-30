@@ -7,25 +7,15 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/tool_bar_main_activity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/background_peach"
+        android:background="@color/peach_500"
         android:minHeight="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_horizontal"
-            android:contentDescription="@string/logo_image_in_tool_bar"
-            android:src="@drawable/ic_logo_toolbar" />
-    </androidx.appcompat.widget.Toolbar>
-
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/button_nav_view_main_activity"

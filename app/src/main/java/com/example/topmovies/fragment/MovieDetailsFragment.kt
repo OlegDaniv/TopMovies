@@ -8,8 +8,6 @@ import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.example.topmovies.databinding.FragmentDetailsMovieBinding
 import com.example.topmovies.repository.MovieRepository
-import com.example.topmovies.viewmodel.MovieModelFactory
-import com.example.topmovies.viewmodel.MovieViewModel
 
 
 class MovieDetailsFragment : BaseFragment() {
@@ -33,7 +31,7 @@ class MovieDetailsFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val movieId = requireArguments().getString(FRAGMENT_KEY)
-        toolBarBridge?.showUpButton()
+        showUpButton()
         setupUI()
         movieId?.let { loadMovieDetailsById(it) }
     }

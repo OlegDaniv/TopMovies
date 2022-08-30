@@ -1,4 +1,4 @@
-package com.example.topmovies.viewmodel
+package com.example.topmovies.fragment
 
 import androidx.annotation.NonNull
 import androidx.lifecycle.ViewModel
