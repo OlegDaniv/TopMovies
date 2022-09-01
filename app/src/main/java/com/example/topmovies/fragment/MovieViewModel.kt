@@ -20,8 +20,8 @@ class MovieViewModel constructor(private val repository: MovieRepository) : View
     val movies: LiveData<List<Movie>> = _movies
     private val _movieDetails = MutableLiveData<MovieDetails>()
     val movieDetails: LiveData<MovieDetails> = _movieDetails
-    private val _favoriteMovies = MutableLiveData<MutableList<Movie>>()
-    val favoriteMovies: LiveData<MutableList<Movie>> = _favoriteMovies
+    private val _favoriteMovies = MutableLiveData<List<Movie>>()
+    val favoriteMovies: LiveData<List<Movie>> = _favoriteMovies
 
     fun getMovieDetails(movieId: String) {
         repository.getMovieDetails(movieId).enqueue(object :
@@ -55,10 +55,5 @@ class MovieViewModel constructor(private val repository: MovieRepository) : View
             if (currentMovie != null) favoriteMovies.add(currentMovie)
         }
         _favoriteMovies.value = favoriteMovies
-    }
-
-    fun updateFavoriteList(id: String) {
-        val movie = _favoriteMovies.value?.find { it.id == id }
-        _favoriteMovies.value?.toMutableList()?.apply { remove(movie) }?.toList()
     }
 }

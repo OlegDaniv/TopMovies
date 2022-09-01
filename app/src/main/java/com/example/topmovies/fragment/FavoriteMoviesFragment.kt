@@ -1,7 +1,6 @@
 package com.example.topmovies.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,15 +10,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.topmovies.R
 import com.example.topmovies.adapter.FavoriteMoviesAdapter
-import com.example.topmovies.adapter.RecyclerviewClickInterface
 import com.example.topmovies.databinding.FragmentFavoriteMoviesBinding
 import com.example.topmovies.preferences.SharedPref
 import com.example.topmovies.repository.MovieRepository
 import com.example.topmovies.unit.SHARED_PREFERENCE_NAME_FAVORITE
 
-class FavoriteMoviesFragment : BaseFragment(), RecyclerviewClickInterface {
+class FavoriteMoviesFragment : BaseFragment() {
     private lateinit var binding: FragmentFavoriteMoviesBinding
-    private val moviesAdapter by lazy { FavoriteMoviesAdapter(this) }
+    private val favoriteMoviesAdapter by lazy { FavoriteMoviesAdapter { id -> onItemClick(id) } }
     private val sharedPref by lazy {
         SharedPref(requireActivity().baseContext, SHARED_PREFERENCE_NAME_FAVORITE)
     }
@@ -28,14 +26,11 @@ class FavoriteMoviesFragment : BaseFragment(), RecyclerviewClickInterface {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View {
         binding = FragmentFavoriteMoviesBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         hideUpButton()
@@ -47,15 +42,14 @@ class FavoriteMoviesFragment : BaseFragment(), RecyclerviewClickInterface {
         moviesViewModel.apply {
             getFavoriteMovies(sharedPref.allFavoriteMoviesId())
             favoriteMovies.observe(viewLifecycleOwner) {
-                Log.e("HASHCODE", "${it.hashCode()}")
-                moviesAdapter.setFavoriteMovies(it)
+                favoriteMoviesAdapter.setFavoriteMovies(it)
             }
         }
     }
 
     private fun setupUI() {
         binding.recyclerviewFavoriteMoviesFragment.apply {
-            adapter = moviesAdapter
+            adapter = favoriteMoviesAdapter
             layoutManager = LinearLayoutManager(requireActivity())
         }
     }
@@ -67,7 +61,7 @@ class FavoriteMoviesFragment : BaseFragment(), RecyclerviewClickInterface {
         )
     }
 
-    override fun onItemClick(movieID: String) {
+    private fun onItemClick(movieID: String) {
         startMovieDetailsFragment(movieID)
     }
 }

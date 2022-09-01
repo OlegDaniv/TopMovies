@@ -9,13 +9,13 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.topmovies.R
-import com.example.topmovies.adapter.MovieAdapter
+import com.example.topmovies.adapter.MoviesAdapter
 import com.example.topmovies.databinding.FragmentMoviesBinding
 import com.example.topmovies.repository.MovieRepository
 
 class MoviesFragment : BaseFragment() {
     private lateinit var binding: FragmentMoviesBinding
-    private val moviesAdapter by lazy { MovieAdapter { id -> onClickItem(id) } }
+    private val moviesAdapter by lazy { MoviesAdapter { id -> onClickItem(id) } }
     private val moviesViewModel by activityViewModels<MovieViewModel> {
         MovieModelFactory(MovieRepository())
     }

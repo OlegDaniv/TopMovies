@@ -15,8 +15,8 @@ import com.example.topmovies.model.Movie
 import com.example.topmovies.preferences.SharedPref
 import com.example.topmovies.unit.*
 
-class MovieAdapter(private val onItemClickListener: (String) -> Unit) :
-    RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
+class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
+    RecyclerView.Adapter<MoviesAdapter.MovieViewHolder>() {
 
     private var movies = listOf<Movie>()
 
@@ -37,10 +37,9 @@ class MovieAdapter(private val onItemClickListener: (String) -> Unit) :
 
     class MovieViewHolder(
         private val binding: ItemLayoutBinding,
-        onItemClickListener: (String) -> Unit,
+        private val onItemClickListener: (String) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        private val setOnItemClick = onItemClickListener
         private val sharedPref by lazy {
             SharedPref(itemView.context, SHARED_PREFERENCE_NAME_FAVORITE)
         }
@@ -66,7 +65,7 @@ class MovieAdapter(private val onItemClickListener: (String) -> Unit) :
                 imageButtonItemFavoriteIcon.setImageResource(movieIsFavorite(movie.id))
                 setRankUpDownColor(movie.rankUpDown)
             }
-            itemView.setOnClickListener { setOnItemClick(movie.id) }
+            itemView.setOnClickListener { onItemClickListener(movie.id) }
             setOnClickListenerFavoriteButton(movie.id)
         }
 
