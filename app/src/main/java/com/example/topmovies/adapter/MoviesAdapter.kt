@@ -12,8 +12,10 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.topmovies.R
 import com.example.topmovies.databinding.ItemLayoutBinding
 import com.example.topmovies.model.Movie
-import com.example.topmovies.preferences.SharedPref
-import com.example.topmovies.unit.*
+import com.example.topmovies.unit.IMAGE_SIZE
+import com.example.topmovies.unit.RANK_DOWN
+import com.example.topmovies.unit.RANK_UP
+import com.example.topmovies.unit.REPLACE_AFTER
 
 class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
     RecyclerView.Adapter<MoviesAdapter.MovieViewHolder>() {
@@ -30,8 +32,9 @@ class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
         onItemClickListener
     )
 
-    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) =
+    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         holder.bind(movies[position])
+    }
 
     override fun getItemCount() = movies.size
 
@@ -39,10 +42,6 @@ class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
         private val binding: ItemLayoutBinding,
         private val onItemClickListener: (String) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
-
-        private val sharedPref by lazy {
-            SharedPref(itemView.context, SHARED_PREFERENCE_NAME_FAVORITE)
-        }
         private val avatarCustomTarget = object : CustomTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                 binding.circleAvatarViewItemLayoutMovieImage.setAvatarImage(resource)
@@ -62,11 +61,14 @@ class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
                     .asBitmap()
                     .load(resizeImage(movie.imageUrl))
                     .into(avatarCustomTarget)
-                imageButtonItemFavoriteIcon.setImageResource(movieIsFavorite(movie.id))
+                imageButtonItemFavoriteIcon.setImageResource(movieIsFavorite(movie.isFavorite))
                 setRankUpDownColor(movie.rankUpDown)
+                imageButtonItemFavoriteIcon.setOnClickListener {
+                    setOnClickListenerFavoriteButton(movie)
+
+                }
             }
             itemView.setOnClickListener { onItemClickListener(movie.id) }
-            setOnClickListenerFavoriteButton(movie.id)
         }
 
         private fun setRankUpDownColor(rankUpDown: String) {
@@ -80,20 +82,18 @@ class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
                 ))
         }
 
-        private fun setOnClickListenerFavoriteButton(id: String) {
-            binding.imageButtonItemFavoriteIcon.setOnClickListener {
-                if (sharedPref.movieIsFavorite(id)) {
-                    sharedPref.saveFavoriteMovie(id, false)
-                    binding.imageButtonItemFavoriteIcon.setImageResource(R.drawable.ic_filled_star)
-                } else {
-                    sharedPref.removeFavoriteMovie(id)
-                    binding.imageButtonItemFavoriteIcon.setImageResource(R.drawable.ic_unfilled_star)
-                }
+        private fun setOnClickListenerFavoriteButton(movie: Movie) {
+            if (!movie.isFavorite) {
+                binding.imageButtonItemFavoriteIcon.setImageResource(R.drawable.ic_filled_star)
+                movie.isFavorite = true
+            } else {
+                binding.imageButtonItemFavoriteIcon.setImageResource(R.drawable.ic_unfilled_star)
+                movie.isFavorite = false
             }
         }
 
-        private fun movieIsFavorite(id: String): Int {
-            return if (sharedPref.movieIsFavorite(id)) R.drawable.ic_unfilled_star
+        private fun movieIsFavorite(isFavorite: Boolean): Int {
+            return if (!isFavorite) R.drawable.ic_unfilled_star
             else R.drawable.ic_filled_star
         }
 

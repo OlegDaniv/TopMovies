@@ -4,17 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.example.topmovies.databinding.FragmentDetailsMovieBinding
-import com.example.topmovies.repository.MovieRepository
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MovieDetailsFragment : BaseFragment() {
     private lateinit var binding: FragmentDetailsMovieBinding
-    private val viewModelMovieDetailsFragment by viewModels<MovieViewModel> {
-        MovieModelFactory(MovieRepository())
-    }
+    private val viewModelMovieDetailsFragment by sharedViewModel<MovieViewModel>()
 
     companion object {
         const val FRAGMENT_KEY = "movieID"

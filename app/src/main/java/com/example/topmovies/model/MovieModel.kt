@@ -17,7 +17,8 @@ data class Movie(
     val imageUrl: String,
     val crew: String,
     val imDbRating: String,
-    val imDbRatingCount: String
+    val imDbRatingCount: String,
+    var isFavorite: Boolean = false
 )
 
 data class MovieDetails(

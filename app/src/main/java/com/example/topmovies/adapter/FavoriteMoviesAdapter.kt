@@ -12,7 +12,6 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.topmovies.R
 import com.example.topmovies.databinding.ItemLayoutBinding
 import com.example.topmovies.model.Movie
-import com.example.topmovies.preferences.SharedPref
 import com.example.topmovies.unit.*
 
 class FavoriteMoviesAdapter(private val onClickFavoriteMovie: (String) -> Unit) :
@@ -48,9 +47,7 @@ class FavoriteMoviesAdapter(private val onClickFavoriteMovie: (String) -> Unit) 
         private val onClickFavoriteMovie: (String) -> Unit,
         private val removeListener: (Movie) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
-        private val sharedPref by lazy {
-            SharedPref(itemView.context, SHARED_PREFERENCE_NAME_FAVORITE)
-        }
+
         private val avatarCustomTarget = object : CustomTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                 binding.circleAvatarViewItemLayoutMovieImage.setAvatarImage(resource)
@@ -73,7 +70,7 @@ class FavoriteMoviesAdapter(private val onClickFavoriteMovie: (String) -> Unit) 
                 setRankUpDownColor(movie.rankUpDown)
                 imageButtonItemFavoriteIcon.setOnClickListener {
                     removeListener(movie)
-                    sharedPref.removeFavoriteMovie(movie.id)
+                    movie.isFavorite = false
                 }
             }
             itemView.setOnClickListener { onClickFavoriteMovie(movie.id) }

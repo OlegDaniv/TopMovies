@@ -11,11 +11,7 @@ abstract class BaseFragment : Fragment(), ToolbarBehaviour {
         toolBarBridge
     }
 
-    override fun showUpButton() {
-        toolBarBridge.showUpButton()
-    }
+    override fun showUpButton() = toolBarBridge.showUpButton()
 
-    override fun hideUpButton() {
-        toolBarBridge.hideUpButton()
-    }
+    override fun hideUpButton() = toolBarBridge.hideUpButton()
 }

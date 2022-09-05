@@ -1,24 +1,24 @@
 package com.example.topmovies.fragment
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.topmovies.R
 import com.example.topmovies.adapter.MoviesAdapter
 import com.example.topmovies.databinding.FragmentMoviesBinding
-import com.example.topmovies.repository.MovieRepository
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class MoviesFragment : BaseFragment() {
     private lateinit var binding: FragmentMoviesBinding
     private val moviesAdapter by lazy { MoviesAdapter { id -> onClickItem(id) } }
-    private val moviesViewModel by activityViewModels<MovieViewModel> {
-        MovieModelFactory(MovieRepository())
-    }
+    private val moviesViewModel by sharedViewModel<MovieViewModel>()
+    private val sharedPref: SharedPreferences by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,14 +35,22 @@ class MoviesFragment : BaseFragment() {
         setupViewModel()
     }
 
+    override fun onDestroyView() {
+        remove()
+        moviesViewModel.favoriteMovies.value?.forEach { movie -> saveFavoriteMovie(movie.id) }
+        super.onDestroyView()
+    }
+
     private fun onClickItem(movieId: String) {
         startMovieDetailsFragment(movieId)
     }
 
     private fun setupViewModel() {
         moviesViewModel.apply {
-            if (moviesViewModel.movies.value == null) getMovies()
-            movies.observe(viewLifecycleOwner) { moviesAdapter.setMovieList(it) }
+            if (moviesViewModel.movies.value == null) getMovies(getFavoriteMoviesId())
+            movies.observe(viewLifecycleOwner) {
+                it?.let { moviesAdapter.setMovieList(it) }
+            }
         }
     }
 
@@ -53,7 +61,7 @@ class MoviesFragment : BaseFragment() {
                 adapter = moviesAdapter
             }
             swipeRefresh.setOnRefreshListener {
-                moviesViewModel.getMovies()
+                moviesViewModel.getMovies(getFavoriteMoviesId())
                 swipeRefresh.isRefreshing = false
             }
         }
@@ -65,4 +73,10 @@ class MoviesFragment : BaseFragment() {
             bundleOf(MovieDetailsFragment.FRAGMENT_KEY to movieId)
         )
     }
+
+    private fun remove() = sharedPref.edit().clear().apply()
+
+    private fun getFavoriteMoviesId() = sharedPref.all.keys.toList()
+
+    private fun saveFavoriteMovie(key: String) = sharedPref.edit().putString(key, "").apply()
 }

@@ -12,12 +12,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-val TAG = BaseFragment::class.simpleName
+val TAG = MovieViewModel::class.simpleName
 
 class MovieViewModel constructor(private val repository: MovieRepository) : ViewModel() {
 
-    private val _movies = MutableLiveData<List<Movie>>()
-    val movies: LiveData<List<Movie>> = _movies
+    private val _movies = MutableLiveData<List<Movie>?>()
+    val movies: MutableLiveData<List<Movie>?> = _movies
     private val _movieDetails = MutableLiveData<MovieDetails>()
     val movieDetails: LiveData<MovieDetails> = _movieDetails
     private val _favoriteMovies = MutableLiveData<List<Movie>>()
@@ -36,10 +36,15 @@ class MovieViewModel constructor(private val repository: MovieRepository) : View
         })
     }
 
-    fun getMovies() {
+    fun getMovies(favoriteMoviesId: List<String>) {
         repository.getMovies().enqueue(object : Callback<MovieObject> {
             override fun onResponse(call: Call<MovieObject>, response: Response<MovieObject>) {
-                _movies.postValue(response.body()?.items)
+                val topMovies = response.body()?.items
+                favoriteMoviesId.forEach { id ->
+                    val currentMovie = topMovies?.find { it.id == id }
+                    if (currentMovie != null) currentMovie.isFavorite = true
+                }
+                _movies.postValue(topMovies)
             }
 
             override fun onFailure(call: Call<MovieObject>, throwable: Throwable) {
@@ -48,12 +53,8 @@ class MovieViewModel constructor(private val repository: MovieRepository) : View
         })
     }
 
-    fun getFavoriteMovies(moviesID: List<String>) {
-        val favoriteMovies = mutableListOf<Movie>()
-        moviesID.forEach { id ->
-            val currentMovie = _movies.value?.find { it.id == id }
-            if (currentMovie != null) favoriteMovies.add(currentMovie)
-        }
+    fun getFavoriteMovies() {
+        val favoriteMovies = _movies.value?.filter { it.isFavorite } ?: emptyList()
         _favoriteMovies.value = favoriteMovies
     }
 }
