@@ -6,7 +6,6 @@
     android:layout_marginStart="@dimen/margin_all_medium"
     android:layout_marginTop="@dimen/margin_all_medium"
     android:layout_marginEnd="@dimen/margin_all_medium"
-    app:cardBackgroundColor="@color/teal_200"
     app:cardCornerRadius="@dimen/corner_radius_item_layout"
     app:cardElevation="@dimen/card_elevation_card_view"
     app:cardMaxElevation="@dimen/max_elevation_card_view"
@@ -17,9 +16,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textview_item_layout_rank_title"
-            style="@style/text_small.fresh_ivy_green.bold"
+            style="@style/text_small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/textview_item_layout_movie_name"
@@ -27,9 +26,9 @@
             android:layout_toEndOf="@id/circle_avatar_view_item_layout_movie_image"
             android:text="@string/item_layout_rank_title" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textview_item_layout_rank_number"
-            style="@style/text_small.fresh_ivy_green"
+            style="@style/text_small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/textview_item_layout_movie_name"
@@ -37,16 +36,16 @@
             android:layout_marginTop="@dimen/margin_all_small"
             android:layout_toEndOf="@id/textview_item_layout_rank_title" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textview_item_layout_movie_name"
-            style="@style/text_medium.fresh_ivy_green.bold"
+            style="@style/text_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/circle_avatar_view_item_layout_movie_image" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textview_item_layout_year_title"
-            style="@style/text_small.fresh_ivy_green.bold"
+            style="@style/text_small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/textview_item_layout_previous_rank_title"
@@ -54,9 +53,9 @@
             android:layout_toEndOf="@id/circle_avatar_view_item_layout_movie_image"
             android:text="@string/item_layout_year_title" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textview_item_layout_year_number"
-            style="@style/text_small.fresh_ivy_green"
+            style="@style/text_small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/textview_item_layout_previous_rank_title"
@@ -64,9 +63,9 @@
             android:layout_marginTop="@dimen/margin_all_small"
             android:layout_toEndOf="@id/textview_item_layout_year_title" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textview_item_layout_previous_rank_title"
-            style="@style/text_small.fresh_ivy_green.bold"
+            style="@style/text_small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/textview_item_layout_rank_title"
@@ -74,9 +73,9 @@
             android:layout_toEndOf="@id/circle_avatar_view_item_layout_movie_image"
             android:text="@string/item_layout_previous_rank_title" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textview_item_layout_previous_rank_number"
-            style="@style/text_small.fresh_ivy_green"
+            style="@style/text_small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/textview_item_layout_rank_title"
@@ -94,16 +93,17 @@
             android:layout_marginEnd="@dimen/margin_all_small"
             android:layout_marginBottom="@dimen/margin_all_small" />
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/image_button_item_favorite_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_alignBottom="@id/circle_avatar_view_item_layout_movie_image"
             android:layout_alignParentEnd="true"
-            android:background="@color/teal_200"
             android:contentDescription="@string/item_description_favorite_button"
             android:minWidth="48dp"
             android:minHeight="48dp"
-            android:src="@drawable/ic_unfilled_star" />
+            app:icon="@drawable/ic_unfilled_star"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp" />
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

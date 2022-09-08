@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -12,7 +13,10 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.topmovies.R
 import com.example.topmovies.databinding.ItemLayoutBinding
 import com.example.topmovies.model.Movie
-import com.example.topmovies.unit.*
+import com.example.topmovies.unit.IMAGE_SIZE
+import com.example.topmovies.unit.RANK_DOWN
+import com.example.topmovies.unit.RANK_UP
+import com.example.topmovies.unit.REPLACE_AFTER
 
 class FavoriteMoviesAdapter(private val onClickFavoriteMovie: (String) -> Unit) :
     RecyclerView.Adapter<FavoriteMoviesAdapter.FavoriteMoviesViewHolder>() {
@@ -66,7 +70,8 @@ class FavoriteMoviesAdapter(private val onClickFavoriteMovie: (String) -> Unit) 
                     .asBitmap()
                     .load(resizeImage(movie.imageUrl))
                     .into(avatarCustomTarget)
-                imageButtonItemFavoriteIcon.setImageResource(R.drawable.ic_filled_star)
+                imageButtonItemFavoriteIcon.icon =
+                    AppCompatResources.getDrawable(root.context, R.drawable.ic_filled_star)
                 setRankUpDownColor(movie.rankUpDown)
                 imageButtonItemFavoriteIcon.setOnClickListener {
                     removeListener(movie)
@@ -82,9 +87,9 @@ class FavoriteMoviesAdapter(private val onClickFavoriteMovie: (String) -> Unit) 
             binding.textviewItemLayoutPreviousRankNumber.setTextColor(
                 ContextCompat.getColor(itemView.context,
                     when (rankUpDown.first()) {
-                        RANK_UP -> R.color.text_rank_up
-                        RANK_DOWN -> R.color.text_rank_down
-                        else -> R.color.text_color_fresh_ivy_green
+                        RANK_UP -> R.color.md_theme_light_tertiary
+                        RANK_DOWN -> R.color.md_theme_light_error
+                        else -> R.color.md_theme_dark_inverseSurface
                     }
                 ))
         }

@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.example.topmovies.databinding.FragmentDetailsMovieBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
-
 
 class MovieDetailsFragment : BaseFragment() {
     private lateinit var binding: FragmentDetailsMovieBinding
@@ -49,6 +47,6 @@ class MovieDetailsFragment : BaseFragment() {
     }
 
     private fun loadMovieDetailsById(movieId: String) {
-        viewModelMovieDetailsFragment.getMovieDetails(movieId)
+        viewModelMovieDetailsFragment.getMovieDetails(getApiKey(), movieId)
     }
 }

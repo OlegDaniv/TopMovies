@@ -2,6 +2,7 @@ package com.example.topmovies.fragment
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,7 +48,7 @@ class MoviesFragment : BaseFragment() {
 
     private fun setupViewModel() {
         moviesViewModel.apply {
-            if (moviesViewModel.movies.value == null) getMovies(getFavoriteMoviesId())
+            if (moviesViewModel.movies.value == null) getMovies(getApiKey(), getFavoriteMoviesId())
             movies.observe(viewLifecycleOwner) {
                 it?.let { moviesAdapter.setMovieList(it) }
             }
@@ -61,7 +62,7 @@ class MoviesFragment : BaseFragment() {
                 adapter = moviesAdapter
             }
             swipeRefresh.setOnRefreshListener {
-                moviesViewModel.getMovies(getFavoriteMoviesId())
+                moviesViewModel.getMovies(getApiKey(), getFavoriteMoviesId())
                 swipeRefresh.isRefreshing = false
             }
         }

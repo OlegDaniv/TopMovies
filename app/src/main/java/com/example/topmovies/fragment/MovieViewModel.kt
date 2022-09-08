@@ -23,8 +23,8 @@ class MovieViewModel constructor(private val repository: MovieRepository) : View
     private val _favoriteMovies = MutableLiveData<List<Movie>>()
     val favoriteMovies: LiveData<List<Movie>> = _favoriteMovies
 
-    fun getMovieDetails(movieId: String) {
-        repository.getMovieDetails(movieId).enqueue(object :
+    fun getMovieDetails(apiKey: String, movieId: String) {
+        repository.getMovieDetails(movieId, apiKey).enqueue(object :
             Callback<MovieDetails> {
             override fun onResponse(call: Call<MovieDetails>, response: Response<MovieDetails>) {
                 _movieDetails.postValue(response.body())
@@ -36,8 +36,8 @@ class MovieViewModel constructor(private val repository: MovieRepository) : View
         })
     }
 
-    fun getMovies(favoriteMoviesId: List<String>) {
-        repository.getMovies().enqueue(object : Callback<MovieObject> {
+    fun getMovies(apiKey: String, favoriteMoviesId: List<String>) {
+        repository.getMovies(apiKey).enqueue(object : Callback<MovieObject> {
             override fun onResponse(call: Call<MovieObject>, response: Response<MovieObject>) {
                 val topMovies = response.body()?.items
                 favoriteMoviesId.forEach { id ->

@@ -17,9 +17,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textview_movie_details_movie_title" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/textview_movie_details_title_description"
-        style="@style/text_medium.roxy_brown.bold.serif"
+        style="@style/text_medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_all_medium"
@@ -28,9 +28,9 @@
         app:layout_constraintStart_toStartOf="@+id/imageview_movie_details_image"
         app:layout_constraintTop_toBottomOf="@id/imageview_movie_details_image" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/textview_movie_details_description"
-        style="@style/text_small.roxy_brown.serif"
+        style="@style/text_small"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_all_medium"
@@ -45,27 +45,27 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/textview_movie_details_movie_title"
-        style="@style/text_large.roxy_brown.bold.serif"
+        style="@style/text_large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/textview_movie_details_rating_title"
-        style="@style/text_small.roxy_brown.serif"
+        style="@style/text_small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/movie_details_rating_title"
         app:layout_constraintStart_toStartOf="@+id/guideline_movie_details"
         app:layout_constraintTop_toTopOf="@id/imageview_movie_details_image" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/textview_movie_details_rating_number"
-        style="@style/text_small.roxy_brown.serif"
+        style="@style/text_small"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_all_small"
@@ -75,22 +75,22 @@
         app:layout_constraintStart_toEndOf="@+id/textview_movie_details_rating_title"
         app:layout_constraintTop_toTopOf="@id/textview_movie_details_rating_title" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/textview_movie_details_genres_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/text_small.roxy_brown.serif"
+        style="@style/text_small"
         android:layout_marginTop="@dimen/margin_all_small"
         android:text="@string/movie_details_genres_title"
         app:layout_constraintStart_toStartOf="@+id/guideline_movie_details"
         app:layout_constraintTop_toBottomOf="@id/textview_movie_details_date_release_title" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/textview_movie_details_genres_source"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_all_small"
-        style="@style/text_small.roxy_brown.serif"
+        style="@style/text_small"
         android:layout_marginEnd="@dimen/margin_all_small"
         android:gravity="end"
         app:layout_constraintEnd_toEndOf="parent"
@@ -99,7 +99,7 @@
 
     <TextView
         android:id="@+id/textview_movie_details_date_release_title"
-        style="@style/text_small.roxy_brown.serif"
+        style="@style/text_small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_all_small"
@@ -107,10 +107,10 @@
         app:layout_constraintStart_toStartOf="@+id/guideline_movie_details"
         app:layout_constraintTop_toBottomOf="@id/textview_movie_details_rating_title" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/textview_movie_details_date_release_source"
         android:layout_width="0dp"
-        style="@style/text_small.roxy_brown.serif"
+        style="@style/text_small"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_all_small"
         android:layout_marginEnd="@dimen/margin_all_small"

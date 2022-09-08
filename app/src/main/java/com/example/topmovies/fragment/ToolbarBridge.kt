@@ -1,8 +1,6 @@
 package com.example.topmovies.fragment
 
-interface ToolbarBridge : ToolbarBehaviour {
-
-}
+interface ToolbarBridge : ToolbarBehaviour
 
 interface ToolbarBehaviour {
 

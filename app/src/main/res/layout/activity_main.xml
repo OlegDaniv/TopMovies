@@ -7,11 +7,11 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/tool_bar_main_activity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/peach_500"
+        app:titleCentered="true"
         android:minHeight="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,12 +25,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:elevation="2dp"
+        app:itemIconSize="30dp"
+        app:labelVisibilityMode="selected"
         app:menu="@menu/button_nav_menu" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_main_activity"
-        android:layout_width="match_parent"
         android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:defaultNavHost="true"
         app:layout_constraintBottom_toTopOf="@id/button_nav_view_main_activity"

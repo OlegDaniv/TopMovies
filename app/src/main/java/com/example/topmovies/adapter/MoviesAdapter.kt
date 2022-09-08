@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -61,7 +62,9 @@ class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
                     .asBitmap()
                     .load(resizeImage(movie.imageUrl))
                     .into(avatarCustomTarget)
-                imageButtonItemFavoriteIcon.setImageResource(movieIsFavorite(movie.isFavorite))
+                binding.imageButtonItemFavoriteIcon.icon =
+                    AppCompatResources.getDrawable(binding.root.context,
+                        movieIsFavorite(movie.isFavorite))
                 setRankUpDownColor(movie.rankUpDown)
                 imageButtonItemFavoriteIcon.setOnClickListener {
                     setOnClickListenerFavoriteButton(movie)
@@ -75,19 +78,23 @@ class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
             binding.textviewItemLayoutPreviousRankNumber.setTextColor(
                 ContextCompat.getColor(itemView.context,
                     when (rankUpDown.first()) {
-                        RANK_UP -> R.color.text_rank_up
-                        RANK_DOWN -> R.color.text_rank_down
-                        else -> R.color.text_color_fresh_ivy_green
+                        RANK_UP -> R.color.md_theme_light_tertiary
+                        RANK_DOWN -> R.color.md_theme_light_error
+                        else -> R.color.md_theme_dark_inverseSurface
                     }
                 ))
         }
 
         private fun setOnClickListenerFavoriteButton(movie: Movie) {
             if (!movie.isFavorite) {
-                binding.imageButtonItemFavoriteIcon.setImageResource(R.drawable.ic_filled_star)
+                binding.imageButtonItemFavoriteIcon.icon =
+                    AppCompatResources.getDrawable(binding.root.context,
+                        R.drawable.ic_filled_star)
                 movie.isFavorite = true
             } else {
-                binding.imageButtonItemFavoriteIcon.setImageResource(R.drawable.ic_unfilled_star)
+                binding.imageButtonItemFavoriteIcon.icon =
+                    AppCompatResources.getDrawable(binding.root.context,
+                        R.drawable.ic_unfilled_star)
                 movie.isFavorite = false
             }
         }

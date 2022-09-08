@@ -4,6 +4,6 @@ import com.example.topmovies.retrofit.MoviesApi
 
 class MovieRepository constructor(private val movieApi: MoviesApi) {
 
-    fun getMovies() = movieApi.getMovies()
-    fun getMovieDetails(movieId: String) = movieApi.getMovieDetails(movieId)
+    fun getMovies(apikey: String) = movieApi.getMovies(apikey)
+    fun getMovieDetails(movieId: String, apikey: String) = movieApi.getMovieDetails(movieId, apikey)
 }

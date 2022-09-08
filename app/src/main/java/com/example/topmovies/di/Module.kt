@@ -5,7 +5,7 @@ import com.example.topmovies.fragment.MovieViewModel
 import com.example.topmovies.repository.MovieRepository
 import com.example.topmovies.retrofit.MoviesApi
 import com.example.topmovies.unit.BASE_URL
-import com.example.topmovies.unit.SHARED_PREFERENCE_NAME_FAVORITE
+import com.example.topmovies.unit.SHARED_PREF_NAME_FAVORITE
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -24,7 +24,7 @@ val appModule = module {
     viewModel { MovieViewModel(repository = get()) }
 
     single {
-        androidApplication().getSharedPreferences(SHARED_PREFERENCE_NAME_FAVORITE,
+        androidApplication().getSharedPreferences(SHARED_PREF_NAME_FAVORITE,
             Context.MODE_PRIVATE)
     }
 }

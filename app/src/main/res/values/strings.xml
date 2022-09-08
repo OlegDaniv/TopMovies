@@ -18,6 +18,23 @@
     <string name="nav_fragment_label_favorite_movies">Favorite movies</string>
     <string name="about_dialog_fragment_title">About</string>
     <string name="about_dialog_fragment_message">This app show top 100 movies</string>
-    <string name="about_dialog_fragment_button_title">ok</string>
+    <string name="about_dialog_fragment_button_title">OK</string>
     <string name="main_activity_dialog_tag">about dialog</string>
+    <!-- Preference Titles -->
+    <string name="profile_header">Profile</string>
+    <string name="debug_screen_header">Debug screen</string>
+
+    <!-- Messages Preferences -->
+    <string name="name_title">Full Name</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="menu_setting_title">Setting</string>
+    <string name="setting_item_textview_name">Tap to change profile image</string>
+    <string name="setting_item_imegeview_content_decsription">profile image</string>
 </resources>
