@@ -24,3 +24,7 @@ class App : Application() {
         Log.e("Logs", "App.someMethod() -> ${BuildConfig.VERSION_CODE}")
     }
 }
+
+fun someMethod2(){
+    Log.e("Logs", "App.someMethod() -> ${BuildConfig.VERSION_CODE}")
+}
