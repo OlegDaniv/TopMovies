@@ -52,7 +52,7 @@ class MoviesFragment : BaseFragment() {
 
     private fun setupUI() {
         binding.apply {
-            recyclerviewMoviesFragment.adapter = moviesAdapter
+            recyclerviewMovies.adapter = moviesAdapter
             swipeRefresh.setOnRefreshListener {
                 moviesViewModel.resolveMovies(getFavoriteMoviesId())
                 swipeRefresh.isRefreshing = false

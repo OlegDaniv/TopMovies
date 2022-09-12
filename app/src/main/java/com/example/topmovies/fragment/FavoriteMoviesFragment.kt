@@ -36,7 +36,7 @@ class FavoriteMoviesFragment : BaseFragment() {
     }
     
     private fun setupRecyclerView() {
-        binding.recyclerviewFavoriteMoviesFragment.adapter = favoriteMoviesAdapter
+        binding.recyclerviewFavoriteMovies.adapter = favoriteMoviesAdapter
     }
     
     private fun startMovieDetailsFragment(id: String) {

@@ -32,10 +32,9 @@ class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
         onItemClickListener
     )
 
-    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) =
         holder.bind(movies[position])
-    }
-
+    
     override fun getItemCount() = movies.size
 
     class MovieViewHolder(
@@ -60,12 +59,12 @@ class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
                 circleAvatarViewItemLayoutMovieImage.setLabel(movie.title)
                 Glide.with(circleAvatarViewItemLayoutMovieImage)
                     .asBitmap()
-                    .load(resizeImage(movie.imageUrl))
+                    .load(movie.imageUrl.replaceAfter(REPLACE_AFTER, IMAGE_SIZE))
                     .into(avatarCustomTarget)
                 imageButtonItemFavoriteIcon.apply {
-                    setImageResource(getFavoriteImageResourceId(movie.isFavorite))
+                    setImageResource(getFavoriteImageResource(movie.isFavorite))
                     setOnClickListener {
-                        setImageResource(getFavoriteImageResourceId(switchFavoriteMovie(movie)))
+                        setImageResource(getFavoriteImageResource(switchFavoriteMovie(movie)))
                     }
                 }
                 setRankUpDownColor(movie.rankUpDown)
@@ -91,11 +90,9 @@ class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
             return movie.isFavorite
         }
     
-        private fun getFavoriteImageResourceId(isFavorite: Boolean): Int {
+        private fun getFavoriteImageResource(isFavorite: Boolean): Int {
             return if (isFavorite) R.drawable.ic_filled_star
             else R.drawable.ic_unfilled_star
         }
-    
-        private fun resizeImage(image: String) = image.replaceAfter(REPLACE_AFTER, IMAGE_SIZE)
     }
 }

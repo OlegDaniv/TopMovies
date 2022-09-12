@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity(), ToolbarBridge {
     
     private fun setupNavigationController() {
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.fragment_main_activity) as NavHostFragment
+            supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         val navController = navHostFragment.navController
         val appBarConfiguration =
             AppBarConfiguration(setOf(R.id.navigation_top_movies, R.id.navigation_favorite_movies))

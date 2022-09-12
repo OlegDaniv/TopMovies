@@ -21,7 +21,7 @@ class MovieViewModel constructor(private val repository: MovieRepository) : View
     private val _movieDetails = MutableLiveData<MovieDetails>()
     val movieDetails: LiveData<MovieDetails> = _movieDetails
     private val _favoriteMovies = MutableLiveData<List<Movie>>()
-    val favoriteMovies: LiveData<List<Movie>> get() = _favoriteMovies
+    val favoriteMovies: LiveData<List<Movie>> = _favoriteMovies
     
     fun resolveMovieDetails(movieId: String) {
         repository.getMovieDetails(movieId).enqueue(object :
