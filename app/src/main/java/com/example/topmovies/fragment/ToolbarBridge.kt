@@ -1,12 +1,9 @@
 package com.example.topmovies.fragment
 
-interface ToolbarBridge : ToolbarBehaviour {
-
-}
+interface ToolbarBridge : ToolbarBehaviour
 
 interface ToolbarBehaviour {
-
-    fun showUpButton()
-    fun hideUpButton()
-
+    
+    fun showBackButton()
+    fun hideBackButton()
 }

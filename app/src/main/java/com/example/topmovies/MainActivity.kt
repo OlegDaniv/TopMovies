@@ -13,11 +13,11 @@ import com.example.topmovies.databinding.ActivityMainBinding
 import com.example.topmovies.fragment.AboutDialogFragment
 import com.example.topmovies.fragment.ToolbarBridge
 
-
 class MainActivity : AppCompatActivity(), ToolbarBridge {
+    
     private var isLoading = true
     private lateinit var binding: ActivityMainBinding
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen().setKeepOnScreenCondition { isLoading }
         super.onCreate(savedInstanceState)
@@ -27,20 +27,20 @@ class MainActivity : AppCompatActivity(), ToolbarBridge {
         setupNavigationController()
         isLoading = false
     }
-
-    override fun showUpButton() {
+    
+    override fun showBackButton() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
-
-    override fun hideUpButton() {
+    
+    override fun hideBackButton() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
-
+    
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         return true
     }
-
+    
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -48,27 +48,26 @@ class MainActivity : AppCompatActivity(), ToolbarBridge {
                 true
             }
             R.id.about -> {
-                setDialog()
+                showDialog()
                 true
             }
             else -> false
         }
     }
-
-    private fun setDialog() {
-        AboutDialogFragment().show(supportFragmentManager,
-            getString(R.string.main_activity_dialog_tag))
+    
+    private fun showDialog() {
+        AboutDialogFragment().show(
+            supportFragmentManager,
+            getString(R.string.main_activity_dialog_tag)
+        )
     }
-
+    
     override fun onBackPressed() {
-        val fragmentManager = supportFragmentManager
-        if (fragmentManager.backStackEntryCount > 1) {
-            fragmentManager.popBackStackImmediate()
-        } else {
-            super.onBackPressed()
-        }
+        supportFragmentManager.takeIf { it.backStackEntryCount > 1 }
+            ?.popBackStackImmediate()
+            ?: super.onBackPressed()
     }
-
+    
     private fun setupNavigationController() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_main_activity) as NavHostFragment
@@ -76,13 +75,11 @@ class MainActivity : AppCompatActivity(), ToolbarBridge {
         val appBarConfiguration =
             AppBarConfiguration(setOf(R.id.navigation_top_movies, R.id.navigation_favorite_movies))
         setupActionBarWithNavController(navController, appBarConfiguration)
-        binding.buttonNavViewMainActivity.setupWithNavController(navController)
+        binding.buttonNavView.setupWithNavController(navController)
     }
 
     private fun setupToolBar() {
         setSupportActionBar(binding.toolBarMainActivity)
-        supportActionBar?.apply {
-            setDisplayShowTitleEnabled(true)
-        }
+        supportActionBar?.setDisplayShowTitleEnabled(true)
     }
 }

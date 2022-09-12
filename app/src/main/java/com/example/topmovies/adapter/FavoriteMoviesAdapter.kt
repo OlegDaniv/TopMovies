@@ -12,36 +12,39 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.topmovies.R
 import com.example.topmovies.databinding.ItemLayoutBinding
 import com.example.topmovies.model.Movie
-import com.example.topmovies.unit.*
+import com.example.topmovies.unit.IMAGE_SIZE
+import com.example.topmovies.unit.RANK_DOWN
+import com.example.topmovies.unit.RANK_UP
+import com.example.topmovies.unit.REPLACE_AFTER
 
 class FavoriteMoviesAdapter(private val onClickFavoriteMovie: (String) -> Unit) :
     RecyclerView.Adapter<FavoriteMoviesAdapter.FavoriteMoviesViewHolder>() {
-    private var favoriteMovies = listOf<Movie>()
-
+    
+    private var favoriteMovies = mutableListOf<Movie>()
+    
     fun setFavoriteMovies(movies: List<Movie>) {
-        favoriteMovies = movies
+        favoriteMovies = movies.toMutableList()
         notifyItemRangeChanged(0, movies.size)
     }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteMoviesViewHolder {
-        val binding = ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return FavoriteMoviesViewHolder(binding, onClickFavoriteMovie, ::removeMovie)
-    }
-
+    
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteMoviesViewHolder =
+        FavoriteMoviesViewHolder(
+            ItemLayoutBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false
+            ), onClickFavoriteMovie, ::removeMovie
+        )
+    
     override fun onBindViewHolder(holder: FavoriteMoviesViewHolder, position: Int) =
         holder.bind(favoriteMovies[position])
-
+    
     override fun getItemCount() = favoriteMovies.size
-
+    
     private fun removeMovie(movie: Movie) {
         val index = favoriteMovies.indexOf(movie)
-        val mutableList = favoriteMovies.toMutableList()
-        mutableList.removeAt(index)
-        favoriteMovies = mutableList.toList()
+        favoriteMovies.removeAt(index)
         notifyItemRemoved(index)
     }
-
-
+    
     class FavoriteMoviesViewHolder(
         private val binding: ItemLayoutBinding,
         private val onClickFavoriteMovie: (String) -> Unit,
@@ -66,12 +69,14 @@ class FavoriteMoviesAdapter(private val onClickFavoriteMovie: (String) -> Unit) 
                     .asBitmap()
                     .load(resizeImage(movie.imageUrl))
                     .into(avatarCustomTarget)
-                imageButtonItemFavoriteIcon.setImageResource(R.drawable.ic_filled_star)
-                setRankUpDownColor(movie.rankUpDown)
-                imageButtonItemFavoriteIcon.setOnClickListener {
-                    removeListener(movie)
-                    movie.isFavorite = false
+                imageButtonItemFavoriteIcon.apply {
+                    setImageResource(R.drawable.ic_filled_star)
+                    setOnClickListener {
+                        removeListener(movie)
+                        movie.isFavorite = false
+                    }
                 }
+                setRankUpDownColor(movie.rankUpDown)
             }
             itemView.setOnClickListener { onClickFavoriteMovie(movie.id) }
         }
