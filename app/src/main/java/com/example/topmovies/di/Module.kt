@@ -22,7 +22,7 @@ val appModule = module {
     single { provideMovieService(retrofit = get()) }
     single { MovieRepository(movieApi = get()) }
     single { provideSharedPreference(androidApplication()) }
-    viewModel { MovieViewModel(repository = get()) }
+    viewModel { MovieViewModel(repository = get(), sharedPref = get()) }
 }
 
 private fun provideDefaultOkhttpClient(): OkHttpClient {

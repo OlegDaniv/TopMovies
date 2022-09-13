@@ -1,5 +1,6 @@
 package com.example.topmovies.viewmodel
 
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +15,10 @@ import retrofit2.Response
 
 val TAG = MovieViewModel::class.simpleName
 
-class MovieViewModel constructor(private val repository: MovieRepository) : ViewModel() {
+class MovieViewModel constructor(
+    private val repository: MovieRepository,
+    private val sharedPref: SharedPreferences
+) : ViewModel() {
     
     private val _movies = MutableLiveData<List<Movie>?>()
     val movies: MutableLiveData<List<Movie>?> = _movies
@@ -46,15 +50,25 @@ class MovieViewModel constructor(private val repository: MovieRepository) : View
                 }
                 _movies.postValue(topMovies)
             }
-            
+    
             override fun onFailure(call: Call<MovieObject>, throwable: Throwable) {
                 Log.e(TAG, "${throwable.message}")
             }
         })
     }
     
+    fun saveFavoriteMovie() {
+        _favoriteMovies.value?.forEach { movie ->
+            sharedPref.edit().putString(movie.id, "").apply()
+        }
+    }
+    
     fun resolveFavoriteMovies() {
         val favoriteMovies = _movies.value?.filter { it.isFavorite } ?: emptyList()
         _favoriteMovies.value = favoriteMovies
     }
+    
+    fun removeMoviePreference() = sharedPref.edit().clear().apply()
+    
+    fun getFavoriteMoviesId() = sharedPref.all.keys.toList()
 }

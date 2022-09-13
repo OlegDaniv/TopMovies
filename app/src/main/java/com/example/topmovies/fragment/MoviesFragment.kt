@@ -1,6 +1,5 @@
 package com.example.topmovies.fragment
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,6 @@ import com.example.topmovies.R
 import com.example.topmovies.adapter.MoviesAdapter
 import com.example.topmovies.databinding.FragmentMoviesBinding
 import com.example.topmovies.viewmodel.MovieViewModel
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class MoviesFragment : BaseFragment() {
@@ -19,7 +17,6 @@ class MoviesFragment : BaseFragment() {
     private val binding by lazy { FragmentMoviesBinding.inflate(layoutInflater) }
     private val moviesAdapter by lazy { MoviesAdapter { id -> onClickItem(id) } }
     private val moviesViewModel by sharedViewModel<MovieViewModel>()
-    private val sharedPref: SharedPreferences by inject()
     
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
@@ -33,8 +30,8 @@ class MoviesFragment : BaseFragment() {
     
     override fun onDestroyView() {
         super.onDestroyView()
-        removeMoviePreference()
-        moviesViewModel.favoriteMovies.value?.forEach { movie -> saveFavoriteMovie(movie.id) }
+        moviesViewModel.removeMoviePreference()
+        moviesViewModel.saveFavoriteMovie()
     }
 
     private fun onClickItem(movieId: String) {
@@ -54,7 +51,7 @@ class MoviesFragment : BaseFragment() {
         binding.apply {
             recyclerviewMovies.adapter = moviesAdapter
             swipeRefresh.setOnRefreshListener {
-                moviesViewModel.resolveMovies(getFavoriteMoviesId())
+                moviesViewModel.resolveMovies(moviesViewModel.getFavoriteMoviesId())
                 swipeRefresh.isRefreshing = false
             }
         }
@@ -66,10 +63,4 @@ class MoviesFragment : BaseFragment() {
             bundleOf(MovieDetailsFragment.FRAGMENT_KEY to movieId)
         )
     }
-    
-    private fun removeMoviePreference() = sharedPref.edit().clear().apply()
-    
-    private fun getFavoriteMoviesId() = sharedPref.all.keys.toList()
-    
-    private fun saveFavoriteMovie(key: String) = sharedPref.edit().putString(key, "").apply()
 }
