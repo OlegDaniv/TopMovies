@@ -3,6 +3,7 @@ package com.example.topmovies
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.fragment.NavHostFragment
@@ -17,6 +18,13 @@ class MainActivity : AppCompatActivity(), ToolbarBridge {
     
     private var isLoading = true
     private lateinit var binding: ActivityMainBinding
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            supportFragmentManager.takeIf { it.backStackEntryCount > 1 }
+                ?.popBackStackImmediate()
+                ?: onBackPressedDispatcher.onBackPressed()
+        }
+    }
     
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen().setKeepOnScreenCondition { isLoading }
@@ -44,7 +52,7 @@ class MainActivity : AppCompatActivity(), ToolbarBridge {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                this.onBackPressed()
+                onBackPressedCallback.handleOnBackPressed()
                 true
             }
             R.id.about -> {
@@ -62,12 +70,6 @@ class MainActivity : AppCompatActivity(), ToolbarBridge {
         )
     }
     
-    override fun onBackPressed() {
-        supportFragmentManager.takeIf { it.backStackEntryCount > 1 }
-            ?.popBackStackImmediate()
-            ?: super.onBackPressed()
-    }
-    
     private fun setupNavigationController() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
@@ -75,7 +77,7 @@ class MainActivity : AppCompatActivity(), ToolbarBridge {
         val appBarConfiguration =
             AppBarConfiguration(setOf(R.id.navigation_top_movies, R.id.navigation_favorite_movies))
         setupActionBarWithNavController(navController, appBarConfiguration)
-        binding.buttonNavView.setupWithNavController(navController)
+        binding.bottomNavView.setupWithNavController(navController)
     }
 
     private fun setupToolBar() {
