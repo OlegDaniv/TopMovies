@@ -4,41 +4,35 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.widget.Toast
+import androidx.core.os.bundleOf
+import androidx.navigation.fragment.findNavController
 import com.example.topmovies.R
-import com.example.topmovies.adapter.MovieAdapter
+import com.example.topmovies.adapter.MoviesAdapter
 import com.example.topmovies.databinding.FragmentMoviesBinding
-import com.example.topmovies.repository.MovieRepository
-import com.example.topmovies.viewmodel.MovieModelFactory
 import com.example.topmovies.viewmodel.MovieViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class MoviesFragment : BaseFragment() {
-    private lateinit var binding: FragmentMoviesBinding
-    private val moviesAdapter by lazy { MovieAdapter { id -> onClickItem(id) } }
-    private val moviesViewModel by viewModels<MovieViewModel> {
-        MovieModelFactory(MovieRepository())
-    }
-
-    companion object {
-        fun newInstance(): MoviesFragment {
-            return MoviesFragment()
-        }
-    }
-
+    
+    private val binding by lazy { FragmentMoviesBinding.inflate(layoutInflater) }
+    private val moviesAdapter by lazy { MoviesAdapter { id -> onClickItem(id) } }
+    private val moviesViewModel by sharedViewModel<MovieViewModel>()
+    
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentMoviesBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ) = binding.root
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        toolBarBridge?.hideUpButton()
+        hideBackButton()
         setupUI()
         setupViewModel()
+    }
+    
+    override fun onDestroyView() {
+        super.onDestroyView()
+        moviesViewModel.removeMoviePreference()
+        moviesViewModel.saveFavoriteMovie()
     }
 
     private fun onClickItem(movieId: String) {
@@ -47,32 +41,30 @@ class MoviesFragment : BaseFragment() {
 
     private fun setupViewModel() {
         moviesViewModel.apply {
-            if (moviesViewModel.movies.value == null) getAllMovies()
+            movies.value ?: resolveMovies(getFavoriteMoviesId())
             movies.observe(viewLifecycleOwner) {
-                moviesAdapter.apply {
-                    setMovieList(it)
-                }
+                it?.let { moviesAdapter.setMovieList(it) }
             }
+        }
+        moviesViewModel.errorMassage.observe(viewLifecycleOwner) {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
         }
     }
 
     private fun setupUI() {
         binding.apply {
-            recyclerviewMoviesFragment.apply {
-                layoutManager = LinearLayoutManager(requireActivity())
-                adapter = moviesAdapter
-            }
+            recyclerviewMovies.adapter = moviesAdapter
             swipeRefresh.setOnRefreshListener {
-                moviesViewModel.getAllMovies()
+                moviesViewModel.resolveMovies(moviesViewModel.getFavoriteMoviesId())
                 swipeRefresh.isRefreshing = false
             }
         }
     }
-
+    
     private fun startMovieDetailsFragment(movieId: String) {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container_view, MovieDetailsFragment.newInstance(movieId))
-            .addToBackStack("movieList")
-            .commit()
+        findNavController().navigate(
+            R.id.action_navigation_top_movies_to_navigation_movie_details,
+            bundleOf(MovieDetailsFragment.FRAGMENT_KEY to movieId)
+        )
     }
 }

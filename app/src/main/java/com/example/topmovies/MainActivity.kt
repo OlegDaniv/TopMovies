@@ -1,65 +1,85 @@
 package com.example.topmovies
 
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.topmovies.databinding.ActivityMainBinding
-import com.example.topmovies.fragment.MoviesFragment
-import com.example.topmovies.fragment.ToolBarBridge
+import com.example.topmovies.fragment.AboutDialogFragment
+import com.example.topmovies.fragment.ToolbarBridge
 
-class MainActivity : AppCompatActivity(), ToolBarBridge {
+class MainActivity : AppCompatActivity(), ToolbarBridge {
+    
     private var isLoading = true
     private lateinit var binding: ActivityMainBinding
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen().setKeepOnScreenCondition { isLoading }
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupToolBar()
-        if (savedInstanceState == null) {
-            addFragment()
-        }
+        setupNavigationController()
         isLoading = false
     }
-
-    private fun setupToolBar() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.apply {
-            setDisplayShowTitleEnabled(false)
-        }
+    
+    override fun showBackButton() {
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
-
+    
+    override fun hideBackButton() {
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+    }
+    
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return true
+    }
+    
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
                 this.onBackPressed()
                 true
             }
-            else -> super.onOptionsItemSelected(item)
+            R.id.about -> {
+                showDialog()
+                true
+            }
+            else -> false
         }
     }
-
-    override fun showUpButton() {
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    
+    private fun showDialog() {
+        AboutDialogFragment().show(
+            supportFragmentManager,
+            getString(R.string.main_activity_dialog_tag)
+        )
     }
-
-    override fun hideUpButton() {
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
-    }
-
-    private fun addFragment() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container_view, MoviesFragment.newInstance(), "movieList")
-            .commit()
-    }
-
+    
     override fun onBackPressed() {
-        val fragmentManager = supportFragmentManager
-        if (fragmentManager.backStackEntryCount > 1) {
-            fragmentManager.popBackStackImmediate()
-        } else {
-            super.onBackPressed()
-        }
+        supportFragmentManager.takeIf { it.backStackEntryCount > 1 }
+            ?.popBackStackImmediate()
+            ?: super.onBackPressed()
+    }
+    
+    private fun setupNavigationController() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+        val navController = navHostFragment.navController
+        val appBarConfiguration =
+            AppBarConfiguration(setOf(R.id.navigation_top_movies, R.id.navigation_favorite_movies))
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        binding.buttonNavView.setupWithNavController(navController)
+    }
+
+    private fun setupToolBar() {
+        setSupportActionBar(binding.toolBarMainActivity)
+        supportActionBar?.setDisplayShowTitleEnabled(true)
     }
 }

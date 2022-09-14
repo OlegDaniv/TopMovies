@@ -17,29 +17,38 @@ import com.example.topmovies.unit.RANK_DOWN
 import com.example.topmovies.unit.RANK_UP
 import com.example.topmovies.unit.REPLACE_AFTER
 
-class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
-    RecyclerView.Adapter<MoviesAdapter.MovieViewHolder>() {
-
-    private var movies = listOf<Movie>()
-
-    fun setMovieList(movies: List<Movie>) {
-        this.movies = movies
+class FavoriteMoviesAdapter(private val onFavoriteMovieClick: (String) -> Unit) :
+    RecyclerView.Adapter<FavoriteMoviesAdapter.FavoriteMoviesViewHolder>() {
+    
+    private var favoriteMovies = mutableListOf<Movie>()
+    
+    fun setFavoriteMovies(movies: List<Movie>) {
+        favoriteMovies = movies.toMutableList()
         notifyItemRangeChanged(0, movies.size)
     }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MovieViewHolder(
-        ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false),
-        onItemClickListener
-    )
-
-    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) =
-        holder.bind(movies[position])
     
-    override fun getItemCount() = movies.size
-
-    class MovieViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteMoviesViewHolder =
+        FavoriteMoviesViewHolder(
+            ItemLayoutBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false
+            ), onFavoriteMovieClick, ::removeMovie
+        )
+    
+    override fun onBindViewHolder(holder: FavoriteMoviesViewHolder, position: Int) =
+        holder.bind(favoriteMovies[position])
+    
+    override fun getItemCount() = favoriteMovies.size
+    
+    private fun removeMovie(movie: Movie) {
+        val index = favoriteMovies.indexOf(movie)
+        favoriteMovies.removeAt(index)
+        notifyItemRemoved(index)
+    }
+    
+    class FavoriteMoviesViewHolder(
         private val binding: ItemLayoutBinding,
-        private val onItemClickListener: (String) -> Unit,
+        private val onClickFavoriteMovie: (String) -> Unit,
+        private val removeListener: (Movie) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private val avatarCustomTarget = object : CustomTarget<Bitmap>() {
@@ -49,7 +58,6 @@ class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
 
             override fun onLoadCleared(placeholder: Drawable?) {}
         }
-
         fun bind(movie: Movie) {
             binding.apply {
                 textviewItemLayoutMovieName.text = movie.title
@@ -62,37 +70,26 @@ class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
                     .load(movie.imageUrl.replaceAfter(REPLACE_AFTER, IMAGE_SIZE))
                     .into(avatarCustomTarget)
                 imageButtonItemFavoriteIcon.apply {
-                    setImageResource(getFavoriteImageResource(movie.isFavorite))
+                    setImageResource(R.drawable.ic_filled_star)
                     setOnClickListener {
-                        setImageResource(getFavoriteImageResource(switchFavoriteMovie(movie)))
+                        removeListener(movie)
+                        movie.isFavorite = false
                     }
                 }
                 setRankUpDownColor(movie.rankUpDown)
             }
-            itemView.setOnClickListener { onItemClickListener(movie.id) }
+            itemView.setOnClickListener { onClickFavoriteMovie(movie.id) }
         }
-    
+
         private fun setRankUpDownColor(rankUpDown: String) {
             binding.textviewItemLayoutPreviousRankNumber.setTextColor(
-                ContextCompat.getColor(
-                    itemView.context,
+                ContextCompat.getColor(itemView.context,
                     when (rankUpDown.first()) {
                         RANK_UP -> R.color.text_rank_up
                         RANK_DOWN -> R.color.text_rank_down
                         else -> R.color.text_color_fresh_ivy_green
                     }
-                )
-            )
-        }
-    
-        private fun switchFavoriteMovie(movie: Movie): Boolean {
-            movie.isFavorite = !movie.isFavorite
-            return movie.isFavorite
-        }
-    
-        private fun getFavoriteImageResource(isFavorite: Boolean): Int {
-            return if (isFavorite) R.drawable.ic_filled_star
-            else R.drawable.ic_unfilled_star
+                ))
         }
     }
 }

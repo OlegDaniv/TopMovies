@@ -6,7 +6,7 @@
     android:layout_marginStart="@dimen/margin_all_medium"
     android:layout_marginTop="@dimen/margin_all_medium"
     android:layout_marginEnd="@dimen/margin_all_medium"
-    app:cardBackgroundColor="@color/background_spearmint"
+    app:cardBackgroundColor="@color/teal_200"
     app:cardCornerRadius="@dimen/corner_radius_item_layout"
     app:cardElevation="@dimen/card_elevation_card_view"
     app:cardMaxElevation="@dimen/max_elevation_card_view"
@@ -93,5 +93,17 @@
             android:layout_marginTop="@dimen/margin_all_small"
             android:layout_marginEnd="@dimen/margin_all_small"
             android:layout_marginBottom="@dimen/margin_all_small" />
+
+        <ImageButton
+            android:id="@+id/image_button_item_favorite_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/circle_avatar_view_item_layout_movie_image"
+            android:layout_alignParentEnd="true"
+            android:background="@color/teal_200"
+            android:contentDescription="@string/item_description_favorite_button"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:src="@drawable/ic_unfilled_star" />
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

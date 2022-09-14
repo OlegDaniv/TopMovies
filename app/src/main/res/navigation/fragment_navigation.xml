@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_navigation"
+    app:startDestination="@id/navigation_top_movies">
+    <fragment
+        android:id="@+id/navigation_top_movies"
+        android:name="com.example.topmovies.fragment.MoviesFragment"
+        android:label="@string/nav_fragment_label_top_movies"
+        tools:layout="@layout/fragment_movies">
+        <action
+            android:id="@+id/action_navigation_top_movies_to_navigation_movie_details"
+            app:destination="@id/navigation_movie_details" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_movie_details"
+        android:name="com.example.topmovies.fragment.MovieDetailsFragment"
+        android:label="@string/nav_fragment_label_movie_details"
+        tools:layout="@layout/fragment_details_movie" />
+
+    <fragment
+        android:id="@+id/navigation_favorite_movies"
+        android:name="com.example.topmovies.fragment.FavoriteMoviesFragment"
+        android:label="@string/nav_fragment_label_favorite_movies"
+        tools:layout="@layout/fragment_favorite_movies">
+        <action
+            android:id="@+id/action_navigation_favorite_movies_to_navigation_movie_details"
+            app:destination="@id/navigation_movie_details" />
+    </fragment>
+</navigation>

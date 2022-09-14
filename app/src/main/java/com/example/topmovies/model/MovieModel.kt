@@ -3,7 +3,8 @@ package com.example.topmovies.model
 import com.google.gson.annotations.SerializedName
 
 data class MovieObject(
-    val items: List<Movie>
+    val items: List<Movie>,
+    val errorMessage: String
 )
 
 data class Movie(
@@ -17,7 +18,8 @@ data class Movie(
     val imageUrl: String,
     val crew: String,
     val imDbRating: String,
-    val imDbRatingCount: String
+    val imDbRatingCount: String,
+    var isFavorite: Boolean = false
 )
 
 data class MovieDetails(
