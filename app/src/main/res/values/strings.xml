@@ -17,8 +17,8 @@
     <string name="nav_fragment_label_movie_details">Movie details</string>
     <string name="nav_fragment_label_favorite_movies">Favorite movies</string>
     <string name="about_dialog_fragment_title">About</string>
-    <string name="about_dialog_fragment_message">This app show top 100 movies</string>
-    <string name="about_dialog_fragment_button_title">OK</string>
+    <string name="about_dialog_fragment_message">This app shows top 100 movies</string>
+    <string name="ok">OK</string>
     <string name="main_activity_dialog_tag">about dialog</string>
     <!-- Preference Titles -->
     <string name="profile_header">Profile</string>

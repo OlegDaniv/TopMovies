@@ -33,16 +33,16 @@ class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
         onItemClickListener
     )
 
-    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) =
         holder.bind(movies[position])
-    }
-
+    
     override fun getItemCount() = movies.size
 
     class MovieViewHolder(
         private val binding: ItemLayoutBinding,
         private val onItemClickListener: (String) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
+
         private val avatarCustomTarget = object : CustomTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                 binding.circleAvatarViewItemLayoutMovieImage.setAvatarImage(resource)
@@ -60,30 +60,38 @@ class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
                 circleAvatarViewItemLayoutMovieImage.setLabel(movie.title)
                 Glide.with(circleAvatarViewItemLayoutMovieImage)
                     .asBitmap()
-                    .load(resizeImage(movie.imageUrl))
+                    .load(movie.imageUrl.replaceAfter(REPLACE_AFTER, IMAGE_SIZE))
                     .into(avatarCustomTarget)
                 binding.imageButtonItemFavoriteIcon.icon =
                     AppCompatResources.getDrawable(binding.root.context,
                         movieIsFavorite(movie.isFavorite))
-                setRankUpDownColor(movie.rankUpDown)
-                imageButtonItemFavoriteIcon.setOnClickListener {
-                    setOnClickListenerFavoriteButton(movie)
-
+                imageButtonItemFavoriteIcon.apply {
+                    setImageResource(getFavoriteImageResource(movie.isFavorite))
+                    setOnClickListener {
+                        setImageResource(getFavoriteImageResource(switchFavoriteMovie(movie)))
+                    }
                 }
+                setRankUpDownColor(movie.rankUpDown)
             }
             itemView.setOnClickListener { onItemClickListener(movie.id) }
         }
-
+    
         private fun setRankUpDownColor(rankUpDown: String) {
             binding.textviewItemLayoutPreviousRankNumber.setTextColor(
-                ContextCompat.getColor(itemView.context,
+                ContextCompat.getColor(
+                    itemView.context,
                     when (rankUpDown.first()) {
                         RANK_UP -> R.color.md_theme_light_tertiary
                         RANK_DOWN -> R.color.md_theme_light_error
                         else -> R.color.md_theme_dark_inverseSurface
                     }
-                ))
+                )
+            )
         }
+    
+        private fun switchFavoriteMovie(movie: Movie): Boolean {
+            movie.isFavorite = !movie.isFavorite
+            return movie.isFavorite
 
         private fun setOnClickListenerFavoriteButton(movie: Movie) {
             if (!movie.isFavorite) {
@@ -98,12 +106,10 @@ class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
                 movie.isFavorite = false
             }
         }
-
-        private fun movieIsFavorite(isFavorite: Boolean): Int {
-            return if (!isFavorite) R.drawable.ic_unfilled_star
-            else R.drawable.ic_filled_star
+    
+        private fun getFavoriteImageResource(isFavorite: Boolean): Int {
+            return if (isFavorite) R.drawable.ic_filled_star
+            else R.drawable.ic_unfilled_star
         }
-
-        private fun resizeImage(image: String) = image.replaceAfter(REPLACE_AFTER, IMAGE_SIZE)
     }
 }

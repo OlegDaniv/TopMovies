@@ -18,34 +18,34 @@ import com.example.topmovies.unit.RANK_DOWN
 import com.example.topmovies.unit.RANK_UP
 import com.example.topmovies.unit.REPLACE_AFTER
 
-class FavoriteMoviesAdapter(private val onClickFavoriteMovie: (String) -> Unit) :
+class FavoriteMoviesAdapter(private val onFavoriteMovieClick: (String) -> Unit) :
     RecyclerView.Adapter<FavoriteMoviesAdapter.FavoriteMoviesViewHolder>() {
-    private var favoriteMovies = listOf<Movie>()
-
+    
+    private var favoriteMovies = mutableListOf<Movie>()
+    
     fun setFavoriteMovies(movies: List<Movie>) {
-        favoriteMovies = movies
+        favoriteMovies = movies.toMutableList()
         notifyItemRangeChanged(0, movies.size)
     }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteMoviesViewHolder {
-        val binding = ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return FavoriteMoviesViewHolder(binding, onClickFavoriteMovie, ::removeMovie)
-    }
-
+    
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteMoviesViewHolder =
+        FavoriteMoviesViewHolder(
+            ItemLayoutBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false
+            ), onFavoriteMovieClick, ::removeMovie
+        )
+    
     override fun onBindViewHolder(holder: FavoriteMoviesViewHolder, position: Int) =
         holder.bind(favoriteMovies[position])
-
+    
     override fun getItemCount() = favoriteMovies.size
-
+    
     private fun removeMovie(movie: Movie) {
         val index = favoriteMovies.indexOf(movie)
-        val mutableList = favoriteMovies.toMutableList()
-        mutableList.removeAt(index)
-        favoriteMovies = mutableList.toList()
+        favoriteMovies.removeAt(index)
         notifyItemRemoved(index)
     }
-
-
+    
     class FavoriteMoviesViewHolder(
         private val binding: ItemLayoutBinding,
         private val onClickFavoriteMovie: (String) -> Unit,
@@ -68,7 +68,7 @@ class FavoriteMoviesAdapter(private val onClickFavoriteMovie: (String) -> Unit) 
                 circleAvatarViewItemLayoutMovieImage.setLabel(movie.title)
                 Glide.with(circleAvatarViewItemLayoutMovieImage)
                     .asBitmap()
-                    .load(resizeImage(movie.imageUrl))
+                    .load(movie.imageUrl.replaceAfter(REPLACE_AFTER, IMAGE_SIZE))
                     .into(avatarCustomTarget)
                 imageButtonItemFavoriteIcon.icon =
                     AppCompatResources.getDrawable(root.context, R.drawable.ic_filled_star)
@@ -76,12 +76,17 @@ class FavoriteMoviesAdapter(private val onClickFavoriteMovie: (String) -> Unit) 
                 imageButtonItemFavoriteIcon.setOnClickListener {
                     removeListener(movie)
                     movie.isFavorite = false
+                imageButtonItemFavoriteIcon.apply {
+                    setImageResource(R.drawable.ic_filled_star)
+                    setOnClickListener {
+                        removeListener(movie)
+                        movie.isFavorite = false
+                    }
                 }
+                setRankUpDownColor(movie.rankUpDown)
             }
             itemView.setOnClickListener { onClickFavoriteMovie(movie.id) }
         }
-
-        private fun resizeImage(image: String) = image.replaceAfter(REPLACE_AFTER, IMAGE_SIZE)
 
         private fun setRankUpDownColor(rankUpDown: String) {
             binding.textviewItemLayoutPreviousRankNumber.setTextColor(
