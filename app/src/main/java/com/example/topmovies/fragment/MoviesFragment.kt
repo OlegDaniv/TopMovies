@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.example.topmovies.R
@@ -44,6 +45,9 @@ class MoviesFragment : BaseFragment() {
             movies.observe(viewLifecycleOwner) {
                 it?.let { moviesAdapter.setMovieList(it) }
             }
+        }
+        moviesViewModel.errorMassage.observe(viewLifecycleOwner) {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
         }
     }
 

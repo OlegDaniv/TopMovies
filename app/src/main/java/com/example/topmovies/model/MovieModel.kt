@@ -3,7 +3,8 @@ package com.example.topmovies.model
 import com.google.gson.annotations.SerializedName
 
 data class MovieObject(
-    val items: List<Movie>
+    val items: List<Movie>,
+    val errorMessage: String
 )
 
 data class Movie(

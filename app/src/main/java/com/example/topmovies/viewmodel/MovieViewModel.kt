@@ -20,12 +20,14 @@ class MovieViewModel constructor(
     private val sharedPref: SharedPreferences
 ) : ViewModel() {
     
-    private val _movies = MutableLiveData<List<Movie>?>()
-    val movies: MutableLiveData<List<Movie>?> = _movies
+    private val _movies = MutableLiveData<List<Movie>>()
+    val movies: MutableLiveData<List<Movie>> = _movies
     private val _movieDetails = MutableLiveData<MovieDetails>()
     val movieDetails: LiveData<MovieDetails> = _movieDetails
     private val _favoriteMovies = MutableLiveData<List<Movie>>()
     val favoriteMovies: LiveData<List<Movie>> = _favoriteMovies
+    private val _errorMassage = MutableLiveData<String>()
+    val errorMassage: MutableLiveData<String> = _errorMassage
     
     fun resolveMovieDetails(movieId: String) {
         repository.getMovieDetails(movieId).enqueue(object :
@@ -43,16 +45,32 @@ class MovieViewModel constructor(
     fun resolveMovies(favoriteMoviesId: List<String>) {
         repository.getMovies().enqueue(object : Callback<MovieObject> {
             override fun onResponse(call: Call<MovieObject>, response: Response<MovieObject>) {
-                val topMovies = response.body()?.items
-                favoriteMoviesId.forEach { id ->
-                    val currentMovie = topMovies?.find { it.id == id }
-                    currentMovie?.isFavorite = true
+                if (response.isSuccessful) {
+                    if (response.body()?.items?.isEmpty() == true) {
+                        _errorMassage.postValue(response.body()?.errorMessage)
+                    } else {
+                        response.body()?.items?.let { movies ->
+                            _movies.postValue(movies)
+                            favoriteMoviesId.forEach { id ->
+                                val currentMovie = movies.find { it.id == id }
+                                currentMovie?.isFavorite = true
+                            }
+                        }
+                    }
+                } else {
+                    _errorMassage.postValue(
+                        when (response.code()) {
+                            in 300..399 -> "Redirection you too many times"
+                            in 400..499 -> "Please restart your client"
+                            in 500..599 -> "An internal server error has occurred"
+                            else -> "The error is unknown"
+                        }
+                    )
                 }
-                _movies.postValue(topMovies)
             }
     
             override fun onFailure(call: Call<MovieObject>, throwable: Throwable) {
-                Log.e(TAG, "${throwable.message}")
+                _errorMassage.postValue(throwable.message)
             }
         })
     }
