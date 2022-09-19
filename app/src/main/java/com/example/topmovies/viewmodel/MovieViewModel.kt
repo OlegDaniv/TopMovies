@@ -9,6 +9,8 @@ import com.example.topmovies.model.Movie
 import com.example.topmovies.model.MovieDetails
 import com.example.topmovies.model.MovieObject
 import com.example.topmovies.repository.MovieRepository
+import com.example.topmovies.unit.DEF_API_KEY
+import com.example.topmovies.unit.SETTING_PREF_USER_API_KEY
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,8 +31,8 @@ class MovieViewModel constructor(
     private val _errorMassage = MutableLiveData<String>()
     val errorMassage: MutableLiveData<String> = _errorMassage
     
-    fun resolveMovieDetails(apiKey: String, movieId: String) {
-        repository.getMovieDetails(apiKey, movieId).enqueue(object : Callback<MovieDetails> {
+    fun resolveMovieDetails(movieId: String) {
+        repository.getMovieDetails(getApiKey(), movieId).enqueue(object : Callback<MovieDetails> {
             override fun onResponse(call: Call<MovieDetails>, response: Response<MovieDetails>) {
                 _movieDetails.postValue(response.body())
             }
@@ -41,8 +43,8 @@ class MovieViewModel constructor(
         })
     }
     
-    fun resolveMovies(apiKey: String, favoriteMoviesId: List<String>) {
-        repository.getMovies(apiKey).enqueue(object : Callback<MovieObject> {
+    fun resolveMovies(favoriteMoviesId: List<String>) {
+        repository.getMovies(getApiKey()).enqueue(object : Callback<MovieObject> {
             override fun onResponse(call: Call<MovieObject>, response: Response<MovieObject>) {
                 if (response.isSuccessful) {
                     if (response.body()?.items?.isEmpty() == true) {
@@ -88,4 +90,11 @@ class MovieViewModel constructor(
     fun removeMoviePreference() = sharedPref.edit().clear().apply()
     
     fun getFavoriteMoviesId() = sharedPref.all.keys.toList()
+    
+    private fun getApiKey(): String {
+        sharedPref.getString(SETTING_PREF_USER_API_KEY, DEF_API_KEY).also {
+            return if (it.isNullOrEmpty()) DEF_API_KEY
+            else it
+        }
+    }
 }
