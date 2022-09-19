@@ -14,16 +14,17 @@ import com.example.topmovies.unit.SETTING_PREF_PROFILE_IMAGE
 
 class ImageViewPreference(context: Context, attrs: AttributeSet?) :
     Preference(context, attrs) {
+    
     private lateinit var imageView: ImageView
     private val sharedPreference = PreferenceManager.getDefaultSharedPreferences(context)
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
         imageView = holder.findViewById(R.id.image) as ImageView
-        val stringUriImage = sharedPreference.getString(SETTING_PREF_PROFILE_IMAGE, null)
-        if (stringUriImage != null) {
-            imageView.setImageURI(stringUriImage.toUri())
-        }
+        sharedPreference.getString(SETTING_PREF_PROFILE_IMAGE, null)
+            ?.let {
+                imageView.setImageURI(it.toUri())
+            }
     }
 
     fun setImage(uri: Uri?) {
