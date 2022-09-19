@@ -36,5 +36,5 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="menu_setting_title">Setting</string>
     <string name="setting_item_textview_name">Tap to change profile image</string>
-    <string name="setting_item_imegeview_content_decsription">profile image</string>
+    <string name="setting_item_imageview_content_description">profile image</string>
 </resources>

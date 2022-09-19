@@ -62,13 +62,14 @@ class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
                     .asBitmap()
                     .load(movie.imageUrl.replaceAfter(REPLACE_AFTER, IMAGE_SIZE))
                     .into(avatarCustomTarget)
-                binding.imageButtonItemFavoriteIcon.icon =
-                    AppCompatResources.getDrawable(binding.root.context,
-                        movieIsFavorite(movie.isFavorite))
                 imageButtonItemFavoriteIcon.apply {
-                    setImageResource(getFavoriteImageResource(movie.isFavorite))
+                    icon = AppCompatResources.getDrawable(
+                        context, getFavoriteImageResource(movie.isFavorite)
+                    )
                     setOnClickListener {
-                        setImageResource(getFavoriteImageResource(switchFavoriteMovie(movie)))
+                        icon = AppCompatResources.getDrawable(
+                            context, getFavoriteImageResource(switchFavoriteMovie(movie))
+                        )
                     }
                 }
                 setRankUpDownColor(movie.rankUpDown)
@@ -92,19 +93,6 @@ class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
         private fun switchFavoriteMovie(movie: Movie): Boolean {
             movie.isFavorite = !movie.isFavorite
             return movie.isFavorite
-
-        private fun setOnClickListenerFavoriteButton(movie: Movie) {
-            if (!movie.isFavorite) {
-                binding.imageButtonItemFavoriteIcon.icon =
-                    AppCompatResources.getDrawable(binding.root.context,
-                        R.drawable.ic_filled_star)
-                movie.isFavorite = true
-            } else {
-                binding.imageButtonItemFavoriteIcon.icon =
-                    AppCompatResources.getDrawable(binding.root.context,
-                        R.drawable.ic_unfilled_star)
-                movie.isFavorite = false
-            }
         }
     
         private fun getFavoriteImageResource(isFavorite: Boolean): Int {

@@ -23,7 +23,6 @@ class FavoriteMoviesFragment : BaseFragment() {
     ) = binding.root
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        hideBackButton()
         setupRecyclerView()
         setupViewModel()
     }

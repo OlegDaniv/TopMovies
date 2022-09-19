@@ -1,7 +1,6 @@
 package com.example.topmovies.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +24,6 @@ class MoviesFragment : BaseFragment() {
     ) = binding.root
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        hideBackButton()
         setupUI()
         setupViewModel()
     }
@@ -42,14 +40,13 @@ class MoviesFragment : BaseFragment() {
 
     private fun setupViewModel() {
         moviesViewModel.apply {
-            movies.value ?: resolveMovies(getFavoriteMoviesId())
-            if (moviesViewModel.movies.value == null) getMovies(getApiKey(), getFavoriteMoviesId())
+            movies.value ?: resolveMovies(getApiKey(), getFavoriteMoviesId())
             movies.observe(viewLifecycleOwner) {
                 it?.let { moviesAdapter.setMovieList(it) }
             }
-        }
-        moviesViewModel.errorMassage.observe(viewLifecycleOwner) {
-            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            errorMassage.observe(viewLifecycleOwner) {
+                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -57,8 +54,9 @@ class MoviesFragment : BaseFragment() {
         binding.apply {
             recyclerviewMovies.adapter = moviesAdapter
             swipeRefresh.setOnRefreshListener {
-                moviesViewModel.resolveMovies(moviesViewModel.getFavoriteMoviesId())
-                moviesViewModel.getMovies(getApiKey(), getFavoriteMoviesId())
+                moviesViewModel.resolveMovies(
+                    getApiKey(), moviesViewModel.getFavoriteMoviesId()
+                )
                 swipeRefresh.isRefreshing = false
             }
         }

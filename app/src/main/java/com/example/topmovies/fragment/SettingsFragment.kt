@@ -15,7 +15,6 @@ import com.example.topmovies.unit.SETTING_PREF_PROFILE_IMAGE
 import com.example.topmovies.unit.SETTING_PREF_THEME
 import com.example.topmovies.view.ImageViewPreference
 
-
 class SettingsFragment : PreferenceFragmentCompat() {
 
     private val activityResult =
@@ -23,13 +22,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
             if (result.resultCode == Activity.RESULT_OK) {
                 val uriImage = result.data?.data
                 uriImage?.let {
-                    context?.contentResolver?.takePersistableUriPermission(it,
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    context?.contentResolver?.takePersistableUriPermission(
+                        it, Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
                 }
                 findPreference<ImageViewPreference>(SETTING_PREF_PROFILE_IMAGE)?.setImage(uriImage)
             }
         }
-
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
@@ -61,7 +60,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         intent.data = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         activityResult.launch(intent)
     }
-
 
     private fun showAbout() {
         findPreference<Preference>(SETTING_PREF_DIALOG_ABOUT)?.onPreferenceClickListener =

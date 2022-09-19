@@ -12,7 +12,7 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginEnd="16dp"
-        android:contentDescription="@string/setting_item_imegeview_content_decsription"
+        android:contentDescription="@string/setting_item_imageview_content_description"
         android:src="@drawable/def_profile_image" />
 
     <TextView

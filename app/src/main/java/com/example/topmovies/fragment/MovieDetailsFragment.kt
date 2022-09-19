@@ -15,7 +15,6 @@ class MovieDetailsFragment : BaseFragment() {
     private val movieViewModel by sharedViewModel<MovieViewModel>()
     
     companion object {
-        
         const val FRAGMENT_KEY = "movieID"
     }
     
@@ -24,7 +23,6 @@ class MovieDetailsFragment : BaseFragment() {
     ) = binding.root
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        showBackButton()
         setupUI()
         requireArguments().getString(FRAGMENT_KEY)?.let { loadMovieDetailsById(it) }
     }
@@ -44,7 +42,6 @@ class MovieDetailsFragment : BaseFragment() {
     }
 
     private fun loadMovieDetailsById(movieId: String) {
-        movieViewModel.resolveMovieDetails(movieId)
-        viewModelMovieDetailsFragment.getMovieDetails(getApiKey(), movieId)
+        movieViewModel.resolveMovieDetails(getApiKey(), movieId)
     }
 }

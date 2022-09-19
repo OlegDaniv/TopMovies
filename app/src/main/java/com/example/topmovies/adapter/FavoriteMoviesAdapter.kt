@@ -28,12 +28,11 @@ class FavoriteMoviesAdapter(private val onFavoriteMovieClick: (String) -> Unit) 
         notifyItemRangeChanged(0, movies.size)
     }
     
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteMoviesViewHolder =
-        FavoriteMoviesViewHolder(
-            ItemLayoutBinding.inflate(
-                LayoutInflater.from(parent.context), parent, false
-            ), onFavoriteMovieClick, ::removeMovie
-        )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = FavoriteMoviesViewHolder(
+        ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+        onFavoriteMovieClick,
+        ::removeMovie
+    )
     
     override fun onBindViewHolder(holder: FavoriteMoviesViewHolder, position: Int) =
         holder.bind(favoriteMovies[position])
@@ -59,6 +58,7 @@ class FavoriteMoviesAdapter(private val onFavoriteMovieClick: (String) -> Unit) 
 
             override fun onLoadCleared(placeholder: Drawable?) {}
         }
+    
         fun bind(movie: Movie) {
             binding.apply {
                 textviewItemLayoutMovieName.text = movie.title
@@ -67,36 +67,30 @@ class FavoriteMoviesAdapter(private val onFavoriteMovieClick: (String) -> Unit) 
                 textviewItemLayoutPreviousRankNumber.text = movie.rankUpDown
                 circleAvatarViewItemLayoutMovieImage.setLabel(movie.title)
                 Glide.with(circleAvatarViewItemLayoutMovieImage)
-                    .asBitmap()
-                    .load(movie.imageUrl.replaceAfter(REPLACE_AFTER, IMAGE_SIZE))
+                    .asBitmap().load(movie.imageUrl.replaceAfter(REPLACE_AFTER, IMAGE_SIZE))
                     .into(avatarCustomTarget)
-                imageButtonItemFavoriteIcon.icon =
-                    AppCompatResources.getDrawable(root.context, R.drawable.ic_filled_star)
                 setRankUpDownColor(movie.rankUpDown)
-                imageButtonItemFavoriteIcon.setOnClickListener {
-                    removeListener(movie)
-                    movie.isFavorite = false
                 imageButtonItemFavoriteIcon.apply {
-                    setImageResource(R.drawable.ic_filled_star)
+                    icon = AppCompatResources.getDrawable(context, R.drawable.ic_filled_star)
                     setOnClickListener {
                         removeListener(movie)
                         movie.isFavorite = false
                     }
                 }
-                setRankUpDownColor(movie.rankUpDown)
+                itemView.setOnClickListener { onClickFavoriteMovie(movie.id) }
             }
-            itemView.setOnClickListener { onClickFavoriteMovie(movie.id) }
         }
-
+    
         private fun setRankUpDownColor(rankUpDown: String) {
             binding.textviewItemLayoutPreviousRankNumber.setTextColor(
-                ContextCompat.getColor(itemView.context,
-                    when (rankUpDown.first()) {
+                ContextCompat.getColor(
+                    itemView.context, when (rankUpDown.first()) {
                         RANK_UP -> R.color.md_theme_light_tertiary
                         RANK_DOWN -> R.color.md_theme_light_error
                         else -> R.color.md_theme_dark_inverseSurface
                     }
-                ))
+                )
+            )
         }
     }
 }

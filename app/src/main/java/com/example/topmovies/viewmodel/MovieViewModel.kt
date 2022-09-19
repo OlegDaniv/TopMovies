@@ -29,9 +29,8 @@ class MovieViewModel constructor(
     private val _errorMassage = MutableLiveData<String>()
     val errorMassage: MutableLiveData<String> = _errorMassage
     
-    fun resolveMovieDetails(movieId: String) {
-        repository.getMovieDetails(movieId).enqueue(object :
-            Callback<MovieDetails> {
+    fun resolveMovieDetails(apiKey: String, movieId: String) {
+        repository.getMovieDetails(apiKey, movieId).enqueue(object : Callback<MovieDetails> {
             override fun onResponse(call: Call<MovieDetails>, response: Response<MovieDetails>) {
                 _movieDetails.postValue(response.body())
             }
@@ -42,8 +41,8 @@ class MovieViewModel constructor(
         })
     }
     
-    fun resolveMovies(favoriteMoviesId: List<String>) {
-        repository.getMovies().enqueue(object : Callback<MovieObject> {
+    fun resolveMovies(apiKey: String, favoriteMoviesId: List<String>) {
+        repository.getMovies(apiKey).enqueue(object : Callback<MovieObject> {
             override fun onResponse(call: Call<MovieObject>, response: Response<MovieObject>) {
                 if (response.isSuccessful) {
                     if (response.body()?.items?.isEmpty() == true) {
