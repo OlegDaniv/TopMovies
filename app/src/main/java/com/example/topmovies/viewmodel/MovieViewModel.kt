@@ -1,25 +1,26 @@
 package com.example.topmovies.viewmodel
 
 import android.content.SharedPreferences
+import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.topmovies.model.Movie
+import com.example.topmovies.model.MovieEntity
 import com.example.topmovies.repository.MovieRepository
 import com.example.topmovies.unit.EnumScreen
 
 class MovieViewModel constructor(
     private val repository: MovieRepository,
-    private val favoritePref: SharedPreferences,
-    sharedPref: SharedPreferences
+    sharedPref: SharedPreferences,
 ) : BaseViewModel(sharedPref) {
 
-    private val movies = MutableLiveData<List<Movie>>()
-    private val _favoriteMovies = mutableListOf<Movie>()
-    private val favoriteMovies: MutableLiveData<List<Movie>> = MutableLiveData(_favoriteMovies)
+    private val movies = MutableLiveData<List<MovieEntity>>()
+    private val favoriteMovies = MutableLiveData<List<MovieEntity>>()
     private var _errorMessage: String? = null
     val errorMessage = MutableLiveData(_errorMessage)
+    private val handler = Handler(Looper.getMainLooper())
 
-    fun getMoviesList(screen: EnumScreen): LiveData<List<Movie>> {
+    fun getMoviesList(screen: EnumScreen): LiveData<List<MovieEntity>> {
         return when (screen) {
             EnumScreen.MOVIES -> movies
             EnumScreen.FAVORITE -> favoriteMovies
@@ -27,33 +28,31 @@ class MovieViewModel constructor(
     }
 
     fun getMovies() {
-        movies.value ?: resolveMovies()
+        repository.getMovies {
+            val movieEntities = it
+            when (movieEntities.isEmpty()) {
+                true -> resolveMovies()
+                false -> handler.post { movies.value = movieEntities }
+            }
+        }
+
+        repository.getFavoriteMovie {
+            handler.post { favoriteMovies.value = it }
+        }
     }
+
+
     fun resolveMovies() {
-        _favoriteMovies.clear()
         repository.getNewMovies(
             getApiKey(),
             onSuccess = {
-                adjustFavoriteMovies(it.items)
-                movies.postValue(it.items)
+                repository.upsertMovies(it.items)
+                repository.getMovies { movieEntities ->
+                    handler.post { movies.value = movieEntities }
+                }
             },
-            onError = { errorMessage.postValue(it) }
+            onError = { handler.post { errorMessage.postValue(it) } }
         )
-    }
-
-    private fun <T> LiveData<T>.update() {
-        (this as? MutableLiveData<T>)?.let {
-            value = value
-        }
-    }
-
-    private fun adjustFavoriteMovies(movies: List<Movie>) {
-        favoritePref.all.keys.toList().forEach { id ->
-            movies.find { it.id == id }?.let { chosenMovie ->
-                chosenMovie.isFavorite = true
-                _favoriteMovies.add(chosenMovie)
-            }
-        }
     }
 
     fun addFavoriteMovie(id: String, favorite: Boolean, screen: EnumScreen) {
@@ -64,30 +63,25 @@ class MovieViewModel constructor(
             EnumScreen.FAVORITE ->
                 removeMovieFromFavorites(id)
         }
-        favoriteMovies.update()
     }
 
     private fun addMovieToFavorites(id: String) {
-        val mutableMovies = movies.value!!.toMutableList()
-        val movie = movies.value!!.find { movie -> movie.id.contains(id) }
-        val copy = movie?.copy(isFavorite = true)
-        if (copy != null) {
-            mutableMovies[movies.value!!.indexOf(movie)] = copy
-            movies.postValue(mutableMovies)
-            _favoriteMovies.add(copy)
-            favoritePref.edit().putString(copy.id, "").apply()
+        repository.updateMovie(id, true)
+        repository.getMovies {
+            handler.post { movies.value = it }
+        }
+        repository.getFavoriteMovie {
+            handler.post { favoriteMovies.value = it }
         }
     }
 
     private fun removeMovieFromFavorites(id: String) {
-        val mutableMovies = movies.value!!.toMutableList()
-        val movie = movies.value!!.find { movie -> movie.id.contains(id) }
-        val copy = movie?.copy(isFavorite = false)
-        if (copy != null) {
-            mutableMovies[movies.value!!.indexOf(movie)] = copy
-            movies.postValue(mutableMovies)
-            _favoriteMovies.remove(movie)
-            favoritePref.edit().remove(copy.id).apply()
+        repository.updateMovie(id, false)
+        repository.getMovies {
+            handler.post { movies.value = it }
+        }
+        repository.getFavoriteMovie {
+            handler.post { favoriteMovies.value = it }
         }
     }
 }

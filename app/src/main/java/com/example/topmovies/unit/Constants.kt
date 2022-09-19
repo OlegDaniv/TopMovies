@@ -7,7 +7,6 @@ const val DEF_API_KEY = "k_efexam0h"
 const val REPLACE_AFTER = "._V1_"
 const val IMAGE_SIZE = "UX126_CR6,0,126,126_AL_.jpg"
 const val DEF_SIZE_VIEW = 200
-const val SHARED_PREF_NAME_FAVORITE = "favorite"
 const val RANK_UP = '+'
 const val RANK_DOWN = '-'
 const val SETTING_PREF_THEME = "switch_theme"

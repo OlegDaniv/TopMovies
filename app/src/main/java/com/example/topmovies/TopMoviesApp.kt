@@ -3,7 +3,7 @@ package com.example.topmovies
 import android.app.Application
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
-import com.example.topmovies.di.appModule
+import com.example.topmovies.di.*
 import com.example.topmovies.unit.SETTING_PREF_THEME
 import com.example.topmovies.unit.checkNightMode
 import org.koin.android.ext.koin.androidContext
@@ -23,7 +23,13 @@ class TopMoviesApp : Application() {
         startKoin {
             androidLogger(Level.DEBUG)
             androidContext(this@TopMoviesApp)
-            modules(appModule)
+            modules(
+                appModule,
+                repositoryModule,
+                databaseModule,
+                viewModelModule,
+                networkModule
+            )
         }
     }
 }

@@ -9,23 +9,24 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.topmovies.R
 import com.example.topmovies.databinding.ItemLayoutBinding
-import com.example.topmovies.model.Movie
+import com.example.topmovies.model.MovieEntity
 import com.example.topmovies.unit.IMAGE_SIZE
 import com.example.topmovies.unit.RANK_DOWN
 import com.example.topmovies.unit.RANK_UP
 import com.example.topmovies.unit.REPLACE_AFTER
+import com.example.topmovies.utils.GlideApp
+
 
 class MoviesAdapter(
     private val onItemClickListener: (String) -> Unit,
     private val onFavoriteMovieClick: (String, Boolean) -> Unit
-) : ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(MovieDiffCallBack()) {
+) : ListAdapter<MovieEntity, MoviesAdapter.MovieViewHolder>(MovieDiffCallBack()) {
 
-    fun submitMoviesList(movies: List<Movie>) {
+    fun submitMoviesList(movies: List<MovieEntity>) {
         submitList(movies)
     }
 
@@ -58,6 +59,7 @@ class MoviesAdapter(
         private val onFavoriteMovieClick: (String, Boolean) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
+
         private val avatarCustomTarget = object : CustomTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                 binding.circleAvatarViewItemLayoutMovieImage.setAvatarImage(resource)
@@ -79,7 +81,6 @@ class MoviesAdapter(
 
         private fun newRank(rankUpDown: String) {
             binding.textviewItemLayoutRankNumber.text = rankUpDown
-
         }
 
         private fun getChanges(id: String, favorite: Boolean) {
@@ -94,13 +95,13 @@ class MoviesAdapter(
             }
         }
 
-        fun bind(movie: Movie) = with(binding) {
+        fun bind(movie: MovieEntity) = with(binding) {
             textviewItemLayoutMovieName.text = movie.title
             textviewItemLayoutRankNumber.text = movie.rank
             textviewItemLayoutYearNumber.text = movie.year
             textviewItemLayoutPreviousRankNumber.text = movie.rankUpDown
             circleAvatarViewItemLayoutMovieImage.setLabel(movie.title)
-            Glide.with(circleAvatarViewItemLayoutMovieImage)
+            GlideApp.with(circleAvatarViewItemLayoutMovieImage)
                 .asBitmap()
                 .load(movie.imageUrl.replaceAfter(REPLACE_AFTER, IMAGE_SIZE))
                 .into(avatarCustomTarget)
@@ -135,13 +136,13 @@ class MoviesAdapter(
         }
     }
 
-    private class MovieDiffCallBack : DiffUtil.ItemCallback<Movie>() {
+    private class MovieDiffCallBack : DiffUtil.ItemCallback<MovieEntity>() {
 
-        override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+        override fun areItemsTheSame(oldItem: MovieEntity, newItem: MovieEntity): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+        override fun areContentsTheSame(oldItem: MovieEntity, newItem: MovieEntity): Boolean {
             return ((oldItem.isFavorite == newItem.isFavorite) &&
                     (oldItem.rank == newItem.rank) &&
                     (oldItem.imageUrl == newItem.imageUrl) &&
@@ -150,7 +151,7 @@ class MoviesAdapter(
                     (oldItem.year == newItem.year))
         }
 
-        override fun getChangePayload(oldItem: Movie, newItem: Movie): Any? {
+        override fun getChangePayload(oldItem: MovieEntity, newItem: MovieEntity): Any? {
             if (oldItem.isFavorite != newItem.isFavorite && oldItem.rank != newItem.rank) {
                 return PayloadChange.Both(newItem.id, newItem.isFavorite, newItem.rank)
             } else if (oldItem.isFavorite != newItem.isFavorite) {
