@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.topmovies.R
 import com.example.topmovies.adapter.MoviesAdapter
@@ -13,7 +14,7 @@ import com.example.topmovies.databinding.FragmentMoviesBinding
 import com.example.topmovies.viewmodel.MovieViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class MoviesFragment : BaseFragment() {
+class MoviesFragment : Fragment() {
     
     private val binding by lazy { FragmentMoviesBinding.inflate(layoutInflater) }
     private val moviesAdapter by lazy { MoviesAdapter { id -> onClickItem(id) } }
@@ -40,7 +41,7 @@ class MoviesFragment : BaseFragment() {
 
     private fun setupViewModel() {
         moviesViewModel.apply {
-            movies.value ?: resolveMovies(getApiKey(), getFavoriteMoviesId())
+            movies.value ?: resolveMovies(getFavoriteMoviesId())
             movies.observe(viewLifecycleOwner) {
                 it?.let { moviesAdapter.setMovieList(it) }
             }
@@ -54,9 +55,7 @@ class MoviesFragment : BaseFragment() {
         binding.apply {
             recyclerviewMovies.adapter = moviesAdapter
             swipeRefresh.setOnRefreshListener {
-                moviesViewModel.resolveMovies(
-                    getApiKey(), moviesViewModel.getFavoriteMoviesId()
-                )
+                moviesViewModel.resolveMovies(moviesViewModel.getFavoriteMoviesId())
                 swipeRefresh.isRefreshing = false
             }
         }

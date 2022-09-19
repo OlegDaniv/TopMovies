@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.topmovies.R
 import com.example.topmovies.adapter.FavoriteMoviesAdapter
@@ -12,7 +13,7 @@ import com.example.topmovies.databinding.FragmentFavoriteMoviesBinding
 import com.example.topmovies.viewmodel.MovieViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class FavoriteMoviesFragment : BaseFragment() {
+class FavoriteMoviesFragment : Fragment() {
     
     private val binding by lazy { FragmentFavoriteMoviesBinding.inflate(layoutInflater) }
     private val favoriteMoviesAdapter by lazy { FavoriteMoviesAdapter { id -> onItemClick(id) } }
