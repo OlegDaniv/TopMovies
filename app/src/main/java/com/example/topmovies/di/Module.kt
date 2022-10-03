@@ -1,11 +1,10 @@
 package com.example.topmovies.di
 
 import android.app.Application
-import android.content.Context
+import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import com.example.topmovies.repository.MovieRepository
 import com.example.topmovies.retrofit.MoviesApi
 import com.example.topmovies.unit.BASE_URL
-import com.example.topmovies.unit.SHARED_PREF_NAME_FAVORITE
 import com.example.topmovies.unit.StringResource
 import com.example.topmovies.viewmodel.MovieDetailsViewModel
 import com.example.topmovies.viewmodel.MovieViewModel
@@ -39,8 +38,6 @@ private fun provideRetrofit(client: OkHttpClient) =
     Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create())
         .client(client).build()
 
-private fun provideSharedPreference(app: Application) = app.getSharedPreferences(
-    SHARED_PREF_NAME_FAVORITE, Context.MODE_PRIVATE
-)
+private fun provideSharedPreference(app: Application) = getDefaultSharedPreferences(app)
 
 private fun provideMovieService(retrofit: Retrofit) = retrofit.create(MoviesApi::class.java)
