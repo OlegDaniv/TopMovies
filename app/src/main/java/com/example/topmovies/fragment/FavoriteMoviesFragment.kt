@@ -16,7 +16,9 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 class FavoriteMoviesFragment : Fragment() {
     
     private val binding by lazy { FragmentFavoriteMoviesBinding.inflate(layoutInflater) }
-    private val favoriteMoviesAdapter by lazy { FavoriteMoviesAdapter { id -> onItemClick(id) } }
+    private val favoriteMoviesAdapter by lazy {
+        FavoriteMoviesAdapter { id -> startMovieDetailsFragment(id) }
+    }
     private val moviesViewModel by sharedViewModel<MovieViewModel>()
     
     override fun onCreateView(
@@ -31,7 +33,14 @@ class FavoriteMoviesFragment : Fragment() {
     private fun setupViewModel() {
         moviesViewModel.resolveFavoriteMovies()
         moviesViewModel.favoriteMovies.observe(viewLifecycleOwner) {
-            favoriteMoviesAdapter.setFavoriteMovies(it)
+            if (it.isEmpty()) {
+                binding.recyclerviewFavoriteMovies.visibility = View.GONE
+                binding.emptyView.visibility = View.VISIBLE
+            } else {
+                favoriteMoviesAdapter.setFavoriteMovies(it)
+                binding.recyclerviewFavoriteMovies.visibility = View.VISIBLE
+                binding.emptyView.visibility = View.GONE
+            }
         }
     }
     
@@ -41,12 +50,7 @@ class FavoriteMoviesFragment : Fragment() {
     
     private fun startMovieDetailsFragment(id: String) {
         findNavController().navigate(
-            R.id.action_navigation_favorite_movies_to_navigation_movie_details,
-            bundleOf(MovieDetailsFragment.FRAGMENT_KEY to id)
+            R.id.action_favorite_movies_to_movie_details, bundleOf(FRAGMENT_KEY to id)
         )
-    }
-    
-    private fun onItemClick(movieID: String) {
-        startMovieDetailsFragment(movieID)
     }
 }

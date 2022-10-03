@@ -21,10 +21,16 @@
             app:title="Email"
             app:useSimpleSummaryProvider="true" />
 
-        <EditTextPreference
+
+        <ListPreference
+            app:defaultValue="Auto"
+            app:dialogTitle="Please choose your mode"
+            app:entries="@array/theme_mode_labels"
             app:iconSpaceReserved="false"
-            app:key="api_key_preference"
-            app:title="Key"
+            app:entryValues="@array/theme_mode_values"
+            app:key="switch_theme"
+            app:summary="Please choose the mode"
+            app:title="Theme"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
@@ -33,17 +39,11 @@
         app:iconSpaceReserved="false"
         app:title="Configure Endpoints">
 
-        <SwitchPreference
+        <EditTextPreference
             app:iconSpaceReserved="false"
-            app:key="switch_theme"
-            app:title="Dark Theme" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        app:iconSpaceReserved="false"
-        app:title="@string/debug_screen_header">
-
+            app:key="api_key_preference"
+            app:title="API Key"
+            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 

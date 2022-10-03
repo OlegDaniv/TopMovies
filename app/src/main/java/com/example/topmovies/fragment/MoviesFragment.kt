@@ -11,13 +11,14 @@ import androidx.navigation.fragment.findNavController
 import com.example.topmovies.R
 import com.example.topmovies.adapter.MoviesAdapter
 import com.example.topmovies.databinding.FragmentMoviesBinding
+import com.example.topmovies.unit.NETWORK_ERROR
 import com.example.topmovies.viewmodel.MovieViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class MoviesFragment : Fragment() {
     
     private val binding by lazy { FragmentMoviesBinding.inflate(layoutInflater) }
-    private val moviesAdapter by lazy { MoviesAdapter { id -> onClickItem(id) } }
+    private val moviesAdapter by lazy { MoviesAdapter { id -> startMovieDetailsFragment(id) } }
     private val moviesViewModel by sharedViewModel<MovieViewModel>()
     
     override fun onCreateView(
@@ -35,18 +36,22 @@ class MoviesFragment : Fragment() {
         moviesViewModel.saveFavoriteMovie()
     }
 
-    private fun onClickItem(movieId: String) {
-        startMovieDetailsFragment(movieId)
-    }
-
     private fun setupViewModel() {
         moviesViewModel.apply {
             movies.value ?: resolveMovies(getFavoriteMoviesId())
             movies.observe(viewLifecycleOwner) {
                 it?.let { moviesAdapter.setMovieList(it) }
             }
-            errorMassage.observe(viewLifecycleOwner) {
-                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            errorMessage.observe(viewLifecycleOwner) {
+                it?.let {
+                    if (it.startsWith(NETWORK_ERROR)) {
+                        NetworkDialogFragment().show(requireActivity().supportFragmentManager, null)
+                        errorMessage.value = null
+                    } else {
+                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                        errorMessage.value = null
+                    }
+                }
             }
         }
     }
@@ -63,8 +68,8 @@ class MoviesFragment : Fragment() {
     
     private fun startMovieDetailsFragment(movieId: String) {
         findNavController().navigate(
-            R.id.action_navigation_top_movies_to_navigation_movie_details,
-            bundleOf(MovieDetailsFragment.FRAGMENT_KEY to movieId)
+            R.id.action_top_movies_to_movie_details,
+            bundleOf(FRAGMENT_KEY to movieId),
         )
     }
 }

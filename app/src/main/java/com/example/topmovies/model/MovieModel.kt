@@ -32,4 +32,5 @@ data class MovieDetails(
     val runtimeStr: String,
     val genres: String,
     val imDbRating: String,
+    val errorMessage: String
 )

@@ -1,54 +1,39 @@
 package com.example.topmovies.viewmodel
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.topmovies.R
 import com.example.topmovies.model.Movie
-import com.example.topmovies.model.MovieDetails
 import com.example.topmovies.model.MovieObject
 import com.example.topmovies.repository.MovieRepository
 import com.example.topmovies.unit.DEF_API_KEY
 import com.example.topmovies.unit.SETTING_PREF_USER_API_KEY
+import com.example.topmovies.unit.StringResource
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-val TAG = MovieViewModel::class.simpleName
-
 class MovieViewModel constructor(
     private val repository: MovieRepository,
-    private val sharedPref: SharedPreferences
+    private val sharedPref: SharedPreferences,
+    private val res: StringResource
 ) : ViewModel() {
     
     private val _movies = MutableLiveData<List<Movie>>()
     val movies: MutableLiveData<List<Movie>> = _movies
-    private val _movieDetails = MutableLiveData<MovieDetails>()
-    val movieDetails: LiveData<MovieDetails> = _movieDetails
     private val _favoriteMovies = MutableLiveData<List<Movie>>()
     val favoriteMovies: LiveData<List<Movie>> = _favoriteMovies
-    private val _errorMassage = MutableLiveData<String>()
-    val errorMassage: MutableLiveData<String> = _errorMassage
-    
-    fun resolveMovieDetails(movieId: String) {
-        repository.getMovieDetails(getApiKey(), movieId).enqueue(object : Callback<MovieDetails> {
-            override fun onResponse(call: Call<MovieDetails>, response: Response<MovieDetails>) {
-                _movieDetails.postValue(response.body())
-            }
-            
-            override fun onFailure(call: Call<MovieDetails>, throwable: Throwable) {
-                Log.e(TAG, "${throwable.message}")
-            }
-        })
-    }
+    private val _errorMessage = null
+    val errorMessage = MutableLiveData<String?>(_errorMessage)
     
     fun resolveMovies(favoriteMoviesId: List<String>) {
         repository.getMovies(getApiKey()).enqueue(object : Callback<MovieObject> {
             override fun onResponse(call: Call<MovieObject>, response: Response<MovieObject>) {
                 if (response.isSuccessful) {
-                    if (response.body()?.items?.isEmpty() == true) {
-                        _errorMassage.postValue(response.body()?.errorMessage)
+                    if (response.body()?.errorMessage?.isNotEmpty() == true) {
+                        errorMessage.value = response.body()?.errorMessage
                     } else {
                         response.body()?.items?.let { movies ->
                             _movies.postValue(movies)
@@ -58,20 +43,11 @@ class MovieViewModel constructor(
                             }
                         }
                     }
-                } else {
-                    _errorMassage.postValue(
-                        when (response.code()) {
-                            in 300..399 -> "Redirection you too many times"
-                            in 400..499 -> "Please restart your client"
-                            in 500..599 -> "An internal server error has occurred"
-                            else -> "The error is unknown"
-                        }
-                    )
-                }
+                } else errorMessage.value = httpErrors(response.code())
             }
     
             override fun onFailure(call: Call<MovieObject>, throwable: Throwable) {
-                _errorMassage.postValue(throwable.message)
+                errorMessage.value = throwable.message
             }
         })
     }
@@ -93,8 +69,17 @@ class MovieViewModel constructor(
     
     private fun getApiKey(): String {
         sharedPref.getString(SETTING_PREF_USER_API_KEY, DEF_API_KEY).also {
-            return if (it.isNullOrEmpty()) DEF_API_KEY
-            else it
+            return if (it.isNullOrEmpty()) DEF_API_KEY else it
+        }
+    }
+    
+    private fun httpErrors(code: Int): String {
+        return when (code) {
+            in 300..399 -> res.getString(R.string.error_redirection)
+            in 400..499 -> res.getString(R.string.error_client)
+            in 500..599 -> res.getString(R.string.error_server)
+            else -> res.getString(R.string.error_unknown)
         }
     }
 }
+

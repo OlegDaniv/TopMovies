@@ -1,6 +1,7 @@
 package com.example.topmovies
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
@@ -43,5 +44,17 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavView.setupWithNavController(navController)
         setSupportActionBar(binding.toolbar)
         setupActionBarWithNavController(navController, appBarConfiguration)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.navigation_movie_details -> {
+                    binding.toolbar.visibility = View.VISIBLE
+                    binding.bottomNavView.visibility = View.GONE
+                }
+                else -> {
+                    binding.toolbar.visibility = View.GONE
+                    binding.bottomNavView.visibility = View.VISIBLE
+                }
+            }
+        }
     }
 }
