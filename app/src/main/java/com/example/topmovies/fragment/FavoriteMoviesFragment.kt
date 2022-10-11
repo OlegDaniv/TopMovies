@@ -15,7 +15,8 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class FavoriteMoviesFragment : Fragment() {
     
-    private val binding by lazy { FragmentFavoriteMoviesBinding.inflate(layoutInflater) }
+    private var _binding: FragmentFavoriteMoviesBinding? = null
+    private val binding get() = _binding!!
     private val favoriteMoviesAdapter by lazy {
         FavoriteMoviesAdapter { id -> startMovieDetailsFragment(id) }
     }
@@ -23,11 +24,26 @@ class FavoriteMoviesFragment : Fragment() {
     
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
-    ) = binding.root
+    ): View {
+        _binding = FragmentFavoriteMoviesBinding.inflate(inflater, container, false)
+        return binding.root
+    }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupRecyclerView()
         setupViewModel()
+    }
+    
+    override fun onStop() {
+        super.onStop()
+        moviesViewModel.resolveFavoriteMovies()
+        moviesViewModel.removeMoviePreference()
+        moviesViewModel.saveFavoriteMovie()
+    }
+    
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
     
     private fun setupViewModel() {

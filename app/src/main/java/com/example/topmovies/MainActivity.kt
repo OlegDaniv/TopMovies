@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -15,32 +14,30 @@ import com.example.topmovies.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     
-    private var isLoading = true
-    private lateinit var navController: NavController
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityMainBinding
+    private val appBarConfiguration = AppBarConfiguration(
+        setOf(
+            R.id.navigation_top_movies, R.id.navigation_favorite_movies, R.id.navigation_setting
+        )
+    )
     
     override fun onCreate(savedInstanceState: Bundle?) {
+        var isLoading = true
         installSplashScreen().setKeepOnScreenCondition { isLoading }
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setupNavigationController()
+        setupNavigationController(binding)
         isLoading = false
     }
     
     override fun onSupportNavigateUp() =
-        findNavController(R.id.fragment_container).navigateUp(appBarConfiguration)
+        findNavController(R.id.fragment_container)
+            .navigateUp(appBarConfiguration)
     
-    private fun setupNavigationController() {
+    private fun setupNavigationController(binding: ActivityMainBinding) {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
-        navController = navHostFragment.navController
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_top_movies, R.id.navigation_favorite_movies, R.id.navigation_setting
-            )
-        )
+        val navController = navHostFragment.navController
         binding.bottomNavView.setupWithNavController(navController)
         setSupportActionBar(binding.toolbar)
         setupActionBarWithNavController(navController, appBarConfiguration)

@@ -40,9 +40,10 @@ class FavoriteMoviesAdapter(private val onFavoriteMovieClick: (String) -> Unit) 
     override fun getItemCount() = favoriteMovies.size
     
     private fun removeMovie(movie: Movie) {
-        val index = favoriteMovies.indexOf(movie)
-        favoriteMovies.removeAt(index)
-        notifyItemRemoved(index)
+        favoriteMovies.indexOf(movie).let {
+            favoriteMovies.removeAt(it)
+            notifyItemRemoved(it)
+        }
     }
     
     class FavoriteMoviesViewHolder(

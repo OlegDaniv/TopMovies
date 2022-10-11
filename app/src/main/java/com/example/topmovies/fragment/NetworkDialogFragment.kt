@@ -8,14 +8,22 @@ import com.example.topmovies.databinding.NoInternetDialogBinding
 
 class NetworkDialogFragment : DialogFragment() {
     
+    private var _binding: NoInternetDialogBinding? = null
+    private val binding get() = _binding!!
+    
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val binding = NoInternetDialogBinding.inflate(layoutInflater)
+        _binding = NoInternetDialogBinding.inflate(layoutInflater)
         binding.buttonRetry.setOnClickListener {
             dialog?.dismiss()
         }
-        val dialog = AlertDialog.Builder(requireActivity())
+        val dialog = AlertDialog.Builder(requireContext())
         dialog.setView(binding.root)
         dialog.create()
         return dialog.show()
+    }
+    
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

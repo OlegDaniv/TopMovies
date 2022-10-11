@@ -18,13 +18,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private val activityResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val uriImage = result.data?.data
-                uriImage?.let {
+                result.data?.data?.let {
                     context?.contentResolver?.takePersistableUriPermission(
                         it, Intent.FLAG_GRANT_READ_URI_PERMISSION
                     )
+                    findPreference<ImageViewPreference>(SETTING_PREF_PROFILE_IMAGE)?.setImage(it)
                 }
-                findPreference<ImageViewPreference>(SETTING_PREF_PROFILE_IMAGE)?.setImage(uriImage)
             }
         }
     
@@ -59,9 +58,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
     
     private fun getImageFromPhone() {
         val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
+        intent.type = INTENT_TYPE
         intent.action = Intent.ACTION_OPEN_DOCUMENT
-        activityResult.launch(Intent.createChooser(intent, "Select Picture"))
+        activityResult.launch(
+            Intent.createChooser(
+                intent,
+                getString(R.string.intent_select_picture)
+            )
+        )
         
     }
     
