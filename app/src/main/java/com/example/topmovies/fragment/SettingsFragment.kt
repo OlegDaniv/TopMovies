@@ -66,14 +66,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 getString(R.string.intent_select_picture)
             )
         )
-        
     }
     
     private fun showAbout() {
         findPreference<Preference>(SETTING_PREF_DIALOG_ABOUT)?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
                 AboutDialogFragment().show(
-                    childFragmentManager, getString(R.string.main_activity_dialog_tag)
+                    childFragmentManager,
+                    getString(R.string.main_activity_dialog_tag)
                 )
                 true
             }

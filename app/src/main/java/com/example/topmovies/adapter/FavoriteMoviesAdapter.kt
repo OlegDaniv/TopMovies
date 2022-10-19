@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -18,33 +20,21 @@ import com.example.topmovies.unit.RANK_DOWN
 import com.example.topmovies.unit.RANK_UP
 import com.example.topmovies.unit.REPLACE_AFTER
 
-class FavoriteMoviesAdapter(private val onFavoriteMovieClick: (String) -> Unit) :
-    RecyclerView.Adapter<FavoriteMoviesAdapter.FavoriteMoviesViewHolder>() {
+class FavoriteMoviesAdapter(
+    private val onFavoriteMovieClick: (String) -> Unit,
+    private val onRemoveFavoriteMovie: (Movie) -> Unit
+) : ListAdapter<Movie, FavoriteMoviesAdapter.FavoriteMoviesViewHolder>(MovieDiffCallBack()) {
     
-    private var favoriteMovies = mutableListOf<Movie>()
-    
-    fun setFavoriteMovies(movies: List<Movie>) {
-        favoriteMovies = movies.toMutableList()
-        notifyItemRangeChanged(0, movies.size)
-    }
+    fun submitFavoriteMovies(movies: List<Movie>) = submitList(movies)
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = FavoriteMoviesViewHolder(
         ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false),
         onFavoriteMovieClick,
-        ::removeMovie
+        onRemoveFavoriteMovie
     )
     
     override fun onBindViewHolder(holder: FavoriteMoviesViewHolder, position: Int) =
-        holder.bind(favoriteMovies[position])
-    
-    override fun getItemCount() = favoriteMovies.size
-    
-    private fun removeMovie(movie: Movie) {
-        favoriteMovies.indexOf(movie).let {
-            favoriteMovies.removeAt(it)
-            notifyItemRemoved(it)
-        }
-    }
+        holder.bind(getItem(position))
     
     class FavoriteMoviesViewHolder(
         private val binding: ItemLayoutBinding,
@@ -93,5 +83,12 @@ class FavoriteMoviesAdapter(private val onFavoriteMovieClick: (String) -> Unit) 
                 )
             )
         }
+    }
+    
+    private class MovieDiffCallBack : DiffUtil.ItemCallback<Movie>() {
+        
+        override fun areItemsTheSame(oldItem: Movie, newItem: Movie) = oldItem == newItem
+        
+        override fun areContentsTheSame(oldItem: Movie, newItem: Movie) = oldItem == newItem
     }
 }

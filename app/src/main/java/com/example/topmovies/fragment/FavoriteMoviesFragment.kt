@@ -5,20 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.topmovies.R
 import com.example.topmovies.adapter.FavoriteMoviesAdapter
 import com.example.topmovies.databinding.FragmentFavoriteMoviesBinding
+import com.example.topmovies.model.Movie
 import com.example.topmovies.viewmodel.MovieViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class FavoriteMoviesFragment : Fragment() {
+class FavoriteMoviesFragment : BaseFragment() {
     
     private var _binding: FragmentFavoriteMoviesBinding? = null
     private val binding get() = _binding!!
     private val favoriteMoviesAdapter by lazy {
-        FavoriteMoviesAdapter { id -> startMovieDetailsFragment(id) }
+        FavoriteMoviesAdapter(
+            { id -> startMovieDetailsFragment(id) },
+            { movie -> removeFavoriteMovie(movie) }
+        )
     }
     private val moviesViewModel by sharedViewModel<MovieViewModel>()
     
@@ -34,29 +37,32 @@ class FavoriteMoviesFragment : Fragment() {
         setupViewModel()
     }
     
-    override fun onStop() {
-        super.onStop()
-        moviesViewModel.resolveFavoriteMovies()
-        moviesViewModel.removeMoviePreference()
-        moviesViewModel.saveFavoriteMovie()
-    }
-    
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
     
+    private fun removeFavoriteMovie(movie: Movie) {
+        moviesViewModel.removeFavoriteMovie(movie)
+    }
+    
     private fun setupViewModel() {
-        moviesViewModel.resolveFavoriteMovies()
-        moviesViewModel.favoriteMovies.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) {
-                binding.recyclerviewFavoriteMovies.visibility = View.GONE
-                binding.emptyView.visibility = View.VISIBLE
-            } else {
-                favoriteMoviesAdapter.setFavoriteMovies(it)
-                binding.recyclerviewFavoriteMovies.visibility = View.VISIBLE
-                binding.emptyView.visibility = View.GONE
+        with(moviesViewModel) {
+            resolveFavoriteMovies()
+            favoriteMovies.observe(viewLifecycleOwner) {
+                favoriteMoviesAdapter.submitFavoriteMovies(it)
+                showMovieList(it)
             }
+        }
+    }
+    
+    private fun showMovieList(movies: List<Movie>) {
+        if (movies.isEmpty()) {
+            binding.recyclerviewFavoriteMovies.visibility = View.GONE
+            binding.emptyView.visibility = View.VISIBLE
+        } else {
+            binding.recyclerviewFavoriteMovies.visibility = View.VISIBLE
+            binding.emptyView.visibility = View.GONE
         }
     }
     

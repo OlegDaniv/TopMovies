@@ -27,6 +27,7 @@ val appModule = module {
     single { MovieRepository(movieApi = get()) }
     single(named("defPref")) { provideSharedPreference(androidApplication()) }
     single(named("favoritePref")) { provideFavoriteSharedPreference(androidApplication()) }
+    viewModel { MovieDetailsViewModel(repository = get(), sharedPref = get(named("defPref"))) }
     viewModel {
         MovieViewModel(
             repository = get(),
@@ -34,7 +35,6 @@ val appModule = module {
             favoritePref = get(named("favoritePref"))
         )
     }
-    viewModel { MovieDetailsViewModel(repository = get(), sharedPref = get(named("defPref"))) }
 }
 
 private fun provideDefaultOkhttpClient(interceptor: HttpLoggingInterceptor) =
@@ -53,8 +53,7 @@ private fun provideRetrofit(client: OkHttpClient) =
 
 private fun provideSharedPreference(app: Application) = getDefaultSharedPreferences(app)
 
-private fun provideFavoriteSharedPreference(app: Application) = app.getSharedPreferences(
-    SHARED_PREF_NAME_FAVORITE, Context.MODE_PRIVATE
-)
+private fun provideFavoriteSharedPreference(app: Application) =
+    app.getSharedPreferences(SHARED_PREF_NAME_FAVORITE, Context.MODE_PRIVATE)
 
 private fun provideMovieService(retrofit: Retrofit) = retrofit.create(MoviesApi::class.java)

@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -18,29 +20,29 @@ import com.example.topmovies.unit.RANK_DOWN
 import com.example.topmovies.unit.RANK_UP
 import com.example.topmovies.unit.REPLACE_AFTER
 
-class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
-    RecyclerView.Adapter<MoviesAdapter.MovieViewHolder>() {
-
-    private var movies = listOf<Movie>()
-
-    fun setMovieList(movies: List<Movie>) {
-        this.movies = movies
-        notifyItemRangeChanged(0, movies.size)
-    }
-
+class MoviesAdapter(
+    private val onItemClickListener: (String) -> Unit,
+    private val saveMoviePref: (String) -> Unit,
+    private val removeMoviePref: (Movie) -> Unit
+) : ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(MovieDiffCallBack()) {
+    
+    fun submitMoviesList(movies: List<Movie>) = submitList(movies)
+    
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MovieViewHolder(
         ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false),
-        onItemClickListener
+        onItemClickListener,
+        saveMoviePref,
+        removeMoviePref
     )
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) =
-        holder.bind(movies[position])
-    
-    override fun getItemCount() = movies.size
+        holder.bind(getItem(position))
 
     class MovieViewHolder(
         private val binding: ItemLayoutBinding,
         private val onItemClickListener: (String) -> Unit,
+        private val savePref: (String) -> Unit,
+        private val removeMoviePref: (Movie) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private val avatarCustomTarget = object : CustomTarget<Bitmap>() {
@@ -70,6 +72,10 @@ class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
                         icon = AppCompatResources.getDrawable(
                             context, getFavoriteImageResource(switchFavoriteMovie(movie))
                         )
+                        when (movie.isFavorite) {
+                            true -> savePref(movie.id)
+                            false -> removeMoviePref(movie)
+                        }
                     }
                 }
                 setRankUpDownColor(movie.rankUpDown)
@@ -99,5 +105,12 @@ class MoviesAdapter(private val onItemClickListener: (String) -> Unit) :
             return if (isFavorite) R.drawable.ic_filled_star
             else R.drawable.ic_unfilled_star
         }
+    }
+    
+  private  class MovieDiffCallBack : DiffUtil.ItemCallback<Movie>() {
+        
+        override fun areItemsTheSame(oldItem: Movie, newItem: Movie) = oldItem == newItem
+        
+        override fun areContentsTheSame(oldItem: Movie, newItem: Movie) = oldItem == newItem
     }
 }

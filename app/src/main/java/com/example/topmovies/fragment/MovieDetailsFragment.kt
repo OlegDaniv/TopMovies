@@ -1,23 +1,18 @@
 package com.example.topmovies.fragment
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.example.topmovies.R
 import com.example.topmovies.databinding.FragmentDetailsMovieBinding
 import com.example.topmovies.viewmodel.MovieDetailsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val FRAGMENT_KEY = "movieID"
 
-class MovieDetailsFragment : Fragment(R.layout.fragment_details_movie) {
+class MovieDetailsFragment : BaseFragment() {
     
     private var _binding: FragmentDetailsMovieBinding? = null
     private val binding get() = _binding!!
@@ -47,19 +42,11 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details_movie) {
         }
         movieViewModel.detailsErrorMassage.observe(viewLifecycleOwner) {
             if (isNetworkAvailable()) {
-                NetworkDialogFragment().show(parentFragmentManager, null)
-            } else {
                 Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            } else {
+                NetworkDialogFragment().show(parentFragmentManager, null)
             }
         }
-    }
-    
-    private fun isNetworkAvailable(): Boolean {
-        val connectivityManager =
-            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val capabilities =
-            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-        return (capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET))
     }
     
     private fun setupUI() {
