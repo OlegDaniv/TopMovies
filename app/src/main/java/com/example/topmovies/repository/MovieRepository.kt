@@ -34,7 +34,7 @@ class MovieRepository constructor(private val movieApi: MoviesApi) {
         onSuccess: (MovieDetails) -> Unit,
         onError: (String) -> Unit
     ) {
-        movieApi.getMovieDetails(apikey, movieId)
+        movieApi.getMovieDetails()
             .enqueue(object : Callback<MovieDetails> {
                 override fun onResponse(
                     call: Call<MovieDetails>,

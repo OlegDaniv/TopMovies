@@ -15,7 +15,7 @@ class MovieViewModel constructor(
     private val _movies = MutableLiveData<List<Movie>>()
     val movies: LiveData<List<Movie>> = _movies
     private val _favoriteMovies = MutableLiveData<List<Movie>>()
-    val favoriteMovies: LiveData<List<Movie>> get() = _favoriteMovies
+    val favoriteMovies: LiveData<List<Movie>> = _favoriteMovies
     private var _errorMessage: String? = null
     val errorMessage = MutableLiveData(_errorMessage)
     
@@ -30,7 +30,7 @@ class MovieViewModel constructor(
     fun saveFavoriteMovie(movieId: String) = favoritePref.edit().putString(movieId, "").apply()
     
     fun resolveFavoriteMovies() {
-        _favoriteMovies.value = _movies.value?.filter { it.isFavorite }
+        _favoriteMovies.value = _movies.value?.filter { it.isFavorite } ?: emptyList()
     }
     
     fun removeFavoriteMovie(movie: Movie) {
