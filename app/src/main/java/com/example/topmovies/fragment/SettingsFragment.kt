@@ -4,8 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -38,11 +36,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         findPreference<ListPreference>(SETTING_PREF_THEME)?.onPreferenceChangeListener =
             Preference.OnPreferenceChangeListener { preference, newValue ->
                 if (preference is ListPreference) {
-                    when (newValue) {
-                        THEME_MODE_AUTO -> setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                        THEME_MODE_DARK -> setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                        THEME_MODE_LIGHT -> setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    }
+                    checkNightMode(newValue.toString())
                 }
                 true
             }

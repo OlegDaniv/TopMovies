@@ -3,15 +3,30 @@ package com.example.topmovies.fragment
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.os.Build
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 
 abstract class BaseFragment : Fragment() {
     
-    fun isNetworkAvailable(): Boolean {
+    fun showErrorMassage(errorMassage: String) {
+        if (isNetworkAvailable()) {
+            Toast.makeText(context, errorMassage, Toast.LENGTH_SHORT).show()
+        } else {
+            NetworkDialogFragment().show(parentFragmentManager, null)
+        }
+    }
+    
+    private fun isNetworkAvailable(): Boolean {
         val connectivityManager =
             requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val capabilities =
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val capabilities =
                 connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-        return (capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET))
+            (capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET))
+        } else {
+            val activeNetworkInfo = connectivityManager.activeNetworkInfo
+            activeNetworkInfo != null && activeNetworkInfo.isConnected
+        }
     }
 }

@@ -42,7 +42,7 @@ private fun provideDefaultOkhttpClient(interceptor: HttpLoggingInterceptor) =
         .readTimeout(15, TimeUnit.SECONDS).build()
 
 private fun provideHttpLoggingInterceptor() = HttpLoggingInterceptor().apply {
-    level = HttpLoggingInterceptor.Level.BODY
+    level = HttpLoggingInterceptor.Level.BASIC
 }
 
 private fun provideRetrofit(client: OkHttpClient) =

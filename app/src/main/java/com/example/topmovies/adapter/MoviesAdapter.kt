@@ -22,8 +22,8 @@ import com.example.topmovies.unit.REPLACE_AFTER
 
 class MoviesAdapter(
     private val onItemClickListener: (String) -> Unit,
-    private val saveMoviePref: (String) -> Unit,
-    private val removeMoviePref: (Movie) -> Unit
+    private val onRemoveMovieClick: (Movie) -> Unit,
+    private val onFavoriteMovieClick: ((String) -> Unit)? = null
 ) : ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(MovieDiffCallBack()) {
     
     fun submitMoviesList(movies: List<Movie>) = submitList(movies)
@@ -31,8 +31,8 @@ class MoviesAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MovieViewHolder(
         ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false),
         onItemClickListener,
-        saveMoviePref,
-        removeMoviePref
+        onFavoriteMovieClick,
+        onRemoveMovieClick
     )
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) =
@@ -41,8 +41,8 @@ class MoviesAdapter(
     class MovieViewHolder(
         private val binding: ItemLayoutBinding,
         private val onItemClickListener: (String) -> Unit,
-        private val savePref: (String) -> Unit,
-        private val removeMoviePref: (Movie) -> Unit
+        private val onFavoriteMovieClick: ((String) -> Unit)? = null,
+        private val onRemoveMovieClick: (Movie) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private val avatarCustomTarget = object : CustomTarget<Bitmap>() {
@@ -52,19 +52,18 @@ class MoviesAdapter(
 
             override fun onLoadCleared(placeholder: Drawable?) {}
         }
-
-        fun bind(movie: Movie) {
-            binding.apply {
-                textviewItemLayoutMovieName.text = movie.title
-                textviewItemLayoutRankNumber.text = movie.rank
-                textviewItemLayoutYearNumber.text = movie.year
-                textviewItemLayoutPreviousRankNumber.text = movie.rankUpDown
-                circleAvatarViewItemLayoutMovieImage.setLabel(movie.title)
-                Glide.with(circleAvatarViewItemLayoutMovieImage)
-                    .asBitmap()
-                    .load(movie.imageUrl.replaceAfter(REPLACE_AFTER, IMAGE_SIZE))
-                    .into(avatarCustomTarget)
-                imageButtonItemFavoriteIcon.apply {
+    
+        fun bind(movie: Movie) = with(binding) {
+            textviewItemLayoutMovieName.text = movie.title
+            textviewItemLayoutRankNumber.text = movie.rank
+            textviewItemLayoutYearNumber.text = movie.year
+            textviewItemLayoutPreviousRankNumber.text = movie.rankUpDown
+            circleAvatarViewItemLayoutMovieImage.setLabel(movie.title)
+            Glide.with(circleAvatarViewItemLayoutMovieImage)
+                .asBitmap()
+                .load(movie.imageUrl.replaceAfter(REPLACE_AFTER, IMAGE_SIZE))
+                .into(avatarCustomTarget)
+            imageButtonItemFavoriteIcon.apply {
                     icon = AppCompatResources.getDrawable(
                         context, getFavoriteImageResource(movie.isFavorite)
                     )
@@ -73,10 +72,9 @@ class MoviesAdapter(
                             context, getFavoriteImageResource(switchFavoriteMovie(movie))
                         )
                         when (movie.isFavorite) {
-                            true -> savePref(movie.id)
-                            false -> removeMoviePref(movie)
+                            true -> onFavoriteMovieClick?.invoke(movie.id)
+                            false -> onRemoveMovieClick(movie)
                         }
-                    }
                 }
                 setRankUpDownColor(movie.rankUpDown)
             }
@@ -107,9 +105,9 @@ class MoviesAdapter(
         }
     }
     
-  private  class MovieDiffCallBack : DiffUtil.ItemCallback<Movie>() {
+    private class MovieDiffCallBack : DiffUtil.ItemCallback<Movie>() {
         
-        override fun areItemsTheSame(oldItem: Movie, newItem: Movie) = oldItem == newItem
+        override fun areItemsTheSame(oldItem: Movie, newItem: Movie) = oldItem.id == newItem.id
         
         override fun areContentsTheSame(oldItem: Movie, newItem: Movie) = oldItem == newItem
     }

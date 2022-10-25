@@ -8,8 +8,8 @@ import com.example.topmovies.repository.MovieRepository
 
 class MovieViewModel constructor(
     private val repository: MovieRepository,
-    sharedPref: SharedPreferences,
-    private val favoritePref: SharedPreferences
+    private val favoritePref: SharedPreferences,
+    sharedPref: SharedPreferences
 ) : BaseViewModel(sharedPref) {
     
     private val _movies = MutableLiveData<List<Movie>>()
@@ -22,16 +22,12 @@ class MovieViewModel constructor(
     fun resolveMovies() {
         repository.getNewMovies(
             getApiKey(),
-            onSuccess = { _movies.postValue(favoriteMovie(it.items)) },
+            onSuccess = { _movies.postValue(it.items) },
             onError = { errorMessage.postValue(it) }
         )
     }
     
     fun saveFavoriteMovie(movieId: String) = favoritePref.edit().putString(movieId, "").apply()
-    
-    fun resolveFavoriteMovies() {
-        _favoriteMovies.value = _movies.value?.filter { it.isFavorite } ?: emptyList()
-    }
     
     fun removeFavoriteMovie(movie: Movie) {
         favoritePref.edit().remove(movie.id).apply()
@@ -40,14 +36,4 @@ class MovieViewModel constructor(
         )
     }
     
-    private fun favoriteMovie(items: List<Movie>): List<Movie> {
-        getFavoriteMoviesId().forEach { id ->
-            items.find { it.id == id }?.isFavorite = true
-        }
-        return items
-    }
-    
-    private fun getFavoriteMoviesId(): List<String> {
-        return favoritePref.all.keys.toList()
-    }
 }

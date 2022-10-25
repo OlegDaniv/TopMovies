@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.example.topmovies.R
@@ -21,8 +20,8 @@ class MoviesFragment : BaseFragment() {
     private val moviesAdapter by lazy {
         MoviesAdapter(
             { id -> startMovieDetailsFragment(id) },
-            { id -> savePref(id) },
-            { movie -> removeFavoriteMovie(movie) }
+            { movie -> removeFavoriteMovie(movie) },
+            { id -> saveFavoriteMoviePreference(id) }
         )
     }
     private val moviesViewModel by sharedViewModel<MovieViewModel>()
@@ -44,21 +43,17 @@ class MoviesFragment : BaseFragment() {
         _binding = null
     }
     
-    private fun setupViewModel() {
-        moviesViewModel.apply {
-            movies.value ?: resolveMovies()
-            movies.observe(viewLifecycleOwner) {
-                it?.let { moviesAdapter.submitMoviesList(it) }
-            }
-            errorMessage.observe(viewLifecycleOwner) {
-                it?.let {
-                    if (isNetworkAvailable()) {
-                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                    } else {
-                        NetworkDialogFragment().show(parentFragmentManager, null)
-                    }
-                    errorMessage.value = null
-                }
+    private fun setupViewModel() = with(moviesViewModel) {
+        movies.value ?: resolveMovies()
+        movies.observe(viewLifecycleOwner) {
+            moviesAdapter.submitMoviesList(it)
+            binding.swipeRefresh.isRefreshing = false
+        }
+        errorMessage.observe(viewLifecycleOwner) {
+            it?.let {
+                showErrorMassage(it)
+                errorMessage.value = null
+                binding.swipeRefresh.isRefreshing = false
             }
         }
     }
@@ -67,17 +62,14 @@ class MoviesFragment : BaseFragment() {
         moviesViewModel.removeFavoriteMovie(movie)
     }
     
-    private fun savePref(id: String) {
+    private fun saveFavoriteMoviePreference(id: String) {
         moviesViewModel.saveFavoriteMovie(id)
     }
     
-    private fun setupUI() {
-        binding.apply {
-            recyclerviewMovies.adapter = moviesAdapter
-            swipeRefresh.setOnRefreshListener {
-                moviesViewModel.resolveMovies()
-                swipeRefresh.isRefreshing = false
-            }
+    private fun setupUI() = with(binding) {
+        recyclerviewMovies.adapter = moviesAdapter
+        swipeRefresh.setOnRefreshListener {
+            moviesViewModel.resolveMovies()
         }
     }
     
