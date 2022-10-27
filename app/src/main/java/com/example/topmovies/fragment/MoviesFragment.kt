@@ -10,6 +10,7 @@ import com.example.topmovies.R
 import com.example.topmovies.adapter.MoviesAdapter
 import com.example.topmovies.databinding.FragmentMoviesBinding
 import com.example.topmovies.model.Movie
+import com.example.topmovies.unit.ALL_MOVIES_SCREEN
 import com.example.topmovies.viewmodel.MovieViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -17,14 +18,13 @@ class MoviesFragment : BaseFragment() {
     
     private var _binding: FragmentMoviesBinding? = null
     private val binding get() = _binding!!
+    private val moviesViewModel by sharedViewModel<MovieViewModel>()
     private val moviesAdapter by lazy {
         MoviesAdapter(
-            { id -> startMovieDetailsFragment(id) },
-            { movie -> removeFavoriteMovie(movie) },
-            { id -> saveFavoriteMoviePreference(id) }
+            ::startMovieDetailsFragment,
+            ::favoriteMovieClicked
         )
     }
-    private val moviesViewModel by sharedViewModel<MovieViewModel>()
     
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
@@ -41,6 +41,7 @@ class MoviesFragment : BaseFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        moviesAdapter.submitMoviesList(emptyList())
     }
     
     private fun setupViewModel() = with(moviesViewModel) {
@@ -58,12 +59,8 @@ class MoviesFragment : BaseFragment() {
         }
     }
     
-    private fun removeFavoriteMovie(movie: Movie) {
-        moviesViewModel.removeFavoriteMovie(movie)
-    }
-    
-    private fun saveFavoriteMoviePreference(id: String) {
-        moviesViewModel.saveFavoriteMovie(id)
+    private fun favoriteMovieClicked(movie: Movie) {
+        moviesViewModel.addFavoriteMovie(movie, ALL_MOVIES_SCREEN)
     }
     
     private fun setupUI() = with(binding) {
