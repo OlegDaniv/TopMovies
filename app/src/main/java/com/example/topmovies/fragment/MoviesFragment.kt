@@ -5,18 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.example.topmovies.R
 import com.example.topmovies.adapter.MoviesAdapter
 import com.example.topmovies.databinding.FragmentMoviesBinding
 import com.example.topmovies.model.Movie
 import com.example.topmovies.unit.ALL_MOVIES_SCREEN
+import com.example.topmovies.unit.FAVOURITE_MOVIES_SCREEN
 import com.example.topmovies.viewmodel.MovieViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class MoviesFragment : BaseFragment() {
     
     private var _binding: FragmentMoviesBinding? = null
+    private val screen by lazy { arguments?.getInt("Screen") ?: ALL_MOVIES_SCREEN }
     private val binding get() = _binding!!
     private val moviesViewModel by sharedViewModel<MovieViewModel>()
     private val moviesAdapter by lazy {
@@ -25,7 +28,7 @@ class MoviesFragment : BaseFragment() {
             ::favoriteMovieClicked
         )
     }
-    
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View {
@@ -34,8 +37,8 @@ class MoviesFragment : BaseFragment() {
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setupUI()
-        setupViewModel()
+        setupUI(screen)
+        setupViewModel(screen)
     }
     
     override fun onDestroyView() {
@@ -44,29 +47,48 @@ class MoviesFragment : BaseFragment() {
         moviesAdapter.submitMoviesList(emptyList())
     }
     
-    private fun setupViewModel() = with(moviesViewModel) {
-        movies.value ?: resolveMovies()
-        movies.observe(viewLifecycleOwner) {
-            moviesAdapter.submitMoviesList(it)
-            binding.swipeRefresh.isRefreshing = false
-        }
-        errorMessage.observe(viewLifecycleOwner) {
-            it?.let {
-                showErrorMassage(it)
-                errorMessage.value = null
-                binding.swipeRefresh.isRefreshing = false
+    private fun setupViewModel(screen: Int) = with(moviesViewModel) {
+        when (screen) {
+            FAVOURITE_MOVIES_SCREEN -> {
+                favoriteMovies.observe(viewLifecycleOwner) {
+                    moviesAdapter.submitMoviesList(it)
+                    showMovieList(it)
+                }
+            }
+            ALL_MOVIES_SCREEN -> {
+                movies.value ?: resolveMovies()
+                movies.observe(viewLifecycleOwner) {
+                    moviesAdapter.submitMoviesList(it)
+                    binding.swipeRefresh.isRefreshing = false
+                }
+                errorMessage.observe(viewLifecycleOwner) {
+                    it?.let {
+                        showErrorMassage(it)
+                        errorMessage.value = null
+                        binding.swipeRefresh.isRefreshing = false
+                    }
+                }
             }
         }
     }
     
-    private fun favoriteMovieClicked(movie: Movie) {
-        moviesViewModel.addFavoriteMovie(movie, ALL_MOVIES_SCREEN)
+    private fun showMovieList(movies: List<Movie>) = with(binding) {
+        recyclerviewMovies.isVisible = movies.isNotEmpty()
+        emptyView.isVisible = movies.isEmpty()
     }
     
-    private fun setupUI() = with(binding) {
+    private fun favoriteMovieClicked(movie: Movie) {
+        moviesViewModel.addFavoriteMovie(movie, screen)
+    }
+    
+    private fun setupUI(screen: Int) = with(binding) {
         recyclerviewMovies.adapter = moviesAdapter
-        swipeRefresh.setOnRefreshListener {
-            moviesViewModel.resolveMovies()
+        when (screen) {
+            ALL_MOVIES_SCREEN -> {
+                swipeRefresh.setOnRefreshListener {
+                    moviesViewModel.resolveMovies()
+                }
+            }
         }
     }
     
