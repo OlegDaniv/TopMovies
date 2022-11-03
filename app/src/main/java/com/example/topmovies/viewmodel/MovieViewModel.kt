@@ -17,10 +17,8 @@ class MovieViewModel constructor(
     
     private val _movies = MutableLiveData<List<Movie>>()
     val movies: LiveData<List<Movie>> = _movies
-    
     private val _favoriteMovies = mutableListOf<Movie>()
     val favoriteMovies: LiveData<List<Movie>> = MutableLiveData(_favoriteMovies)
-    
     private var _errorMessage: String? = null
     val errorMessage = MutableLiveData(_errorMessage)
     
@@ -54,8 +52,11 @@ class MovieViewModel constructor(
     fun addFavoriteMovie(movie: Movie, @Screen screen: Int) {
         when (screen) {
             ALL_MOVIES_SCREEN -> {
-                if (movie.isFavorite) removeMovieFromFavorites(movie)
-                else addMovieToFavorites(movie)
+                if (movie.isFavorite) {
+                    removeMovieFromFavorites(movie)
+                } else {
+                    addMovieToFavorites(movie)
+                }
             }
             FAVOURITE_MOVIES_SCREEN -> removeMovieFromFavorites(movie)
         }
@@ -65,7 +66,7 @@ class MovieViewModel constructor(
     private fun addMovieToFavorites(movie: Movie) {
         val mutableMovies = _movies.value!!.toMutableList()
         val copy = movie.copy(isFavorite = true)
-        mutableMovies[mutableMovies.indexOf(movie)] = copy
+        mutableMovies[_movies.value!!.indexOf(movie)] = copy
         _movies.postValue(mutableMovies)
         _favoriteMovies.add(copy)
         favoritePref.edit().putString(movie.id, "").apply()
@@ -74,7 +75,7 @@ class MovieViewModel constructor(
     private fun removeMovieFromFavorites(movie: Movie) {
         val mutableMovies = _movies.value!!.toMutableList()
         val copy = movie.copy(isFavorite = false)
-        mutableMovies[mutableMovies.indexOf(movie)] = copy
+        mutableMovies[_movies.value!!.indexOf(movie)] = copy
         _movies.postValue(mutableMovies)
         _favoriteMovies.remove(movie)
         favoritePref.edit().remove(movie.id).apply()
