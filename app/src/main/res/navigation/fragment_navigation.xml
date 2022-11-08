@@ -34,7 +34,7 @@
             android:defaultValue="1"
             app:argType="integer" />
         <action
-            android:id="@+id/action_favorite_movies_to_movie_details"
+            android:id="@+id/action_top_movies_to_movie_details"
             app:destination="@id/navigation_movie_details" />
     </fragment>
 
