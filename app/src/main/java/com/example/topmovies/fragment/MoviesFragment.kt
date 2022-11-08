@@ -44,30 +44,21 @@ class MoviesFragment : BaseFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        moviesAdapter.submitMoviesList(emptyList())
+        moviesAdapter.submitMoviesList(screen, emptyList())
     }
     
     private fun setupViewModel(screen: Int) = with(moviesViewModel) {
-        when (screen) {
-            FAVOURITE_MOVIES_SCREEN -> {
-                favoriteMovies.observe(viewLifecycleOwner) {
-                    moviesAdapter.submitMoviesList(it)
-                    showMovieList(it)
-                }
-            }
-            ALL_MOVIES_SCREEN -> {
-                movies.value ?: resolveMovies()
-                movies.observe(viewLifecycleOwner) {
-                    moviesAdapter.submitMoviesList(it)
-                    binding.swipeRefresh.isRefreshing = false
-                }
-                errorMessage.observe(viewLifecycleOwner) {
-                    it?.let {
-                        showErrorMassage(it)
-                        errorMessage.value = null
-                        binding.swipeRefresh.isRefreshing = false
-                    }
-                }
+        getMovies()
+        getMoviesList(screen).observe(viewLifecycleOwner) {
+            moviesAdapter.submitMoviesList(screen, it)
+            showMovieList(it)
+        }
+
+        errorMessage.observe(viewLifecycleOwner) {
+            it?.let {
+                showErrorMassage(it)
+                errorMessage.value = null
+                binding.swipeRefresh.isRefreshing = false
             }
         }
     }
@@ -87,7 +78,12 @@ class MoviesFragment : BaseFragment() {
             ALL_MOVIES_SCREEN -> {
                 swipeRefresh.setOnRefreshListener {
                     moviesViewModel.resolveMovies()
+                    swipeRefresh.isRefreshing = false
                 }
+            }
+            FAVOURITE_MOVIES_SCREEN -> {
+                swipeRefresh.isRefreshing = false
+                swipeRefresh.isEnabled = false
             }
         }
     }

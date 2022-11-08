@@ -14,27 +14,38 @@ class MovieViewModel constructor(
     private val favoritePref: SharedPreferences,
     sharedPref: SharedPreferences
 ) : BaseViewModel(sharedPref) {
-    
-    private val _movies = MutableLiveData<List<Movie>>()
-    val movies: LiveData<List<Movie>> = _movies
+
+    private val movies = MutableLiveData<List<Movie>>()
     private val _favoriteMovies = mutableListOf<Movie>()
-    val favoriteMovies: LiveData<List<Movie>> = MutableLiveData(_favoriteMovies)
+    private val favoriteMovies: MutableLiveData<List<Movie>> = MutableLiveData(_favoriteMovies)
     private var _errorMessage: String? = null
     val errorMessage = MutableLiveData(_errorMessage)
-    
+
+    fun getMoviesList(screen: Int): LiveData<List<Movie>> {
+        return when (screen) {
+            ALL_MOVIES_SCREEN -> movies
+            FAVOURITE_MOVIES_SCREEN -> favoriteMovies
+            else -> throw java.lang.NullPointerException("Unknown screen")
+        }
+    }
+
     private fun <T> LiveData<T>.update() {
         (this as? MutableLiveData<T>)?.let {
             value = value
         }
     }
-    
+
+    fun getMovies() {
+        movies.value ?: resolveMovies()
+    }
+
     fun resolveMovies() {
         _favoriteMovies.clear()
         repository.getNewMovies(
             getApiKey(),
             onSuccess = {
                 adjustFavoriteMovies(it.items)
-                _movies.postValue(it.items)
+                movies.postValue(it.items)
             },
             onError = { errorMessage.postValue(it) }
         )
@@ -52,11 +63,8 @@ class MovieViewModel constructor(
     fun addFavoriteMovie(movie: Movie, @Screen screen: Int) {
         when (screen) {
             ALL_MOVIES_SCREEN -> {
-                if (movie.isFavorite) {
-                    removeMovieFromFavorites(movie)
-                } else {
-                    addMovieToFavorites(movie)
-                }
+                if (movie.isFavorite) removeMovieFromFavorites(movie)
+                else addMovieToFavorites(movie)
             }
             FAVOURITE_MOVIES_SCREEN -> removeMovieFromFavorites(movie)
         }
@@ -64,19 +72,19 @@ class MovieViewModel constructor(
     }
     
     private fun addMovieToFavorites(movie: Movie) {
-        val mutableMovies = _movies.value!!.toMutableList()
+        val mutableMovies = movies.value!!.toMutableList()
         val copy = movie.copy(isFavorite = true)
-        mutableMovies[_movies.value!!.indexOf(movie)] = copy
-        _movies.postValue(mutableMovies)
+        mutableMovies[movies.value!!.indexOf(movie)] = copy
+        movies.postValue(mutableMovies)
         _favoriteMovies.add(copy)
         favoritePref.edit().putString(movie.id, "").apply()
     }
     
     private fun removeMovieFromFavorites(movie: Movie) {
-        val mutableMovies = _movies.value!!.toMutableList()
+        val mutableMovies = movies.value!!.toMutableList()
         val copy = movie.copy(isFavorite = false)
-        mutableMovies[_movies.value!!.indexOf(movie)] = copy
-        _movies.postValue(mutableMovies)
+        mutableMovies[movies.value!!.indexOf(movie)] = copy
+        movies.postValue(mutableMovies)
         _favoriteMovies.remove(movie)
         favoritePref.edit().remove(movie.id).apply()
     }

@@ -15,31 +15,33 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.topmovies.R
 import com.example.topmovies.databinding.ItemLayoutBinding
 import com.example.topmovies.model.Movie
-import com.example.topmovies.unit.IMAGE_SIZE
-import com.example.topmovies.unit.RANK_DOWN
-import com.example.topmovies.unit.RANK_UP
-import com.example.topmovies.unit.REPLACE_AFTER
+import com.example.topmovies.unit.*
 
 class MoviesAdapter(
     private val onItemClickListener: (String) -> Unit,
     private val onFavoriteMovieClick: (Movie) -> Unit
 ) : ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(MovieDiffCallBack()) {
-    
-    fun submitMoviesList(movies: List<Movie>) = submitList(movies)
-    
+
+    fun submitMoviesList(screen: Int, movies: List<Movie>) {
+        when (screen) {
+            ALL_MOVIES_SCREEN -> submitList(movies)
+            FAVOURITE_MOVIES_SCREEN -> submitList(movies.toList())
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MovieViewHolder(
-        ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false),
-        onItemClickListener,
-        onFavoriteMovieClick,
+            ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+            onItemClickListener,
+            onFavoriteMovieClick
     )
-    
+
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) =
-        holder.bind(getItem(position))
-    
+            holder.bind(getItem(position))
+
     override fun onBindViewHolder(
-        holder: MovieViewHolder,
-        position: Int,
-        payloads: MutableList<Any>
+            holder: MovieViewHolder,
+            position: Int,
+            payloads: MutableList<Any>
     ) {
         if (payloads.isEmpty()) {
             super.onBindViewHolder(holder, position, payloads)
@@ -55,24 +57,25 @@ class MoviesAdapter(
         private val onItemClickListener: (String) -> Unit,
         private val onFavoriteMovieClick: (Movie) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
-        
+
         private val avatarCustomTarget = object : CustomTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                 binding.circleAvatarViewItemLayoutMovieImage.setAvatarImage(resource)
             }
-            
+
             override fun onLoadCleared(placeholder: Drawable?) {}
         }
-        
-        fun bindFavoriteState(movie: Movie) {
-            
-            binding.imageButtonItemFavoriteIcon.icon =
-                AppCompatResources.getDrawable(
+
+        fun bindFavoriteState(movie: Movie) = with(binding.imageButtonItemFavoriteIcon) {
+            icon = AppCompatResources.getDrawable(
                     binding.root.context,
                     getFavoriteImageResource(movie.isFavorite)
-                )
+            )
+            setOnClickListener {
+                onFavoriteMovieClick(movie)
+            }
         }
-        
+
         fun bind(movie: Movie) = with(binding) {
             textviewItemLayoutMovieName.text = movie.title
             textviewItemLayoutRankNumber.text = movie.rank
@@ -80,7 +83,7 @@ class MoviesAdapter(
             textviewItemLayoutPreviousRankNumber.text = movie.rankUpDown
             circleAvatarViewItemLayoutMovieImage.setLabel(movie.title)
             Glide.with(circleAvatarViewItemLayoutMovieImage)
-                .asBitmap()
+                    .asBitmap()
                 .load(movie.imageUrl.replaceAfter(REPLACE_AFTER, IMAGE_SIZE))
                 .into(avatarCustomTarget)
             imageButtonItemFavoriteIcon.apply {
@@ -119,7 +122,7 @@ class MoviesAdapter(
         override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
             return oldItem.id == newItem.id
         }
-    
+
         override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
             return ((oldItem.isFavorite == newItem.isFavorite) &&
                     (oldItem.rank == newItem.rank) &&
@@ -128,9 +131,9 @@ class MoviesAdapter(
                     (oldItem.rankUpDown == newItem.rankUpDown) &&
                     (oldItem.year == newItem.year))
         }
-    
-        override fun getChangePayload(oldItem: Movie, newItem: Movie): Any? {
-            return if (oldItem.isFavorite != newItem.isFavorite) true else null
+
+        override fun getChangePayload(oldItem: Movie, newItem: Movie): Any {
+            return oldItem.isFavorite != newItem.isFavorite
         }
     }
 }

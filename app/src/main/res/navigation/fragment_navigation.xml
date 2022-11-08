@@ -28,8 +28,7 @@
     <fragment
         android:id="@+id/navigation_favorite_movies"
         android:name="com.example.topmovies.fragment.MoviesFragment"
-        android:label="@string/nav_fragment_label_favorite_movies"
-        tools:layout="@layout/fragment_favorite_movies">
+        android:label="@string/nav_fragment_label_favorite_movies">
         <argument
             android:name="Screen"
             android:defaultValue="1"
