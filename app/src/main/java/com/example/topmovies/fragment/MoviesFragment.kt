@@ -11,15 +11,16 @@ import com.example.topmovies.R
 import com.example.topmovies.adapter.MoviesAdapter
 import com.example.topmovies.databinding.FragmentMoviesBinding
 import com.example.topmovies.model.Movie
-import com.example.topmovies.unit.ALL_MOVIES_SCREEN
-import com.example.topmovies.unit.FAVOURITE_MOVIES_SCREEN
+import com.example.topmovies.unit.EnumScreen
 import com.example.topmovies.viewmodel.MovieViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class MoviesFragment : BaseFragment() {
-    
+
     private var _binding: FragmentMoviesBinding? = null
-    private val screen by lazy { arguments?.getInt("Screen") ?: ALL_MOVIES_SCREEN }
+    private val screen by lazy {
+        arguments?.getSerializable(resources.getString(R.string.notification_argument_name)) as EnumScreen
+    }
     private val binding get() = _binding!!
     private val moviesViewModel by sharedViewModel<MovieViewModel>()
     private val moviesAdapter by lazy {
@@ -35,19 +36,19 @@ class MoviesFragment : BaseFragment() {
         _binding = FragmentMoviesBinding.inflate(inflater, container, false)
         return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupUI(screen)
         setupViewModel(screen)
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
         moviesAdapter.submitMoviesList(screen, emptyList())
     }
-    
-    private fun setupViewModel(screen: Int) = with(moviesViewModel) {
+
+    private fun setupViewModel(screen: EnumScreen) = with(moviesViewModel) {
         getMovies()
         getMoviesList(screen).observe(viewLifecycleOwner) {
             moviesAdapter.submitMoviesList(screen, it)
@@ -62,26 +63,26 @@ class MoviesFragment : BaseFragment() {
             }
         }
     }
-    
+
     private fun showMovieList(movies: List<Movie>) = with(binding) {
         recyclerviewMovies.isVisible = movies.isNotEmpty()
         emptyView.isVisible = movies.isEmpty()
     }
-    
+
     private fun favoriteMovieClicked(movie: Movie) {
         moviesViewModel.addFavoriteMovie(movie, screen)
     }
-    
-    private fun setupUI(screen: Int) = with(binding) {
+
+    private fun setupUI(screen: EnumScreen) = with(binding) {
         recyclerviewMovies.adapter = moviesAdapter
         when (screen) {
-            ALL_MOVIES_SCREEN -> {
+            EnumScreen.MOVIES -> {
                 swipeRefresh.setOnRefreshListener {
                     moviesViewModel.resolveMovies()
                     swipeRefresh.isRefreshing = false
                 }
             }
-            FAVOURITE_MOVIES_SCREEN -> {
+            EnumScreen.FAVORITE -> {
                 swipeRefresh.isRefreshing = false
                 swipeRefresh.isEnabled = false
             }

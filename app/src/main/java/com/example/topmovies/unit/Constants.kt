@@ -18,3 +18,7 @@ const val THEME_MODE_AUTO = "Auto"
 const val THEME_MODE_LIGHT = "Light"
 const val THEME_MODE_DARK = "Dark"
 const val INTENT_TYPE  = "image/*"
+
+enum class EnumScreen{
+    MOVIES, FAVORITE
+}

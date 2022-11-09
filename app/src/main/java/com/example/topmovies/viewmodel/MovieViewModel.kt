@@ -5,9 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.topmovies.model.Movie
 import com.example.topmovies.repository.MovieRepository
-import com.example.topmovies.unit.ALL_MOVIES_SCREEN
-import com.example.topmovies.unit.FAVOURITE_MOVIES_SCREEN
-import com.example.topmovies.unit.Screen
+import com.example.topmovies.unit.EnumScreen
 
 class MovieViewModel constructor(
     private val repository: MovieRepository,
@@ -21,11 +19,10 @@ class MovieViewModel constructor(
     private var _errorMessage: String? = null
     val errorMessage = MutableLiveData(_errorMessage)
 
-    fun getMoviesList(screen: Int): LiveData<List<Movie>> {
+    fun getMoviesList(screen: EnumScreen): LiveData<List<Movie>> {
         return when (screen) {
-            ALL_MOVIES_SCREEN -> movies
-            FAVOURITE_MOVIES_SCREEN -> favoriteMovies
-            else -> throw java.lang.NullPointerException("Unknown screen")
+            EnumScreen.MOVIES -> movies
+            EnumScreen.FAVORITE -> favoriteMovies
         }
     }
 
@@ -59,14 +56,14 @@ class MovieViewModel constructor(
             }
         }
     }
-    
-    fun addFavoriteMovie(movie: Movie, @Screen screen: Int) {
+
+    fun addFavoriteMovie(movie: Movie, screen: EnumScreen) {
         when (screen) {
-            ALL_MOVIES_SCREEN -> {
+            EnumScreen.MOVIES -> {
                 if (movie.isFavorite) removeMovieFromFavorites(movie)
                 else addMovieToFavorites(movie)
             }
-            FAVOURITE_MOVIES_SCREEN -> removeMovieFromFavorites(movie)
+            EnumScreen.FAVORITE -> removeMovieFromFavorites(movie)
         }
         favoriteMovies.update()
     }
@@ -79,7 +76,7 @@ class MovieViewModel constructor(
         _favoriteMovies.add(copy)
         favoritePref.edit().putString(movie.id, "").apply()
     }
-    
+
     private fun removeMovieFromFavorites(movie: Movie) {
         val mutableMovies = movies.value!!.toMutableList()
         val copy = movie.copy(isFavorite = false)
@@ -89,4 +86,3 @@ class MovieViewModel constructor(
         favoritePref.edit().remove(movie.id).apply()
     }
 }
-

@@ -22,10 +22,10 @@ class MoviesAdapter(
     private val onFavoriteMovieClick: (Movie) -> Unit
 ) : ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(MovieDiffCallBack()) {
 
-    fun submitMoviesList(screen: Int, movies: List<Movie>) {
+    fun submitMoviesList(screen: EnumScreen, movies: List<Movie>) {
         when (screen) {
-            ALL_MOVIES_SCREEN -> submitList(movies)
-            FAVOURITE_MOVIES_SCREEN -> submitList(movies.toList())
+            EnumScreen.MOVIES -> submitList(movies)
+            EnumScreen.FAVORITE -> submitList(movies.toList())
         }
     }
 
