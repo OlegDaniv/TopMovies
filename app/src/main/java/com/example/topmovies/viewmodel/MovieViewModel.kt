@@ -26,16 +26,9 @@ class MovieViewModel constructor(
         }
     }
 
-    private fun <T> LiveData<T>.update() {
-        (this as? MutableLiveData<T>)?.let {
-            value = value
-        }
-    }
-
     fun getMovies() {
         movies.value ?: resolveMovies()
     }
-
     fun resolveMovies() {
         _favoriteMovies.clear()
         repository.getNewMovies(
@@ -47,7 +40,13 @@ class MovieViewModel constructor(
             onError = { errorMessage.postValue(it) }
         )
     }
-    
+
+    private fun <T> LiveData<T>.update() {
+        (this as? MutableLiveData<T>)?.let {
+            value = value
+        }
+    }
+
     private fun adjustFavoriteMovies(movies: List<Movie>) {
         favoritePref.all.keys.toList().forEach { id ->
             movies.find { it.id == id }?.let { chosenMovie ->
@@ -57,32 +56,38 @@ class MovieViewModel constructor(
         }
     }
 
-    fun addFavoriteMovie(movie: Movie, screen: EnumScreen) {
+    fun addFavoriteMovie(id: String, favorite: Boolean, screen: EnumScreen) {
         when (screen) {
-            EnumScreen.MOVIES -> {
-                if (movie.isFavorite) removeMovieFromFavorites(movie)
-                else addMovieToFavorites(movie)
-            }
-            EnumScreen.FAVORITE -> removeMovieFromFavorites(movie)
+            EnumScreen.MOVIES ->
+                if (favorite) removeMovieFromFavorites(id)
+                else addMovieToFavorites(id)
+            EnumScreen.FAVORITE ->
+                removeMovieFromFavorites(id)
         }
         favoriteMovies.update()
     }
-    
-    private fun addMovieToFavorites(movie: Movie) {
+
+    private fun addMovieToFavorites(id: String) {
         val mutableMovies = movies.value!!.toMutableList()
-        val copy = movie.copy(isFavorite = true)
-        mutableMovies[movies.value!!.indexOf(movie)] = copy
-        movies.postValue(mutableMovies)
-        _favoriteMovies.add(copy)
-        favoritePref.edit().putString(movie.id, "").apply()
+        val movie = movies.value!!.find { movie -> movie.id.contains(id) }
+        val copy = movie?.copy(isFavorite = true)
+        if (copy != null) {
+            mutableMovies[movies.value!!.indexOf(movie)] = copy
+            movies.postValue(mutableMovies)
+            _favoriteMovies.add(copy)
+            favoritePref.edit().putString(copy.id, "").apply()
+        }
     }
 
-    private fun removeMovieFromFavorites(movie: Movie) {
+    private fun removeMovieFromFavorites(id: String) {
         val mutableMovies = movies.value!!.toMutableList()
-        val copy = movie.copy(isFavorite = false)
-        mutableMovies[movies.value!!.indexOf(movie)] = copy
-        movies.postValue(mutableMovies)
-        _favoriteMovies.remove(movie)
-        favoritePref.edit().remove(movie.id).apply()
+        val movie = movies.value!!.find { movie -> movie.id.contains(id) }
+        val copy = movie?.copy(isFavorite = false)
+        if (copy != null) {
+            mutableMovies[movies.value!!.indexOf(movie)] = copy
+            movies.postValue(mutableMovies)
+            _favoriteMovies.remove(movie)
+            favoritePref.edit().remove(copy.id).apply()
+        }
     }
 }

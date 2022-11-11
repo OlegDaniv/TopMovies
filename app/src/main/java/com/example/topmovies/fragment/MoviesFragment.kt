@@ -45,13 +45,13 @@ class MoviesFragment : BaseFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        moviesAdapter.submitMoviesList(screen, emptyList())
+        moviesAdapter.submitMoviesList(emptyList())
     }
 
     private fun setupViewModel(screen: EnumScreen) = with(moviesViewModel) {
         getMovies()
         getMoviesList(screen).observe(viewLifecycleOwner) {
-            moviesAdapter.submitMoviesList(screen, it)
+            moviesAdapter.submitMoviesList(if (screen == EnumScreen.MOVIES) it else it.toList())
             showMovieList(it)
         }
 
@@ -69,8 +69,8 @@ class MoviesFragment : BaseFragment() {
         emptyView.isVisible = movies.isEmpty()
     }
 
-    private fun favoriteMovieClicked(movie: Movie) {
-        moviesViewModel.addFavoriteMovie(movie, screen)
+    private fun favoriteMovieClicked(id: String, favorite: Boolean) {
+        moviesViewModel.addFavoriteMovie(id, favorite, screen)
     }
 
     private fun setupUI(screen: EnumScreen) = with(binding) {
