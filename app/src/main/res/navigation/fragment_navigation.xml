@@ -5,17 +5,16 @@
     android:id="@+id/fragment_navigation"
     app:startDestination="@id/navigation_top_movies">
 
+    <action
+        android:id="@+id/action_global_setting"
+        app:destination="@id/setting_fragment" />
     <fragment
         android:id="@+id/navigation_top_movies"
         android:name="com.example.topmovies.fragment.MoviesFragment"
         android:label="@string/nav_fragment_label_top_movies"
         tools:layout="@layout/fragment_movies">
-        <argument
-                android:name="@string/notification_argument_name"
-                android:defaultValue="MOVIES"
-                app:argType="com.example.topmovies.unit.EnumScreen" />
         <action
-            android:id="@+id/action_top_movies_to_movie_details"
+            android:id="@+id/action_navigation_top_movies_to_navigation_movie_details"
             app:destination="@id/navigation_movie_details" />
     </fragment>
 
@@ -27,19 +26,17 @@
 
     <fragment
         android:id="@+id/navigation_favorite_movies"
-        android:name="com.example.topmovies.fragment.MoviesFragment"
-        android:label="@string/nav_fragment_label_favorite_movies">
-        <argument
-                android:name="@string/notification_argument_name"
-                android:defaultValue="FAVORITE"
-                app:argType="com.example.topmovies.unit.EnumScreen" />
+        android:name="com.example.topmovies.fragment.FavoriteMoviesFragment"
+        android:label="@string/nav_fragment_label_favorite_movies"
+        tools:layout="@layout/fragment_favorite_movies">
         <action
-            android:id="@+id/action_top_movies_to_movie_details"
+            android:id="@+id/action_navigation_favorite_movies_to_navigation_movie_details"
             app:destination="@id/navigation_movie_details" />
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_setting"
+        android:id="@+id/setting_fragment"
         android:name="com.example.topmovies.fragment.SettingsFragment"
-        android:label="Settings" />
+        android:label="Setting">
+    </fragment>
 </navigation>

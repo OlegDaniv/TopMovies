@@ -6,55 +6,45 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.example.topmovies.databinding.FragmentDetailsMovieBinding
-import com.example.topmovies.viewmodel.MovieDetailsViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
-
-const val FRAGMENT_KEY = "movieID"
+import com.example.topmovies.viewmodel.MovieViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class MovieDetailsFragment : BaseFragment() {
     
-    private var _binding: FragmentDetailsMovieBinding? = null
-    private val binding get() = _binding!!
-    private val movieViewModel: MovieDetailsViewModel by viewModel()
+    private val binding by lazy { FragmentDetailsMovieBinding.inflate(layoutInflater) }
+    private val movieViewModel by sharedViewModel<MovieViewModel>()
+    
+    companion object {
+        
+        const val FRAGMENT_KEY = "movieID"
+    }
     
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentDetailsMovieBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    ) = binding.root
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        arguments?.getString(FRAGMENT_KEY)?.let { loadMovieDetailsById(it) }
-        setupViewModel()
+        showBackButton()
         setupUI()
+        requireArguments().getString(FRAGMENT_KEY)?.let { loadMovieDetailsById(it) }
     }
     
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-    
-    private fun setupViewModel() {
-        movieViewModel.detailsErrorMassage.observe(viewLifecycleOwner) {
-            showErrorMassage(it)
+    private fun setupUI() {
+        binding.apply {
+            movieViewModel.movieDetails.observe(viewLifecycleOwner) {
+                textviewMovieDetailsDescription.text = it.plot
+                Glide.with(imageviewMovieDetailsImage).asBitmap().load(it.imageUrl)
+                    .into(imageviewMovieDetailsImage)
+                textviewMovieDetailsMovieTitle.text = it.title
+                textviewMovieDetailsRatingNumber.text = it.imDbRating
+                textviewMovieDetailsGenresSource.text = it.genres
+                textviewMovieDetailsDateReleaseSource.text = it.releaseDate
+            }
         }
     }
-    
-    private fun setupUI() = with(binding) {
-        movieViewModel.movieDetails.observe(viewLifecycleOwner) {
-            textviewMovieDetailsDescription.text = it.plot
-            Glide.with(imageviewMovieDetailsImage).asBitmap().load(it.imageUrl)
-                .into(imageviewMovieDetailsImage)
-            textviewMovieDetailsMovieTitle.text = it.title
-            textviewMovieDetailsRatingNumber.text = it.imDbRating
-            textviewMovieDetailsGenresSource.text = it.genres
-            textviewMovieDetailsDateReleaseSource.text = it.releaseDate
-            errorLine.text = it.errorMessage
-        }
-    }
-    
+
     private fun loadMovieDetailsById(movieId: String) {
         movieViewModel.resolveMovieDetails(movieId)
+        viewModelMovieDetailsFragment.getMovieDetails(getApiKey(), movieId)
     }
 }

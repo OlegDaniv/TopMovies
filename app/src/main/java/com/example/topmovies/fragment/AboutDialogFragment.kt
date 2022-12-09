@@ -12,7 +12,8 @@ class AboutDialogFragment : DialogFragment() {
         return AlertDialog.Builder(requireActivity())
             .setTitle(getString(R.string.about_dialog_fragment_title))
             .setMessage(getString(R.string.about_dialog_fragment_message))
-            .setPositiveButton(getString(R.string.ok)) { _, _ -> }
+            .setPositiveButton(getString(R.string.ok))
+            { _, _ -> }
             .create()
     }
 }

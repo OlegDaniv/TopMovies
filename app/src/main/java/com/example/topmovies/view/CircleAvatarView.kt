@@ -54,7 +54,7 @@ class CircleAvatarView @JvmOverloads constructor(
                 label = typedArray.getString(R.styleable.CircleAvatarView_text) ?: ""
                 imageBitmap = BitmapFactory.decodeResource(
                     resources, typedArray.getResourceId(
-                        R.styleable.CircleAvatarView_src, R.drawable.def_profile_image
+                        R.styleable.CircleAvatarView_src, 0
                     )
                 )
                 if (imageBitmap != null) setMatrix()
