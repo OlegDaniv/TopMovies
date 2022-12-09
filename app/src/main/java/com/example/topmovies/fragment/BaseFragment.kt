@@ -1,18 +1,32 @@
 package com.example.topmovies.fragment
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 
-abstract class BaseFragment : Fragment(), ToolbarBehaviour {
+abstract class BaseFragment : Fragment() {
     
-    private val toolBarBridge: ToolbarBridge by lazy { requireActivity() as ToolbarBridge }
-    
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        toolBarBridge
+    fun showErrorMassage(errorMassage: String) {
+        if (isNetworkAvailable()) {
+            Toast.makeText(context, errorMassage, Toast.LENGTH_SHORT).show()
+        } else {
+            NetworkDialogFragment().show(parentFragmentManager, null)
+        }
     }
     
-    override fun showBackButton() = toolBarBridge.showBackButton()
-    
-    override fun hideBackButton() = toolBarBridge.hideBackButton()
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager =
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val capabilities =
+                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+            (capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET))
+        } else {
+            val activeNetworkInfo = connectivityManager.activeNetworkInfo
+            activeNetworkInfo != null && activeNetworkInfo.isConnected
+        }
+    }
 }

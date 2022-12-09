@@ -1,0 +1,62 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/profile_header">
+
+        <com.example.topmovies.view.ImageViewPreference
+            app:icon="@drawable/def_profile_image"
+            app:key="image_preference"
+            app:layout="@layout/setting_item_layout" />
+
+        <EditTextPreference
+            app:iconSpaceReserved="false"
+            app:key="key_name"
+            app:title="@string/name_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:iconSpaceReserved="false"
+            app:key="key_email"
+            app:title="Email"
+            app:useSimpleSummaryProvider="true" />
+
+
+        <ListPreference
+            app:defaultValue="Auto"
+            app:dialogTitle="Please choose your mode"
+            app:entries="@array/theme_mode_labels"
+            app:iconSpaceReserved="false"
+            app:entryValues="@array/theme_mode_values"
+            app:key="switch_theme"
+            app:summary="Please choose the mode"
+            app:title="Theme"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="Configure Endpoints">
+
+        <EditTextPreference
+            app:iconSpaceReserved="false"
+            app:key="api_key_preference"
+            app:title="API Key"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="Other">
+
+
+    </PreferenceCategory>
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:key="dialog_preference"
+        app:title="About" />
+</PreferenceScreen>

@@ -8,4 +8,8 @@
         android:id="@+id/navigation_favorite_movies"
         android:icon="@drawable/ic_unfilled_star"
         android:title="@string/nav_menu_title_favorite" />
+    <item
+        android:id="@+id/navigation_setting"
+        android:icon="@drawable/icon_setting"
+        android:title="@string/menu_setting_title" />
 </menu>
