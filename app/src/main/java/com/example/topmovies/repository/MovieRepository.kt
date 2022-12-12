@@ -33,7 +33,11 @@ class MovieRepository constructor(
     }
 
     fun upsertMovies(movies: List<Movie>) {
-      executor.execute { moviesDao.upsertMovies(movies) }
+        executor.execute { moviesDao.upsertMovies(movies) }
+    }
+
+    private fun insert(movie: MovieDetailsEntity) {
+        executor.execute { movieDetailsDao.insert(movie) }
     }
 
     fun getNewMovies(
@@ -91,9 +95,5 @@ class MovieRepository constructor(
                     onError(t.message.orEmpty())
                 }
             })
-    }
-
-    private fun insert(movie: MovieDetailsEntity) {
-        executor.execute { movieDetailsDao.insert(movie) }
     }
 }

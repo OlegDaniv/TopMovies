@@ -5,7 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.topmovies.model.MovieEntity
+import com.example.topmovies.model.Movie
 import com.example.topmovies.repository.MovieRepository
 import com.example.topmovies.unit.EnumScreen
 
@@ -14,13 +14,13 @@ class MovieViewModel constructor(
     sharedPref: SharedPreferences,
 ) : BaseViewModel(sharedPref) {
 
-    private val movies = MutableLiveData<List<MovieEntity>>()
-    private val favoriteMovies = MutableLiveData<List<MovieEntity>>()
+    private val movies = MutableLiveData<List<Movie>>()
+    private val favoriteMovies = MutableLiveData<List<Movie>>()
     private var _errorMessage: String? = null
     val errorMessage = MutableLiveData(_errorMessage)
     private val handler = Handler(Looper.getMainLooper())
 
-    fun getMoviesList(screen: EnumScreen): LiveData<List<MovieEntity>> {
+    fun getMoviesList(screen: EnumScreen): LiveData<List<Movie>> {
         return when (screen) {
             EnumScreen.MOVIES -> movies
             EnumScreen.FAVORITE -> favoriteMovies
@@ -28,16 +28,14 @@ class MovieViewModel constructor(
     }
 
     fun getMovies() {
-        repository.getMovies {
-            val movieEntities = it
-            when (movieEntities.isEmpty()) {
-                true -> resolveMovies()
-                false -> handler.post { movies.value = movieEntities }
-            }
+        repository.getMovies { it ->
+            it.takeIf { it.isNotEmpty() }.apply {
+                handler.post { movies.value = it.map { it.toMovie() } }
+            } ?: resolveMovies()
         }
 
         repository.getFavoriteMovie {
-            handler.post { favoriteMovies.value = it }
+            handler.post { favoriteMovies.value = it.map { it.toMovie() } }
         }
     }
 
@@ -48,7 +46,9 @@ class MovieViewModel constructor(
             onSuccess = {
                 repository.upsertMovies(it.items)
                 repository.getMovies { movieEntities ->
-                    handler.post { movies.value = movieEntities }
+                    handler.post {
+                        movies.value = movieEntities.map { movieEntity -> movieEntity.toMovie() }
+                    }
                 }
             },
             onError = { handler.post { errorMessage.postValue(it) } }
@@ -68,20 +68,20 @@ class MovieViewModel constructor(
     private fun addMovieToFavorites(id: String) {
         repository.updateMovie(id, true)
         repository.getMovies {
-            handler.post { movies.value = it }
+            handler.post { movies.value = it.map { it.toMovie() } }
         }
         repository.getFavoriteMovie {
-            handler.post { favoriteMovies.value = it }
+            handler.post { favoriteMovies.value = it.map { it.toMovie() } }
         }
     }
 
     private fun removeMovieFromFavorites(id: String) {
         repository.updateMovie(id, false)
         repository.getMovies {
-            handler.post { movies.value = it }
+            handler.post { movies.value = it.map { it.toMovie() } }
         }
         repository.getFavoriteMovie {
-            handler.post { favoriteMovies.value = it }
+            handler.post { favoriteMovies.value = it.map { it.toMovie() } }
         }
     }
 }

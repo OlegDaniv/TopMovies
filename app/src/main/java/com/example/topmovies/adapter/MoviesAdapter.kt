@@ -13,20 +13,19 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.topmovies.R
 import com.example.topmovies.databinding.ItemLayoutBinding
-import com.example.topmovies.model.MovieEntity
+import com.example.topmovies.model.Movie
 import com.example.topmovies.unit.IMAGE_SIZE
 import com.example.topmovies.unit.RANK_DOWN
 import com.example.topmovies.unit.RANK_UP
 import com.example.topmovies.unit.REPLACE_AFTER
 import com.example.topmovies.utils.GlideApp
 
-
 class MoviesAdapter(
     private val onItemClickListener: (String) -> Unit,
     private val onFavoriteMovieClick: (String, Boolean) -> Unit
-) : ListAdapter<MovieEntity, MoviesAdapter.MovieViewHolder>(MovieDiffCallBack()) {
+) : ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(MovieDiffCallBack()) {
 
-    fun submitMoviesList(movies: List<MovieEntity>) {
+    fun submitMoviesList(movies: List<Movie>) {
         submitList(movies)
     }
 
@@ -58,7 +57,6 @@ class MoviesAdapter(
         private val onItemClickListener: (String) -> Unit,
         private val onFavoriteMovieClick: (String, Boolean) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
-
 
         private val avatarCustomTarget = object : CustomTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
@@ -95,7 +93,7 @@ class MoviesAdapter(
             }
         }
 
-        fun bind(movie: MovieEntity) = with(binding) {
+        fun bind(movie: Movie) = with(binding) {
             textviewItemLayoutMovieName.text = movie.title
             textviewItemLayoutRankNumber.text = movie.rank
             textviewItemLayoutYearNumber.text = movie.year
@@ -136,13 +134,13 @@ class MoviesAdapter(
         }
     }
 
-    private class MovieDiffCallBack : DiffUtil.ItemCallback<MovieEntity>() {
+    private class MovieDiffCallBack : DiffUtil.ItemCallback<Movie>() {
 
-        override fun areItemsTheSame(oldItem: MovieEntity, newItem: MovieEntity): Boolean {
+        override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: MovieEntity, newItem: MovieEntity): Boolean {
+        override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
             return ((oldItem.isFavorite == newItem.isFavorite) &&
                     (oldItem.rank == newItem.rank) &&
                     (oldItem.imageUrl == newItem.imageUrl) &&
@@ -151,7 +149,7 @@ class MoviesAdapter(
                     (oldItem.year == newItem.year))
         }
 
-        override fun getChangePayload(oldItem: MovieEntity, newItem: MovieEntity): Any? {
+        override fun getChangePayload(oldItem: Movie, newItem: Movie): Any? {
             if (oldItem.isFavorite != newItem.isFavorite && oldItem.rank != newItem.rank) {
                 return PayloadChange.Both(newItem.id, newItem.isFavorite, newItem.rank)
             } else if (oldItem.isFavorite != newItem.isFavorite) {

@@ -53,7 +53,23 @@ data class MovieEntity @JvmOverloads constructor(
     val imDbRating: String,
     val imDbRatingCount: String,
     var isFavorite: Boolean = false
-)
+) {
+    fun toMovie(): Movie {
+        return Movie(
+            id,
+            rank,
+            rankUpDown,
+            title,
+            fullTitle,
+            year,
+            imageUrl,
+            crew,
+            imDbRating,
+            imDbRatingCount,
+            isFavorite
+        )
+    }
+}
 
 data class MovieDetails(
     val id: String,
@@ -95,4 +111,18 @@ data class MovieDetailsEntity(
     val genres: String,
     val imDbRating: String,
     val errorMessage: String? = null
-)
+) {
+    fun toMovieDetails(): MovieDetails {
+        return MovieDetails(
+            id,
+            title,
+            year,
+            plot,
+            imageUrl,
+            releaseDate,
+            runtimeStr,
+            genres,
+            imDbRating
+        )
+    }
+}

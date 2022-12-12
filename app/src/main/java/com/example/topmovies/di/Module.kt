@@ -2,6 +2,7 @@ package com.example.topmovies.di
 
 import android.app.Application
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
+import androidx.room.Room
 import com.example.topmovies.database.MovieDatabase
 import com.example.topmovies.database.dao.MovieDetailsDao
 import com.example.topmovies.database.dao.MoviesDao
@@ -54,7 +55,8 @@ val viewModelModule = module {
 
 val databaseModule = module {
 
-    fun provideDatabase(app: Application): MovieDatabase? = MovieDatabase.getInstance(app)
+    fun provideDatabase(app: Application): MovieDatabase =
+        Room.databaseBuilder(app, MovieDatabase::class.java, DATABASE_NAME).build()
 
     fun provideDao(database: MovieDatabase): MoviesDao = database.movieDao()
 
