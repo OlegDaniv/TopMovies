@@ -28,14 +28,17 @@ class MovieViewModel constructor(
     }
 
     fun getMovies() {
-        repository.getMovies { movies ->
-            movies.takeIf { it.isNotEmpty() }.apply {
-                handler.post { this@MovieViewModel.movies.value = movies.map { it.toMovie() } }
-            } ?: resolveMovies()
+        if (movies.value == null) {
+            repository.getMovies { movies ->
+                movies.takeIf { it.isNotEmpty() }.apply {
+                    handler.post { this@MovieViewModel.movies.value = movies.map { it.toMovie() } }
+                } ?: resolveMovies()
+            }
         }
-        favoriteMovies.value = movies.value?.filter { it.isFavorite }
+        if (favoriteMovies.value == null) {
+            favoriteMovies.value = movies.value?.filter { it.isFavorite }
+        }
     }
-
 
     fun resolveMovies() {
         repository.getNewMovies(
