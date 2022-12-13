@@ -2,7 +2,7 @@ package com.example.topmovies.repository
 
 import com.example.topmovies.database.dao.MovieDetailsDao
 import com.example.topmovies.database.dao.MoviesDao
-import com.example.topmovies.model.*
+import com.example.topmovies.models.*
 import com.example.topmovies.retrofit.MoviesApi
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,10 +20,6 @@ class MovieRepository constructor(
         executor.execute { callback(moviesDao.getMovies()) }
     }
 
-    fun getFavoriteMovie(callback: (List<MovieEntity>) -> Unit) {
-        executor.execute { callback(moviesDao.getFavoriteMovies(true)) }
-    }
-
     fun updateMovie(id: String, boolean: Boolean) {
         executor.execute { moviesDao.updateMovie(id, boolean) }
     }
@@ -32,8 +28,11 @@ class MovieRepository constructor(
         executor.execute { callback(movieDetailsDao.getMovieDetailsById(id)) }
     }
 
-    fun upsertMovies(movies: List<Movie>) {
-        executor.execute { moviesDao.upsertMovies(movies) }
+    fun upsertMovies(movies: List<Movie>, callback: (List<MovieEntity>) -> Unit) {
+        executor.execute {
+            moviesDao.upsertMovies(movies)
+            getMovies(callback)
+        }
     }
 
     private fun insert(movie: MovieDetailsEntity) {
@@ -68,14 +67,14 @@ class MovieRepository constructor(
     fun getMovieDetails(
         movieId: String,
         apikey: String,
-        onSuccess: (MovieDetails) -> Unit,
+        onSuccess: (MovieDetailsApi) -> Unit,
         onError: (String) -> Unit
     ) {
         api.getMovieDetails()
-            .enqueue(object : Callback<MovieDetails> {
+            .enqueue(object : Callback<MovieDetailsApi> {
                 override fun onResponse(
-                    call: Call<MovieDetails>,
-                    response: Response<MovieDetails>
+                    call: Call<MovieDetailsApi>,
+                    response: Response<MovieDetailsApi>
                 ) {
                     if (response.isSuccessful) {
                         response.body()?.let {
@@ -91,7 +90,7 @@ class MovieRepository constructor(
                     }
                 }
 
-                override fun onFailure(call: Call<MovieDetails>, t: Throwable) {
+                override fun onFailure(call: Call<MovieDetailsApi>, t: Throwable) {
                     onError(t.message.orEmpty())
                 }
             })

@@ -1,11 +1,11 @@
-package com.example.topmovies.model
+package com.example.topmovies.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 data class MovieObject(
-    val items: List<Movie>,
+    val items: List<MovieApi>,
     val errorMessage: String
 )
 
@@ -16,7 +16,6 @@ data class Movie(
     val title: String,
     val fullTitle: String,
     val year: String,
-    @SerializedName("image")
     val imageUrl: String,
     val crew: String,
     val imDbRating: String,
@@ -71,58 +70,33 @@ data class MovieEntity @JvmOverloads constructor(
     }
 }
 
-data class MovieDetails(
+data class MovieApi(
     val id: String,
+    val rank: String,
+    val rankUpDown: String,
     val title: String,
+    val fullTitle: String,
     val year: String,
-    val plot: String,
     @SerializedName("image")
     val imageUrl: String,
-    val releaseDate: String,
-    val runtimeStr: String,
-    val genres: String,
+    val crew: String,
     val imDbRating: String,
-    val errorMessage: String? = null
+    val imDbRatingCount: String,
+    var isFavorite: Boolean = false
 ) {
-    fun toMovieDetailsEntity(): MovieDetailsEntity {
-        return MovieDetailsEntity(
+    fun toMovie(): Movie {
+        return Movie(
             id,
+            rank,
+            rankUpDown,
             title,
+            fullTitle,
             year,
-            plot,
             imageUrl,
-            releaseDate,
-            runtimeStr,
-            genres,
-            imDbRating
-        )
-    }
-}
-
-@Entity(tableName = "tb_movie_details")
-data class MovieDetailsEntity(
-    @PrimaryKey val id: String,
-    val title: String,
-    val year: String,
-    val plot: String,
-    val imageUrl: String,
-    val releaseDate: String,
-    val runtimeStr: String,
-    val genres: String,
-    val imDbRating: String,
-    val errorMessage: String? = null
-) {
-    fun toMovieDetails(): MovieDetails {
-        return MovieDetails(
-            id,
-            title,
-            year,
-            plot,
-            imageUrl,
-            releaseDate,
-            runtimeStr,
-            genres,
-            imDbRating
+            crew,
+            imDbRating,
+            imDbRatingCount,
+            isFavorite
         )
     }
 }

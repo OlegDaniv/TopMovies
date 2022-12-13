@@ -3,8 +3,8 @@ package com.example.topmovies.database.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import com.example.topmovies.model.Movie
-import com.example.topmovies.model.MovieEntity
+import com.example.topmovies.models.Movie
+import com.example.topmovies.models.MovieEntity
 
 @Dao
 abstract class MoviesDao : BaseDao<MovieEntity> {

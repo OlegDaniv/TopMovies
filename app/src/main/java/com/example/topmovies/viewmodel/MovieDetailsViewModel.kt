@@ -3,7 +3,7 @@ package com.example.topmovies.viewmodel
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.topmovies.model.MovieDetails
+import com.example.topmovies.models.MovieDetails
 import com.example.topmovies.repository.MovieRepository
 
 class MovieDetailsViewModel(
@@ -22,7 +22,7 @@ class MovieDetailsViewModel(
                     apikey = getApiKey(),
                     movieId = movieId,
                     onSuccess = {
-                        _movieDetails.postValue(it)
+                        _movieDetails.postValue(it.toMovieDetails())
                     },
                     onError = { _detailsErrorMassage.postValue(it) })
         }
