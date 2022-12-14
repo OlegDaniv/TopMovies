@@ -49,10 +49,11 @@ class MoviesFragment : BaseFragment() {
     }
 
     private fun setupViewModel() = with(moviesViewModel) {
-        getMovies()
+        loadMovies()
         getMoviesList(screen).observe(viewLifecycleOwner) {
             moviesAdapter.submitMoviesList(it)
-            showMovieList(it)
+            showEmptyListText()
+            showView(it)
         }
 
         errorMessage.observe(viewLifecycleOwner) {
@@ -64,8 +65,7 @@ class MoviesFragment : BaseFragment() {
         }
     }
 
-    private fun showMovieList(movies: List<Movie>) = with(binding) {
-        showText()
+    private fun showView(movies: List<Movie>) = with(binding) {
         recyclerviewMovies.isVisible = movies.isNotEmpty()
         emptyView.isVisible = movies.isEmpty()
     }
@@ -74,7 +74,7 @@ class MoviesFragment : BaseFragment() {
         moviesViewModel.addFavoriteMovie(id, favorite, screen)
     }
 
-    private fun showText() = with(binding) {
+    private fun showEmptyListText() = with(binding) {
         when (screen) {
             EnumScreen.MOVIES -> emptyView.text =
                 resources.getString(R.string.movies_massage_no_movies)

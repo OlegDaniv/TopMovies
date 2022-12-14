@@ -27,21 +27,19 @@ class MovieViewModel constructor(
         }
     }
 
-    fun getMovies() {
-        if (movies.value == null) {
-            repository.getMovies { movies ->
-                movies.takeIf { it.isNotEmpty() }.apply {
-                    handler.post { this@MovieViewModel.movies.value = movies.map { it.toMovie() } }
-                } ?: resolveMovies()
-            }
-        }
-        if (favoriteMovies.value == null) {
-            favoriteMovies.value = movies.value?.filter { it.isFavorite }
+    fun loadMovies() {
+        repository.loadMovies { movieEntities ->
+            movieEntities.takeIf { it.isNotEmpty() }?.let {
+                handler.post { movies.value = it.map { it.toMovie() } }
+                repository.loadFavoriteMovie {
+                    handler.post { favoriteMovies.value = it.map { it.toMovie() } }
+                }
+            } ?: resolveMovies()
         }
     }
 
     fun resolveMovies() {
-        repository.getNewMovies(
+        repository.loadNewMovies(
             getApiKey(),
             onSuccess = {
                 repository.upsertMovies(it.items.map { movieApi -> movieApi.toMovie() }) {
@@ -76,14 +74,14 @@ class MovieViewModel constructor(
     private fun removeMovieFromFavorites(id: String) {
         repository.updateMovie(id, false)
         val mutableMovies = movies.value?.toMutableList()
-        val mutableFavoriteMovie = favoriteMovies.value?.toMutableList()
         val movie = mutableMovies?.find { it.id == id }
         val copy = movie!!.copy(isFavorite = false)
         val index = mutableMovies.indexOf(movie)
-        mutableFavoriteMovie?.remove(movie)
         mutableMovies.remove(movie)
         mutableMovies.add(index, copy)
         mutableMovies.let { movies.value = it }
+        val mutableFavoriteMovie = favoriteMovies.value?.toMutableList()
+        mutableFavoriteMovie?.remove(movie)
         mutableFavoriteMovie?.let { favoriteMovies.value = it }
     }
 }

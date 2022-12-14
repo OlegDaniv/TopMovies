@@ -16,9 +16,9 @@ class MovieDetailsViewModel(
     val detailsErrorMassage: LiveData<String> = _detailsErrorMassage
 
     fun resolveMovieDetails(movieId: String) = with(repository) {
-        getMovieDetailsById(movieId) { movieDetailsEntity ->
+        loadMovieDetailsById(movieId) { movieDetailsEntity ->
             movieDetailsEntity?.let { _movieDetails.postValue(it.toMovieDetails()) }
-                ?: getMovieDetails(
+                ?: loadMovieDetails(
                     apikey = getApiKey(),
                     movieId = movieId,
                     onSuccess = {

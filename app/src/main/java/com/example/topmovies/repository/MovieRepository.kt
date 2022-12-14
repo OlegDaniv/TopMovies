@@ -16,22 +16,26 @@ class MovieRepository constructor(
     private val executor: ExecutorService
 ) {
 
-    fun getMovies(callback: (List<MovieEntity>) -> Unit) {
+    fun loadMovies(callback: (List<MovieEntity>) -> Unit) {
         executor.execute { callback(moviesDao.getMovies()) }
     }
 
-    fun updateMovie(id: String, boolean: Boolean) {
-        executor.execute { moviesDao.updateMovie(id, boolean) }
+    fun loadFavoriteMovie(callback: (List<MovieEntity>) -> Unit) {
+        executor.execute { callback(moviesDao.getFavoriteMovies(true)) }
     }
 
-    fun getMovieDetailsById(id: String, callback: (MovieDetailsEntity?) -> Unit) {
+    fun updateMovie(id: String, isFavorite: Boolean) {
+        executor.execute { moviesDao.updateMovie(id, isFavorite) }
+    }
+
+    fun loadMovieDetailsById(id: String, callback: (MovieDetailsEntity?) -> Unit) {
         executor.execute { callback(movieDetailsDao.getMovieDetailsById(id)) }
     }
 
     fun upsertMovies(movies: List<Movie>, callback: (List<MovieEntity>) -> Unit) {
         executor.execute {
             moviesDao.upsertMovies(movies)
-            getMovies(callback)
+            loadMovies(callback)
         }
     }
 
@@ -39,7 +43,7 @@ class MovieRepository constructor(
         executor.execute { movieDetailsDao.insert(movie) }
     }
 
-    fun getNewMovies(
+    fun loadNewMovies(
         apikey: String, onSuccess: (MovieObject) -> Unit, onError: (String) -> Unit
     ) {
         api.getMovies().enqueue(object : Callback<MovieObject> {
@@ -64,7 +68,7 @@ class MovieRepository constructor(
         })
     }
 
-    fun getMovieDetails(
+    fun loadMovieDetails(
         movieId: String,
         apikey: String,
         onSuccess: (MovieDetailsApi) -> Unit,
