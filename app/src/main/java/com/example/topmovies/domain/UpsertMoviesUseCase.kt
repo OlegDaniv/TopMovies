@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutorService
 
 class UpsertMoviesUseCase(
     private val repository: MovieRepository,
-    private val executorService: ExecutorService,
+    private val executor: ExecutorService,
     private val getMoviesUseCase: GetMoviesUseCase
 ) {
 
@@ -16,7 +16,7 @@ class UpsertMoviesUseCase(
         onResult: (List<Movie>) -> Unit,
         onFailed: (String) -> Unit
     ) {
-        executorService.execute {
+        executor.execute {
             repository.upsertMovies(data.items.map { it.toMovie() })
             getMoviesUseCase({
                 onResult(it)

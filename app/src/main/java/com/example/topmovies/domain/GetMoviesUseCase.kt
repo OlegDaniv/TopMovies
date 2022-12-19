@@ -20,7 +20,6 @@ class GetMoviesUseCase(
                 handler.post { onResult(result) }
             }
                 ?: loadMoviesUseCase({ movieObject ->
-//                    upsertMoviesUseCase(movieObject, {}, {})
                     onResult(movieObject.items.map { it.toMovie() })
                 }, {
                     onFailed(it)

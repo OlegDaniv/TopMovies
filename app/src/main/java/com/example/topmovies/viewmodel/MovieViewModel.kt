@@ -57,7 +57,6 @@ class MovieViewModel constructor(
             movies.value = newMovies
             favoriteMovies.value = movies.value?.filter { it.isFavorite }
         }
-
     }
 
     private fun removeMovieFromFavorites(id: String) {

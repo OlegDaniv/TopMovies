@@ -8,12 +8,12 @@ import java.util.concurrent.ExecutorService
 
 class GetFavoriteMovieUseCase(
     private val repository: MovieRepository,
-    private val executorService: ExecutorService,
+    private val executor: ExecutorService,
     private val handler: Handler,
 ) {
 
     operator fun invoke(onResult: (List<Movie>) -> Unit) {
-        executorService.execute {
+        executor.execute {
             val movies = repository.loadFavoriteMovie(true).map { it.toMovie() }
             handler.post { onResult(movies) }
         }
