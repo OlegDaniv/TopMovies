@@ -83,7 +83,7 @@
             android:layout_marginTop="@dimen/margin_all_small"
             android:layout_toEndOf="@id/textview_item_layout_previous_rank_title" />
 
-        <com.example.topmovies.view.CircleAvatarView
+        <com.example.topmovies.ui.view.CircleAvatarView
             android:id="@+id/circle_avatar_view_item_layout_movie_image"
             android:layout_width="@dimen/width_item_layout_circle_avatar_view"
             android:layout_height="@dimen/height_item_layout_circle_avatar_view"
