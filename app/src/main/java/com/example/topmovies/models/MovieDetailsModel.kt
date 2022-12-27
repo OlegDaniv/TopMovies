@@ -16,7 +16,21 @@ data class MovieDetails(
     val genres: String,
     val imDbRating: String,
     val errorMessage: String? = null
-)
+) {
+    companion object {
+        val empty = MovieDetails(
+            "", "", "", "", "", "",
+            "", "", "", null
+        )
+    }
+
+    fun toMovieDetailsEntity(): MovieDetailsEntity {
+        return MovieDetailsEntity(
+            id, title, year, plot, imageUrl, releaseDate,
+            runtimeStr, genres, imDbRating, errorMessage
+        )
+    }
+}
 
 @Entity(tableName = "tb_movie_details")
 data class MovieDetailsEntity(
@@ -31,17 +45,11 @@ data class MovieDetailsEntity(
     val imDbRating: String,
     val errorMessage: String? = null
 ) {
+
     fun toMovieDetails(): MovieDetails {
         return MovieDetails(
-            id,
-            title,
-            year,
-            plot,
-            imageUrl,
-            releaseDate,
-            runtimeStr,
-            genres,
-            imDbRating
+            id, title, year, plot, imageUrl, releaseDate,
+            runtimeStr, genres, imDbRating, errorMessage
         )
     }
 }
@@ -57,33 +65,27 @@ data class MovieDetailsApi(
     val runtimeStr: String,
     val genres: String,
     val imDbRating: String,
-    val errorMessage: String? = null
+    val errorMessage: String?
 ) {
+
+    companion object {
+        val empty = MovieDetailsApi(
+            "", "", "", "", "", "",
+            "", "", "", null
+        )
+    }
+
     fun toMovieDetailsEntity(): MovieDetailsEntity {
         return MovieDetailsEntity(
-            id,
-            title,
-            year,
-            plot,
-            imageUrl,
-            releaseDate,
-            runtimeStr,
-            genres,
-            imDbRating
+            id, title, year, plot, imageUrl, releaseDate,
+            runtimeStr, genres, imDbRating, errorMessage
         )
     }
 
     fun toMovieDetails(): MovieDetails {
         return MovieDetails(
-            id,
-            title,
-            year,
-            plot,
-            imageUrl,
-            releaseDate,
-            runtimeStr,
-            genres,
-            imDbRating
+            id, title, year, plot, imageUrl, releaseDate,
+            runtimeStr, genres, imDbRating, errorMessage
         )
     }
 }

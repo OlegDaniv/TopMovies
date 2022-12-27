@@ -3,99 +3,70 @@ package com.example.topmovies.repository
 import android.content.SharedPreferences
 import com.example.topmovies.database.dao.MovieDetailsDao
 import com.example.topmovies.database.dao.MoviesDao
+import com.example.topmovies.domain.UseCase.Data
 import com.example.topmovies.models.*
 import com.example.topmovies.retrofit.MoviesApi
 import com.example.topmovies.unit.DEF_API_KEY
 import com.example.topmovies.unit.SETTING_PREF_USER_API_KEY
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.util.concurrent.ExecutorService
 
 class MovieRepository constructor(
     private val api: MoviesApi,
     private val moviesDao: MoviesDao,
     private val movieDetailsDao: MovieDetailsDao,
     private val sharedPreferences: SharedPreferences,
-    private val executor: ExecutorService
 ) {
 
-    fun loadMovies(): List<MovieEntity> = moviesDao.getMovies()
+    fun getMoviesEntity(): List<MovieEntity> = moviesDao.getMoviesEntity()
 
-    fun loadFavoriteMovie(isFavorite: Boolean) = moviesDao.getFavoriteMovies(isFavorite)
+    fun getFavoriteMoviesEntity(isFavorite: Boolean) = moviesDao.getFavoriteMoviesEntity(isFavorite)
 
-    fun loadMovieDetailsById(id: String) = movieDetailsDao.getMovieDetailsById(id)
+    fun getMovieDetailsEntityById(id: String) = movieDetailsDao.getMovieDetailsEntityById(id)
 
-    fun updateMovie(id: String, isFavorite: Boolean) {
-        moviesDao.updateMovie(id, isFavorite)
+    fun updateMovieEntity(id: String, isFavorite: Boolean) {
+        moviesDao.updateMovieEntity(id, isFavorite)
     }
 
-    fun upsertMovies(movies: List<Movie>) {
-        moviesDao.upsertMovies(movies)
+    fun upsertMoviesEntity(movies: List<Movie>) {
+        moviesDao.upsertMoviesEntity(movies)
     }
 
-    fun insert(movie: MovieDetailsEntity) {
-        executor.execute { movieDetailsDao.insert(movie) }
+    fun insertMovieDetailsEntity(entity: MovieDetailsEntity) {
+        movieDetailsDao.insert(entity)
     }
 
-    /** for realize use getApiKey() like parameter in api.getMovies() or api.getMovieDetails(), now it's mock **/
+    /** when using api.getMovies() and api.getMovieDetails() without any parameters, it connects to a mock server.
+     *  If you wish to utilize the imdb server, put the return value in api.getMovies(getApiKey()) and
+     *  api.getMovieDetails(id),getApiKey()).
+     *  id - movie id in the imdb server**/
     fun getApiKey() =
         sharedPreferences.getString(SETTING_PREF_USER_API_KEY, DEF_API_KEY)
             ?.takeIf { it.isNotBlank() }
             ?: DEF_API_KEY
 
-    fun loadNewMovies(onSuccess: (MovieObject) -> Unit, onError: (String) -> Unit) {
-        api.getMovies().enqueue(object : Callback<MovieObject> {
-
-            override fun onResponse(call: Call<MovieObject>, response: Response<MovieObject>) {
-                if (response.isSuccessful) {
-                    response.body()?.let {
-                        if (it.errorMessage.isNotEmpty()) {
-                            onError(it.errorMessage)
-                        } else {
-                            onSuccess(it)
-                        }
-                    }
-                } else {
-                    onError(response.code().toString())
-
-                }
+    fun loadNewMovies(): Data<List<MovieApi>> {
+        return try {
+            val response = api.getMovies().execute()
+            when (response.isSuccessful) {
+                true -> response.body()?.items
+                    ?.let { Data(it) }
+                    ?: Data(emptyList(), "The list is Empty")
+                false -> Data(emptyList(), response.code().toString())
             }
-
-            override fun onFailure(call: Call<MovieObject>, t: Throwable) {
-                onError(t.message.orEmpty())
-            }
-        })
+        } catch (e: Exception) {
+            Data(emptyList(), e.message.toString())
+        }
     }
 
-    fun loadMovieDetails(
-        movieId: String,
-        onSuccess: (MovieDetailsApi) -> Unit,
-        onError: (String) -> Unit
-    ) {
-        api.getMovieDetails()
-            .enqueue(object : Callback<MovieDetailsApi> {
-                override fun onResponse(
-                    call: Call<MovieDetailsApi>,
-                    response: Response<MovieDetailsApi>
-                ) {
-                    if (response.isSuccessful) {
-                        response.body()?.let {
-                            if (it.errorMessage != null) {
-                                onError(it.errorMessage)
-                            } else {
-                                insert(it.toMovieDetailsEntity())
-                                onSuccess(it)
-                            }
-                        }
-                    } else {
-                        onError(response.code().toString())
-                    }
-                }
-
-                override fun onFailure(call: Call<MovieDetailsApi>, t: Throwable) {
-                    onError(t.message.orEmpty())
-                }
-            })
+    fun loadMovieDetails(id: String): Data<MovieDetails> {
+        return try {
+            val response = api.getMovieDetails().execute()
+            when (response.isSuccessful) {
+                true -> response.body()?.let { Data(it.toMovieDetails()) }
+                    ?: Data(MovieDetails.empty, "Body is empty")
+                false -> Data(MovieDetails.empty, response.code().toString())
+            }
+        } catch (e: Exception) {
+            Data(MovieDetails.empty, e.message.toString())
+        }
     }
 }

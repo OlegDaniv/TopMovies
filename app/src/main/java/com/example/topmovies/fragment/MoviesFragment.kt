@@ -49,23 +49,22 @@ class MoviesFragment : BaseFragment() {
     }
 
     private fun setupViewModel() = with(moviesViewModel) {
-        loadMovies()
-        getMoviesList(screen).observe(viewLifecycleOwner) {
+        getMovies()
+        getObservableList(screen).observe(viewLifecycleOwner) {
             moviesAdapter.submitMoviesList(it)
-            showEmptyListText()
-            showView(it)
+            assignTextWhenListEmpty()
+            changeRecyclerViewVisibility(it)
         }
 
         errorMessage.observe(viewLifecycleOwner) {
             it?.let {
                 showErrorMassage(it)
-                errorMessage.value = null
                 binding.swipeRefresh.isRefreshing = false
             }
         }
     }
 
-    private fun showView(movies: List<Movie>) = with(binding) {
+    private fun changeRecyclerViewVisibility(movies: List<Movie>) = with(binding) {
         recyclerviewMovies.isVisible = movies.isNotEmpty()
         emptyView.isVisible = movies.isEmpty()
     }
@@ -74,7 +73,7 @@ class MoviesFragment : BaseFragment() {
         moviesViewModel.addFavoriteMovie(id, favorite, screen)
     }
 
-    private fun showEmptyListText() = with(binding) {
+    private fun assignTextWhenListEmpty() = with(binding) {
         when (screen) {
             EnumScreen.MOVIES -> emptyView.text =
                 resources.getString(R.string.movies_massage_no_movies)
@@ -88,7 +87,7 @@ class MoviesFragment : BaseFragment() {
         when (screen) {
             EnumScreen.MOVIES -> {
                 swipeRefresh.setOnRefreshListener {
-                    moviesViewModel.resolveMovies()
+                    moviesViewModel.loadNewMovies()
                     swipeRefresh.isRefreshing = false
                 }
             }

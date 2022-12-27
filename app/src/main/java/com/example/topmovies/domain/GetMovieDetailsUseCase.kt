@@ -7,19 +7,22 @@ import java.util.concurrent.ExecutorService
 
 class GetMovieDetailsUseCase(
     private val repository: MovieRepository,
-    private val executor: ExecutorService,
-    private val handler: Handler,
-    private val loadMovieDetailsUseCase: LoadMovieDetailsUseCase
-) {
+    override val executor: ExecutorService,
+    override val handler: Handler
+) : UseCase<String, MovieDetails>() {
 
-    operator fun invoke(id: String, onResult: (MovieDetails) -> Unit, onFailed: (String) -> Unit) {
-        executor.execute {
-            val result = repository.loadMovieDetailsById(id)?.toMovieDetails()
-            result?.let { handler.post { onResult(it) } } ?: loadMovieDetailsUseCase(id, {
-                handler.post { onResult(it) }
-            }, {
-                onFailed(it)
-            })
+    override fun run(params: String): Data<MovieDetails> {
+        val result = repository.getMovieDetailsEntityById(params)
+        return if (result == null) {
+            val data = repository.loadMovieDetails(params)
+            if (data.error.isNotEmpty()) {
+                data
+            } else {
+                repository.insertMovieDetailsEntity(data.data.toMovieDetailsEntity())
+                Data(data.data)
+            }
+        } else {
+            Data(result.toMovieDetails())
         }
     }
 }

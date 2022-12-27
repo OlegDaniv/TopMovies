@@ -5,7 +5,10 @@ import android.os.Looper
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import androidx.room.Room
 import com.example.topmovies.database.MovieDatabase
-import com.example.topmovies.domain.*
+import com.example.topmovies.domain.GetMovieDetailsUseCase
+import com.example.topmovies.domain.GetMoviesUseCase
+import com.example.topmovies.domain.LoadMoviesUseCase
+import com.example.topmovies.domain.UpdateMovieUseCase
 import com.example.topmovies.repository.MovieRepository
 import com.example.topmovies.retrofit.MoviesApi
 import com.example.topmovies.unit.BASE_URL
@@ -45,17 +48,14 @@ val networkModule = module {
 
 val viewModelModule = module {
     viewModel { MovieDetailsViewModel(get()) }
-    viewModel { MovieViewModel(get(), get(), get(), get(), get()) }
+    viewModel { MovieViewModel(get(), get(), get()) }
 }
 
 val useCase = module {
-    single { GetMoviesUseCase(get(), get(), get(), get()) }
-    single { GetFavoriteMovieUseCase(get(), get(), get()) }
-    single { UpsertMoviesUseCase(get(), get(), get()) }
+    single { GetMoviesUseCase(get(), get(), get()) }
     single { UpdateMovieUseCase(get(), get(), get()) }
-    single { LoadMoviesUseCase(get()) }
-    single { LoadMovieDetailsUseCase(get()) }
-    single { GetMovieDetailsUseCase(get(), get(), get(), get()) }
+    single { LoadMoviesUseCase(get(), get(), get()) }
+    single { GetMovieDetailsUseCase(get(), get(), get()) }
 }
 
 val databaseModule = module {
@@ -67,11 +67,11 @@ val databaseModule = module {
 }
 
 val repositoryModule = module {
-    single { MovieRepository(get(), get(), get(), get(), get()) }
+    single { MovieRepository(get(), get(), get(), get()) }
 }
 
 val appModule = module {
     single { Handler(Looper.getMainLooper()) }
-    single { Executors.newSingleThreadExecutor() }
+    single { Executors.newFixedThreadPool(4) }
     single { getDefaultSharedPreferences(androidApplication()) }
 }
