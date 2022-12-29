@@ -3,7 +3,7 @@ package com.example.topmovies.repository
 import android.content.SharedPreferences
 import com.example.topmovies.database.dao.MovieDetailsDao
 import com.example.topmovies.database.dao.MoviesDao
-import com.example.topmovies.domain.UseCase.Data
+import com.example.topmovies.domain.UseCase.Result
 import com.example.topmovies.models.*
 import com.example.topmovies.retrofit.MoviesApi
 import com.example.topmovies.unit.DEF_API_KEY
@@ -43,30 +43,30 @@ class MovieRepository constructor(
             ?.takeIf { it.isNotBlank() }
             ?: DEF_API_KEY
 
-    fun loadNewMovies(): Data<List<MovieApi>> {
+    fun loadNewMovies(): Result<List<MovieApi>> {
         return try {
             val response = api.getMovies().execute()
             when (response.isSuccessful) {
                 true -> response.body()?.items
-                    ?.let { Data(it) }
-                    ?: Data(emptyList(), "The list is Empty")
-                false -> Data(emptyList(), response.code().toString())
+                    ?.let { Result(it) }
+                    ?: Result(emptyList(), "The list is Empty")
+                false -> Result(emptyList(), response.code().toString())
             }
         } catch (e: Exception) {
-            Data(emptyList(), e.message.toString())
+            Result(emptyList(), e.message.toString())
         }
     }
 
-    fun loadMovieDetails(id: String): Data<MovieDetails> {
+    fun loadMovieDetails(id: String): Result<MovieDetails> {
         return try {
             val response = api.getMovieDetails().execute()
             when (response.isSuccessful) {
-                true -> response.body()?.let { Data(it.toMovieDetails()) }
-                    ?: Data(MovieDetails.empty, "Body is empty")
-                false -> Data(MovieDetails.empty, response.code().toString())
+                true -> response.body()?.let { Result(it.toMovieDetails()) }
+                    ?: Result(MovieDetails.empty, "Body is empty")
+                false -> Result(MovieDetails.empty, response.code().toString())
             }
         } catch (e: Exception) {
-            Data(MovieDetails.empty, e.message.toString())
+            Result(MovieDetails.empty, e.message.toString())
         }
     }
 }

@@ -68,20 +68,6 @@ data class MovieDetailsApi(
     val errorMessage: String?
 ) {
 
-    companion object {
-        val empty = MovieDetailsApi(
-            "", "", "", "", "", "",
-            "", "", "", null
-        )
-    }
-
-    fun toMovieDetailsEntity(): MovieDetailsEntity {
-        return MovieDetailsEntity(
-            id, title, year, plot, imageUrl, releaseDate,
-            runtimeStr, genres, imDbRating, errorMessage
-        )
-    }
-
     fun toMovieDetails(): MovieDetails {
         return MovieDetails(
             id, title, year, plot, imageUrl, releaseDate,

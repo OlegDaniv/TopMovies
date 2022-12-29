@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.topmovies.domain.GetMoviesUseCase
 import com.example.topmovies.domain.LoadMoviesUseCase
-import com.example.topmovies.domain.UpdateMovieUseCase
-import com.example.topmovies.domain.UpdateMovieUseCase.Params
+import com.example.topmovies.domain.UpdateFavoriteMovieUseCase
+import com.example.topmovies.domain.UpdateFavoriteMovieUseCase.Params
 import com.example.topmovies.domain.UseCase.None
 import com.example.topmovies.models.Movie
 import com.example.topmovies.unit.EnumScreen
@@ -13,7 +13,7 @@ import com.example.topmovies.unit.EnumScreen
 class MovieViewModel constructor(
     private val getMovies: GetMoviesUseCase,
     private val loadMovies: LoadMoviesUseCase,
-    private val updateMovie: UpdateMovieUseCase,
+    private val updateMovie: UpdateFavoriteMovieUseCase,
 ) : BaseViewModel() {
 
     private val movies = MutableLiveData<List<Movie>>()
@@ -31,8 +31,8 @@ class MovieViewModel constructor(
             if (it.error.isNotEmpty()) {
                 handledErrors(it.error)
             } else {
-                handledMovie(it.data.movies)
-                handledFavoriteMovie(it.data.favorite)
+                handledMovie(it.value.first)
+                handledFavoriteMovie(it.value.second)
             }
         }
     }
@@ -42,7 +42,7 @@ class MovieViewModel constructor(
             if (it.error.isNotEmpty()) {
                 handledErrors(it.error)
             } else {
-                handledMovie(it.data)
+                handledMovie(it.value)
             }
         }
     }
@@ -70,8 +70,8 @@ class MovieViewModel constructor(
             if (it.error.isNotEmpty()) {
                 handledErrors(it.error)
             } else {
-                handledMovie(it.data.movies)
-                handledFavoriteMovie(it.data.favorite)
+                handledMovie(it.value.first)
+                handledFavoriteMovie(it.value.second)
             }
         }
     }
@@ -81,8 +81,8 @@ class MovieViewModel constructor(
             if (it.error.isNotEmpty()) {
                 handledErrors(it.error)
             } else {
-                handledMovie(it.data.movies)
-                handledFavoriteMovie(it.data.favorite)
+                handledMovie(it.value.first)
+                handledFavoriteMovie(it.value.second)
             }
         }
     }
