@@ -10,7 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.topmovies.R
 import com.example.topmovies.adapter.MoviesAdapter
 import com.example.topmovies.databinding.FragmentMoviesBinding
-import com.example.topmovies.model.Movie
+import com.example.topmovies.models.Movie
 import com.example.topmovies.unit.EnumScreen
 import com.example.topmovies.viewmodel.MovieViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -38,8 +38,8 @@ class MoviesFragment : BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setupUI(screen)
-        setupViewModel(screen)
+        setupUI()
+        setupViewModel()
     }
 
     override fun onDestroyView() {
@@ -48,23 +48,23 @@ class MoviesFragment : BaseFragment() {
         moviesAdapter.submitMoviesList(emptyList())
     }
 
-    private fun setupViewModel(screen: EnumScreen) = with(moviesViewModel) {
+    private fun setupViewModel() = with(moviesViewModel) {
         getMovies()
-        getMoviesList(screen).observe(viewLifecycleOwner) {
-            moviesAdapter.submitMoviesList(if (screen == EnumScreen.MOVIES) it else it.toList())
-            showMovieList(it)
+        getObservableList(screen).observe(viewLifecycleOwner) {
+            moviesAdapter.submitMoviesList(it)
+            assignTextWhenListEmpty()
+            changeRecyclerViewVisibility(it)
         }
 
         errorMessage.observe(viewLifecycleOwner) {
             it?.let {
                 showErrorMassage(it)
-                errorMessage.value = null
                 binding.swipeRefresh.isRefreshing = false
             }
         }
     }
 
-    private fun showMovieList(movies: List<Movie>) = with(binding) {
+    private fun changeRecyclerViewVisibility(movies: List<Movie>) = with(binding) {
         recyclerviewMovies.isVisible = movies.isNotEmpty()
         emptyView.isVisible = movies.isEmpty()
     }
@@ -73,17 +73,25 @@ class MoviesFragment : BaseFragment() {
         moviesViewModel.addFavoriteMovie(id, favorite, screen)
     }
 
-    private fun setupUI(screen: EnumScreen) = with(binding) {
+    private fun assignTextWhenListEmpty() = with(binding) {
+        when (screen) {
+            EnumScreen.MOVIES -> emptyView.text =
+                resources.getString(R.string.movies_massage_no_movies)
+            EnumScreen.FAVORITE -> emptyView.text =
+                resources.getString(R.string.favorite_movies_massage_no_movies)
+        }
+    }
+
+    private fun setupUI() = with(binding) {
         recyclerviewMovies.adapter = moviesAdapter
         when (screen) {
             EnumScreen.MOVIES -> {
                 swipeRefresh.setOnRefreshListener {
-                    moviesViewModel.resolveMovies()
+                    moviesViewModel.loadNewMovies()
                     swipeRefresh.isRefreshing = false
                 }
             }
             EnumScreen.FAVORITE -> {
-                swipeRefresh.isRefreshing = false
                 swipeRefresh.isEnabled = false
             }
         }

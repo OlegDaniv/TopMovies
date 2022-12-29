@@ -9,16 +9,16 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.topmovies.R
 import com.example.topmovies.databinding.ItemLayoutBinding
-import com.example.topmovies.model.Movie
+import com.example.topmovies.models.Movie
 import com.example.topmovies.unit.IMAGE_SIZE
 import com.example.topmovies.unit.RANK_DOWN
 import com.example.topmovies.unit.RANK_UP
 import com.example.topmovies.unit.REPLACE_AFTER
+import com.example.topmovies.utils.GlideApp
 
 class MoviesAdapter(
     private val onItemClickListener: (String) -> Unit,
@@ -79,7 +79,6 @@ class MoviesAdapter(
 
         private fun newRank(rankUpDown: String) {
             binding.textviewItemLayoutRankNumber.text = rankUpDown
-
         }
 
         private fun getChanges(id: String, favorite: Boolean) {
@@ -100,7 +99,7 @@ class MoviesAdapter(
             textviewItemLayoutYearNumber.text = movie.year
             textviewItemLayoutPreviousRankNumber.text = movie.rankUpDown
             circleAvatarViewItemLayoutMovieImage.setLabel(movie.title)
-            Glide.with(circleAvatarViewItemLayoutMovieImage)
+            GlideApp.with(circleAvatarViewItemLayoutMovieImage)
                 .asBitmap()
                 .load(movie.imageUrl.replaceAfter(REPLACE_AFTER, IMAGE_SIZE))
                 .into(avatarCustomTarget)

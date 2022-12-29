@@ -13,13 +13,13 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.topmovies.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    
+
     private val appBarConfiguration = AppBarConfiguration(
         setOf(
             R.id.navigation_top_movies, R.id.navigation_favorite_movies, R.id.navigation_setting
         )
     )
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         var isLoading = true
         installSplashScreen().setKeepOnScreenCondition { isLoading }
@@ -29,11 +29,11 @@ class MainActivity : AppCompatActivity() {
         setupNavigationController(binding)
         isLoading = false
     }
-    
+
     override fun onSupportNavigateUp() =
         findNavController(R.id.fragment_container)
             .navigateUp(appBarConfiguration)
-    
+
     private fun setupNavigationController(binding: ActivityMainBinding) {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment

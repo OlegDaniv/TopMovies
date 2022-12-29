@@ -1,25 +1,24 @@
 package com.example.topmovies.viewmodel
 
-import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.topmovies.model.MovieDetails
-import com.example.topmovies.repository.MovieRepository
+import com.example.topmovies.domain.GetMovieDetailsUseCase
+import com.example.topmovies.models.MovieDetails
 
 class MovieDetailsViewModel(
-    private val repository: MovieRepository, sharedPref: SharedPreferences
-) : BaseViewModel(sharedPref) {
-    
+    private val getMovieDetailsUseCase: GetMovieDetailsUseCase
+) : BaseViewModel() {
+
     private val _movieDetails = MutableLiveData<MovieDetails>()
     val movieDetails: LiveData<MovieDetails> = _movieDetails
-    private val _detailsErrorMassage = MutableLiveData<String>()
-    val detailsErrorMassage: LiveData<String> = _detailsErrorMassage
-    
+
     fun resolveMovieDetails(movieId: String) {
-        repository.getMovieDetails(
-            apikey = getApiKey(),
-            movieId = movieId,
-            onSuccess = { _movieDetails.postValue(it) },
-            onError = { _detailsErrorMassage.postValue(it) })
+        getMovieDetailsUseCase(movieId) { data ->
+            if (data.error.isNotEmpty()) {
+                handledErrors(data.error)
+            } else {
+                data.data.let { _movieDetails.value = it }
+            }
+        }
     }
 }

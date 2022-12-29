@@ -1,59 +1,77 @@
 package com.example.topmovies.di
 
-import android.app.Application
-import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
+import androidx.room.Room
+import com.example.topmovies.database.MovieDatabase
+import com.example.topmovies.domain.GetMovieDetailsUseCase
+import com.example.topmovies.domain.GetMoviesUseCase
+import com.example.topmovies.domain.LoadMoviesUseCase
+import com.example.topmovies.domain.UpdateMovieUseCase
 import com.example.topmovies.repository.MovieRepository
 import com.example.topmovies.retrofit.MoviesApi
 import com.example.topmovies.unit.BASE_URL
-import com.example.topmovies.unit.SHARED_PREF_NAME_FAVORITE
 import com.example.topmovies.viewmodel.MovieDetailsViewModel
 import com.example.topmovies.viewmodel.MovieViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-val appModule = module {
-    single { provideHttpLoggingInterceptor() }
-    single { provideDefaultOkhttpClient(interceptor = get()) }
-    single { provideRetrofit(client = get()) }
-    single { provideMovieService(retrofit = get()) }
-    single { MovieRepository(movieApi = get()) }
-    single(named("defPref")) { provideSharedPreference(androidApplication()) }
-    single(named("favoritePref")) { provideFavoriteSharedPreference(androidApplication()) }
-    viewModel { MovieDetailsViewModel(repository = get(), sharedPref = get(named("defPref"))) }
-    viewModel {
-        MovieViewModel(
-            repository = get(),
-            sharedPref = get(named("defPref")),
-            favoritePref = get(named("favoritePref"))
-        )
+const val DATABASE_NAME: String = "movie_database"
+
+val networkModule = module {
+    single {
+        HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BASIC
+        }
     }
+    single {
+        OkHttpClient.Builder().addInterceptor(get<HttpLoggingInterceptor>())
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS).build()
+    }
+    single {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(get()).build()
+    }
+    single { get<Retrofit>().create(MoviesApi::class.java) }
 }
 
-private fun provideDefaultOkhttpClient(interceptor: HttpLoggingInterceptor) =
-    OkHttpClient.Builder().addInterceptor(interceptor).connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(15, TimeUnit.SECONDS).build()
-
-private fun provideHttpLoggingInterceptor() = HttpLoggingInterceptor().apply {
-    level = HttpLoggingInterceptor.Level.BASIC
+val viewModelModule = module {
+    viewModel { MovieDetailsViewModel(get()) }
+    viewModel { MovieViewModel(get(), get(), get()) }
 }
 
-private fun provideRetrofit(client: OkHttpClient) =
-    Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .client(client).build()
+val useCase = module {
+    single { GetMoviesUseCase(get(), get(), get()) }
+    single { UpdateMovieUseCase(get(), get(), get()) }
+    single { LoadMoviesUseCase(get(), get(), get()) }
+    single { GetMovieDetailsUseCase(get(), get(), get()) }
+}
 
-private fun provideSharedPreference(app: Application) = getDefaultSharedPreferences(app)
+val databaseModule = module {
+    single {
+        Room.databaseBuilder(androidApplication(), MovieDatabase::class.java, DATABASE_NAME).build()
+    }
+    single { get<MovieDatabase>().movieDao() }
+    single { get<MovieDatabase>().movieDetails() }
+}
 
-private fun provideFavoriteSharedPreference(app: Application) =
-    app.getSharedPreferences(SHARED_PREF_NAME_FAVORITE, Context.MODE_PRIVATE)
+val repositoryModule = module {
+    single { MovieRepository(get(), get(), get(), get()) }
+}
 
-private fun provideMovieService(retrofit: Retrofit) = retrofit.create(MoviesApi::class.java)
+val appModule = module {
+    single { Handler(Looper.getMainLooper()) }
+    single { Executors.newFixedThreadPool(4) }
+    single { getDefaultSharedPreferences(androidApplication()) }
+}
