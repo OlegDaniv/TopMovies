@@ -11,18 +11,18 @@ class GetMovieDetailsUseCase(
     override val handler: Handler
 ) : UseCase<String, MovieDetails>() {
 
-    override fun run(params: String): Data<MovieDetails> {
-        val result = repository.getMovieDetailsEntityById(params)
-        return if (result == null) {
-            val data = repository.loadMovieDetails(params)
-            if (data.error.isNotEmpty()) {
-                data
+    override fun run(params: String): Result<MovieDetails> {
+        val detailsEntity = repository.getMovieDetailsEntityById(params)
+        return if (detailsEntity == null) {
+            val resultApi = repository.loadMovieDetails(params)
+            if (resultApi.error.isNotEmpty()) {
+                resultApi
             } else {
-                repository.insertMovieDetailsEntity(data.data.toMovieDetailsEntity())
-                Data(data.data)
+                repository.insertMovieDetailsEntity(resultApi.value.toMovieDetailsEntity())
+                Result(resultApi.value)
             }
         } else {
-            Data(result.toMovieDetails())
+            Result(detailsEntity.toMovieDetails())
         }
     }
 }

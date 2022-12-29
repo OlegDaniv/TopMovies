@@ -24,17 +24,8 @@ data class Movie(
 ) {
     fun toMovieEntity(): MovieEntity {
         return MovieEntity(
-            id,
-            rank,
-            rankUpDown,
-            title,
-            fullTitle,
-            year,
-            imageUrl,
-            crew,
-            imDbRating,
-            imDbRatingCount,
-            isFavorite
+            id, rank, rankUpDown, title, fullTitle,
+            year, imageUrl, crew, imDbRating, imDbRatingCount, isFavorite
         )
     }
 }
@@ -55,17 +46,8 @@ data class MovieEntity @JvmOverloads constructor(
 ) {
     fun toMovie(): Movie {
         return Movie(
-            id,
-            rank,
-            rankUpDown,
-            title,
-            fullTitle,
-            year,
-            imageUrl,
-            crew,
-            imDbRating,
-            imDbRatingCount,
-            isFavorite
+            id, rank, rankUpDown, title, fullTitle,
+            year, imageUrl, crew, imDbRating, imDbRatingCount, isFavorite
         )
     }
 }
@@ -86,17 +68,8 @@ data class MovieApi(
 ) {
     fun toMovie(): Movie {
         return Movie(
-            id,
-            rank,
-            rankUpDown,
-            title,
-            fullTitle,
-            year,
-            imageUrl,
-            crew,
-            imDbRating,
-            imDbRatingCount,
-            isFavorite
+            id, rank, rankUpDown, title, fullTitle, year, imageUrl,
+            crew, imDbRating, imDbRatingCount, isFavorite
         )
     }
 }

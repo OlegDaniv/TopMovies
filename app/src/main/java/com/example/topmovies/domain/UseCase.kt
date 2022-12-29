@@ -8,11 +8,11 @@ abstract class UseCase<Params, R> {
     abstract val executor: ExecutorService
     abstract val handler: Handler
 
-    abstract fun run(params: Params): Data<R>
+    abstract fun run(params: Params): Result<R>
 
     operator fun invoke(
         params: Params,
-        onSuccess: (Data<R>) -> Unit = {}
+        onSuccess: (Result<R>) -> Unit = {}
     ) {
         executor.execute {
             val result = run(params)
@@ -22,5 +22,5 @@ abstract class UseCase<Params, R> {
 
     class None
 
-    data class Data<T>(val data: T, val error: String = "")
+    data class Result<T>(val value: T, val error: String = "")
 }

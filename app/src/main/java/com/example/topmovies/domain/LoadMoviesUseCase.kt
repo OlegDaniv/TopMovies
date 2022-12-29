@@ -12,11 +12,11 @@ class LoadMoviesUseCase(
     override val handler: Handler
 ) : UseCase<None, List<Movie>>() {
 
-    override fun run(params: None): Data<List<Movie>> {
+    override fun run(params: None): Result<List<Movie>> {
         val data = repository.loadNewMovies()
-        val movies = data.data.map { it.toMovie() }
+        val movies = data.value.map { it.toMovie() }
         val error = data.error
         repository.upsertMoviesEntity(movies)
-        return Data(movies, error)
+        return Result(movies, error)
     }
 }

@@ -17,7 +17,7 @@ class MovieDetailsViewModel(
             if (data.error.isNotEmpty()) {
                 handledErrors(data.error)
             } else {
-                data.data.let { _movieDetails.value = it }
+                data.value.let { _movieDetails.value = it }
             }
         }
     }
