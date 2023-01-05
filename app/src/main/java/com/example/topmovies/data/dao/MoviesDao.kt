@@ -3,8 +3,6 @@ package com.example.topmovies.data.dao
 import androidx.room.*
 import com.example.topmovies.data.models.entity.MovieEntity
 import com.example.topmovies.data.repository.MoviesRepository.*
-import com.example.topmovies.domain.exeption.Failure
-import com.example.topmovies.domain.utils.ResultOf
 import com.example.topmovies.presentation.models.Movie
 
 @Dao
@@ -29,19 +27,18 @@ abstract class MoviesDao {
     abstract fun updateMovieEntity(id: String, rank: String, rankUpDown: String)
 
     @Transaction
-    open fun upsertMoviesEntity(movies: ResultOf<Failure, List<Movie>>) {
-        movies.fold({}, {
-            it.forEach { movie ->
-                getMovieEntityById(movie.id)
-                    ?.let {
-                        updateMovieEntity(
-                            movie.id,
-                            movie.rank,
-                            movie.rankUpDown
-                        )
-                    }
-                    ?: insertMovieEntity(movie.toMovieEntity())
-            }
-        })
+    open fun upsertMoviesEntity(movies: List<Movie>) {
+
+        movies.forEach { movie ->
+            getMovieEntityById(movie.id)
+                ?.let {
+                    updateMovieEntity(
+                        movie.id,
+                        movie.rank,
+                        movie.rankUpDown
+                    )
+                }
+                ?: insertMovieEntity(movie.toMovieEntity())
+        }
     }
 }

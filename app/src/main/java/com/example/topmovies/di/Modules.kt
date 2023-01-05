@@ -13,10 +13,10 @@ import com.example.topmovies.data.repository.MovieDetailsRepository
 import com.example.topmovies.data.repository.MovieDetailsRepository.MovieDetailsRepositoryImp
 import com.example.topmovies.data.repository.MoviesRepository
 import com.example.topmovies.data.repository.MoviesRepository.MoviesRepositoryImp
+import com.example.topmovies.data.utils.NetworkHandler
 import com.example.topmovies.domain.usecase.*
 import com.example.topmovies.presentation.viewmodel.MovieDetailsViewModel
 import com.example.topmovies.presentation.viewmodel.MovieViewModel
-import com.example.topmovies.data.utils.NetworkHandler
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
@@ -48,10 +48,10 @@ val networkModule = module {
             .addConverterFactory(GsonConverterFactory.create())
             .client(get()).build()
     }
-    single(named("moviesR")) { get<Retrofit>().create(MoviesApi::class.java) }
-    single(named("detailsR")) { get<Retrofit>().create(MovieDetailsAPi::class.java) }
-    single { MoviesRequest(get(named("moviesR")), get(), get()) }
-    single { MovieDetailsRequest(get(named("detailsR")), get(), get()) }
+    single(named("moviesRetrofit")) { get<Retrofit>().create(MoviesApi::class.java) }
+    single(named("detailsRetrofit")) { get<Retrofit>().create(MovieDetailsAPi::class.java) }
+    single { MoviesRequest(get(named("moviesRetrofit")), get(), get()) }
+    single { MovieDetailsRequest(get(named("detailsRetrofit")), get(), get()) }
 }
 
 val databaseModule = module {

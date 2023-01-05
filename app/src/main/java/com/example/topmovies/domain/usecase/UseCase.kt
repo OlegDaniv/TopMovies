@@ -1,7 +1,7 @@
 package com.example.topmovies.domain.usecase
 
 import android.os.Handler
-import com.example.topmovies.domain.exeption.Failure
+import com.example.topmovies.domain.utils.Failure
 import com.example.topmovies.domain.utils.ResultOf
 import java.util.concurrent.ExecutorService
 

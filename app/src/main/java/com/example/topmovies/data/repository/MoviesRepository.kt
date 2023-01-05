@@ -2,8 +2,8 @@ package com.example.topmovies.data.repository
 
 import com.example.topmovies.data.dao.MoviesDao
 import com.example.topmovies.data.network.MoviesRequest
-import com.example.topmovies.domain.exeption.Failure
 import com.example.topmovies.domain.usecase.UpdateFavoriteMovieUseCase.Params
+import com.example.topmovies.domain.utils.Failure
 import com.example.topmovies.domain.utils.ResultOf
 import com.example.topmovies.domain.utils.ResultOf.Success
 import com.example.topmovies.presentation.models.Movie
@@ -34,7 +34,10 @@ interface MoviesRepository {
 
         override fun loadNewMovie(): ResultOf<Failure, List<Movie>> {
             val newMovies = movieRequest.getNewMovies()
-            moviesDao.upsertMoviesEntity(newMovies)
+            newMovies.fold(
+                onFailed = {},
+                onSuccess = { moviesDao.upsertMoviesEntity(it) }
+            )
             return newMovies
         }
 

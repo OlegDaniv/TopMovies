@@ -1,6 +1,6 @@
 package com.example.topmovies.data.network
 
-import com.example.topmovies.domain.exeption.Failure
+import com.example.topmovies.domain.utils.Failure
 import com.example.topmovies.domain.utils.ResultOf
 import retrofit2.Call
 

@@ -2,7 +2,7 @@ package com.example.topmovies.domain.usecase
 
 import android.os.Handler
 import com.example.topmovies.data.repository.MovieDetailsRepository
-import com.example.topmovies.domain.exeption.Failure
+import com.example.topmovies.domain.utils.Failure
 import com.example.topmovies.domain.utils.ResultOf
 import com.example.topmovies.presentation.models.MovieDetails
 import java.util.concurrent.ExecutorService

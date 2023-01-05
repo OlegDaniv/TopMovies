@@ -2,7 +2,7 @@ package com.example.topmovies.data.repository
 
 import com.example.topmovies.data.dao.MovieDetailsDao
 import com.example.topmovies.data.network.MovieDetailsRequest
-import com.example.topmovies.domain.exeption.Failure
+import com.example.topmovies.domain.utils.Failure
 import com.example.topmovies.domain.utils.ResultOf
 import com.example.topmovies.domain.utils.ResultOf.Failed
 import com.example.topmovies.domain.utils.ResultOf.Success

@@ -7,12 +7,13 @@ import com.example.topmovies.domain.usecase.GetMoviesUseCase
 import com.example.topmovies.domain.usecase.LoadNewMoviesUseCase
 import com.example.topmovies.domain.usecase.UpdateFavoriteMovieUseCase
 import com.example.topmovies.domain.usecase.UpdateFavoriteMovieUseCase.Params
-import com.example.topmovies.domain.exeption.Failure
+import com.example.topmovies.domain.utils.Failure
 import com.example.topmovies.domain.utils.None
-import com.example.topmovies.presentation.viewmodel.MovieViewModel.EnumResult.Single
-import com.example.topmovies.presentation.viewmodel.MovieViewModel.EnumResult.WithFavoriteMovies
 import com.example.topmovies.domain.utils.ResultOf
 import com.example.topmovies.presentation.models.Movie
+import com.example.topmovies.presentation.utils.EnumResult
+import com.example.topmovies.presentation.utils.EnumResult.Single
+import com.example.topmovies.presentation.utils.EnumResult.WithFavoriteMovies
 import com.example.topmovies.presentation.utils.EnumScreen
 
 class MovieViewModel constructor(
@@ -72,17 +73,13 @@ class MovieViewModel constructor(
         when (enumResult) {
             Single -> resultOfMovies.fold(::handledErrors, ::handleMovies)
             WithFavoriteMovies -> resultOfMovies.fold(
-                { handledErrors(it) },
-                {
+                onFailed = { handledErrors(it) },
+                onSuccess = {
                     handleMovies(it)
                     getFavoriteMovie(None()) { resultOfFavoriteMovie ->
                         resultOfFavoriteMovie.fold(::handledErrors, ::handleFavoriteMovies)
                     }
                 })
         }
-    }
-
-    enum class EnumResult {
-        Single, WithFavoriteMovies
     }
 }
