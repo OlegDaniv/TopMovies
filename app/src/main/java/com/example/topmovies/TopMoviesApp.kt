@@ -4,12 +4,11 @@ import android.app.Application
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import com.example.topmovies.di.*
-import com.example.topmovies.ui.fragment.SettingsFragment.Companion.SETTING_PREF_THEME
-import com.example.topmovies.utils.checkNightMode
+import com.example.topmovies.presentation.fragment.SettingsFragment.Companion.SETTING_PREF_THEME
+import com.example.topmovies.presentation.utils.ThemeHandler.Companion.checkNightMode
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
-
 import org.koin.core.logger.Level
 
 class TopMoviesApp : Application() {
