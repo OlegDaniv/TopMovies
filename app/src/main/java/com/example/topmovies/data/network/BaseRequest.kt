@@ -2,6 +2,8 @@ package com.example.topmovies.data.network
 
 import com.example.topmovies.domain.utils.Failure
 import com.example.topmovies.domain.utils.ResultOf
+import com.example.topmovies.domain.utils.ResultOf.Failed
+import com.example.topmovies.domain.utils.ResultOf.Success
 import retrofit2.Call
 
 abstract class BaseRequest {
@@ -13,12 +15,13 @@ abstract class BaseRequest {
     ): ResultOf<Failure, Result> {
         return try {
             val response = call.execute()
-            when (response.isSuccessful) {
-                true -> ResultOf.Success(transform((response.body() ?: default)))
-                false -> ResultOf.Failed(Failure.ServerError)
+            if (response.isSuccessful) {
+                Success(transform((response.body() ?: default)))
+            } else {
+                Failed(Failure.ServerError)
             }
         } catch (exception: Throwable) {
-            ResultOf.Failed(Failure.ServerError)
+            Failed(Failure.ServerError)
         }
     }
 }
