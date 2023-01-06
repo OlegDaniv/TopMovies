@@ -57,6 +57,7 @@ class MoviesFragment : BaseFragment() {
             moviesAdapter.submitMoviesList(it)
             assignTextWhenListEmpty()
             changeRecyclerViewVisibility(it)
+            binding.swipeRefresh.isRefreshing = false
         }
 
         errorMessage.observe(viewLifecycleOwner) {
@@ -90,7 +91,6 @@ class MoviesFragment : BaseFragment() {
         when (screen) {
             MOVIES -> swipeRefresh.setOnRefreshListener {
                 moviesViewModel.loadNewMovies()
-                swipeRefresh.isRefreshing = false
             }
             FAVORITE -> swipeRefresh.isEnabled = false
         }
