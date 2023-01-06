@@ -8,7 +8,6 @@ import com.example.topmovies.domain.usecase.LoadNewMoviesUseCase
 import com.example.topmovies.domain.usecase.UpdateFavoriteMovieUseCase
 import com.example.topmovies.domain.usecase.UpdateFavoriteMovieUseCase.Params
 import com.example.topmovies.domain.utils.Failure
-import com.example.topmovies.domain.utils.None
 import com.example.topmovies.domain.utils.ResultOf
 import com.example.topmovies.presentation.models.Movie
 import com.example.topmovies.presentation.utils.EnumResult
@@ -34,7 +33,7 @@ class MovieViewModel constructor(
     }
 
     fun getMovies() {
-        getMovies(None()) { foldNewResult(it, WithFavoriteMovies) }
+        getMovies(Unit) { foldNewResult(it, WithFavoriteMovies) }
     }
 
     private fun handleFavoriteMovies(newFavoriteMovies: List<Movie>) {
@@ -46,7 +45,7 @@ class MovieViewModel constructor(
     }
 
     fun loadNewMovies() {
-        loadNewMovies(None()) {
+        loadNewMovies(Unit) {
             foldNewResult(it, Single)
         }
     }
@@ -76,7 +75,7 @@ class MovieViewModel constructor(
                 onFailed = { handledErrors(it) },
                 onSuccess = {
                     handleMovies(it)
-                    getFavoriteMovie(None()) { resultOfFavoriteMovie ->
+                    getFavoriteMovie(Unit) { resultOfFavoriteMovie ->
                         resultOfFavoriteMovie.fold(::handledErrors, ::handleFavoriteMovies)
                     }
                 })
