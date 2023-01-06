@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.topmovies.presentation.models.Movie
 
-@Entity(tableName = "tb_movies")
+@Entity(tableName = "movies")
 data class MovieEntity @JvmOverloads constructor(
     @PrimaryKey val id: String,
     val rank: String,

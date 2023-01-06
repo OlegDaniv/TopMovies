@@ -11,19 +11,19 @@ abstract class MoviesDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insertMovieEntity(entity: MovieEntity)
 
-    @Query("SELECT * From tb_movies")
+    @Query("SELECT * From movies")
     abstract fun getMoviesEntity(): List<MovieEntity>
 
-    @Query("Select * from tb_movies where id = :id")
+    @Query("Select * from movies where id = :id")
     abstract fun getMovieEntityById(id: String): MovieEntity?
 
-    @Query("select * from tb_movies where isFavorite = :isFavorite ")
+    @Query("select * from movies where isFavorite = :isFavorite ")
     abstract fun getFavoriteMoviesEntity(isFavorite: Boolean): List<MovieEntity>
 
-    @Query("UPDATE tb_movies SET isFavorite = :isFavorite WHERE id = :id")
+    @Query("UPDATE movies SET isFavorite = :isFavorite WHERE id = :id")
     abstract fun updateMovieEntity(id: String, isFavorite: Boolean)
 
-    @Query("UPDATE tb_movies SET rank = :rank,rankUpDown = :rankUpDown  WHERE id = :id")
+    @Query("UPDATE movies SET rank = :rank,rankUpDown = :rankUpDown  WHERE id = :id")
     abstract fun updateMovieEntity(id: String, rank: String, rankUpDown: String)
 
     @Transaction
