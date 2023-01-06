@@ -6,11 +6,11 @@ import retrofit2.Call
 
 abstract class BaseRequest {
 
-    fun <T, R> request(
-        call: Call<T>,
-        transform: (T) -> R,
-        default: T
-    ): ResultOf<Failure, R> {
+    fun <Type, Result> request(
+        call: Call<Type>,
+        transform: (Type) -> Result,
+        default: Type
+    ): ResultOf<Failure, Result> {
         return try {
             val response = call.execute()
             when (response.isSuccessful) {
