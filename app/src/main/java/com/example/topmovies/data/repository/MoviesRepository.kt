@@ -12,11 +12,11 @@ interface MoviesRepository {
 
     fun getMoviesEntity(): ResultOf<Failure, List<Movie>>
 
-    fun getFavoriteMoviesEntity(): ResultOf<Failure, List<Movie>>
+    fun getFavoriteMovies(): ResultOf<Failure, List<Movie>>
 
     fun loadNewMovie(): ResultOf<Failure, List<Movie>>
 
-    fun updateMovieEntity(params: Params)
+    fun updateMovie(params: Params)
 
     class MoviesRepositoryImp(
         private val moviesDao: MoviesDao,
@@ -24,7 +24,7 @@ interface MoviesRepository {
     ) : MoviesRepository {
 
         override fun getMoviesEntity(): ResultOf<Failure, List<Movie>> {
-            val movies = moviesDao.getMoviesEntity().map { it.toMovie() }
+            val movies = moviesDao.getMovies().map { it.toMovie() }
             return if (movies.isEmpty()) {
                 loadNewMovie()
             } else {
@@ -36,16 +36,16 @@ interface MoviesRepository {
             val newMovies = movieRequest.getNewMovies()
             newMovies.fold(
                 onFailed = {},
-                onSuccess = { moviesDao.upsertMoviesEntity(it) }
+                onSuccess = { moviesDao.upsertMovies(it) }
             )
             return newMovies
         }
 
-        override fun getFavoriteMoviesEntity(): ResultOf<Nothing, List<Movie>> =
-            Success(moviesDao.getFavoriteMoviesEntity(true).map { it.toMovie() })
+        override fun getFavoriteMovies(): ResultOf<Nothing, List<Movie>> =
+            Success(moviesDao.getFavoriteMovies(true).map { it.toMovie() })
 
-        override fun updateMovieEntity(params: Params) {
-            moviesDao.updateMovieEntity(params.id, params.isFavorite)
+        override fun updateMovie(params: Params) {
+            moviesDao.updateMovie(params.id, params.isFavorite)
         }
     }
 }

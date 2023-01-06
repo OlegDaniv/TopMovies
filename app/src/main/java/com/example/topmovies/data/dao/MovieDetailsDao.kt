@@ -7,8 +7,8 @@ import com.example.topmovies.data.models.entity.MovieDetailsEntity
 abstract class MovieDetailsDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract fun insertMovieDetailsEntity(entity: MovieDetailsEntity)
+    abstract fun insertMovieDetails(entity: MovieDetailsEntity)
 
     @Query("SELECT * FROM movie_details WHERE id = :id")
-    abstract fun getMovieDetailsEntityById(id: String): MovieDetailsEntity?
+    abstract fun getMovieDetailsById(id: String): MovieDetailsEntity?
 }

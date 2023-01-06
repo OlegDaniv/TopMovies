@@ -15,5 +15,5 @@ class GetFavoriteMovieUseCase(
 ) : UseCase<None, List<Movie>>() {
 
     override fun run(params: None): ResultOf<Failure, List<Movie>> =
-        repository.getFavoriteMoviesEntity()
+        repository.getFavoriteMovies()
 }

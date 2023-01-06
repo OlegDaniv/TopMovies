@@ -9,36 +9,36 @@ import com.example.topmovies.presentation.models.Movie
 abstract class MoviesDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract fun insertMovieEntity(entity: MovieEntity)
+    abstract fun insertMovie(entity: MovieEntity)
 
     @Query("SELECT * From movies")
-    abstract fun getMoviesEntity(): List<MovieEntity>
+    abstract fun getMovies(): List<MovieEntity>
 
     @Query("Select * from movies where id = :id")
-    abstract fun getMovieEntityById(id: String): MovieEntity?
+    abstract fun getMovieById(id: String): MovieEntity?
 
     @Query("select * from movies where isFavorite = :isFavorite ")
-    abstract fun getFavoriteMoviesEntity(isFavorite: Boolean): List<MovieEntity>
+    abstract fun getFavoriteMovies(isFavorite: Boolean): List<MovieEntity>
 
     @Query("UPDATE movies SET isFavorite = :isFavorite WHERE id = :id")
-    abstract fun updateMovieEntity(id: String, isFavorite: Boolean)
+    abstract fun updateMovie(id: String, isFavorite: Boolean)
 
     @Query("UPDATE movies SET rank = :rank,rankUpDown = :rankUpDown  WHERE id = :id")
-    abstract fun updateMovieEntity(id: String, rank: String, rankUpDown: String)
+    abstract fun updateMovie(id: String, rank: String, rankUpDown: String)
 
     @Transaction
-    open fun upsertMoviesEntity(movies: List<Movie>) {
+    open fun upsertMovies(movies: List<Movie>) {
 
         movies.forEach { movie ->
-            getMovieEntityById(movie.id)
+            getMovieById(movie.id)
                 ?.let {
-                    updateMovieEntity(
+                    updateMovie(
                         movie.id,
                         movie.rank,
                         movie.rankUpDown
                     )
                 }
-                ?: insertMovieEntity(movie.toMovieEntity())
+                ?: insertMovie(movie.toMovieEntity())
         }
     }
 }

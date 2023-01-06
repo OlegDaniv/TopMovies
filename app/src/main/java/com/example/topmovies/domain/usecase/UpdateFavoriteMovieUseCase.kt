@@ -15,7 +15,7 @@ class UpdateFavoriteMovieUseCase(
 ) : UseCase<Params, List<Movie>>() {
 
     override fun run(params: Params): ResultOf<Failure, List<Movie>> {
-        repository.updateMovieEntity(params)
+        repository.updateMovie(params)
         return repository.getMoviesEntity()
     }
 

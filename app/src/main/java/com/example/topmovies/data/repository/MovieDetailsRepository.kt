@@ -12,7 +12,7 @@ interface MovieDetailsRepository {
 
     fun getMovieDetails(id: String): ResultOf<Failure, MovieDetails>
 
-    fun loadNewMovieDetails(id: String): ResultOf<Failure, MovieDetails>
+    fun loadNewMovieDetailsById(id: String): ResultOf<Failure, MovieDetails>
 
     class MovieDetailsRepositoryImp(
         private val movieDetailsDao: MovieDetailsDao,
@@ -20,12 +20,12 @@ interface MovieDetailsRepository {
     ) : MovieDetailsRepository {
 
         override fun getMovieDetails(id: String): ResultOf<Failure, MovieDetails> {
-            val movieDetails = movieDetailsDao.getMovieDetailsEntityById(id)
+            val movieDetails = movieDetailsDao.getMovieDetailsById(id)
             return if (movieDetails == null) {
-                val newMovieDetails = loadNewMovieDetails(id)
+                val newMovieDetails = loadNewMovieDetailsById(id)
                 newMovieDetails.fold(
                     onFailed = { Failed(it) },
-                    onSuccess = { movieDetailsDao.insertMovieDetailsEntity(it.toMovieDetailsEntity()) }
+                    onSuccess = { movieDetailsDao.insertMovieDetails(it.toMovieDetailsEntity()) }
                 )
                 newMovieDetails
             } else {
@@ -33,7 +33,7 @@ interface MovieDetailsRepository {
             }
         }
 
-        override fun loadNewMovieDetails(id: String): ResultOf<Failure, MovieDetails> {
+        override fun loadNewMovieDetailsById(id: String): ResultOf<Failure, MovieDetails> {
             return movieDetailsRequest.loadMovieDetails(id)
         }
     }
