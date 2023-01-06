@@ -2,8 +2,8 @@ package com.example.topmovies.domain.usecase
 
 import android.os.Handler
 import com.example.topmovies.data.repository.MoviesRepository
-import com.example.topmovies.domain.utils.Failure
 import com.example.topmovies.domain.usecase.UpdateFavoriteMovieUseCase.Params
+import com.example.topmovies.domain.utils.Failure
 import com.example.topmovies.domain.utils.ResultOf
 import com.example.topmovies.presentation.models.Movie
 import java.util.concurrent.ExecutorService
