@@ -15,5 +15,5 @@ class GetMoviesUseCase(
 ) : UseCase<None, List<Movie>>() {
 
     override fun run(params: None): ResultOf<Failure, List<Movie>> =
-        repository.getMoviesEntity()
+        repository.getMovies()
 }

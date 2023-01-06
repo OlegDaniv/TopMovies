@@ -10,7 +10,7 @@ import com.example.topmovies.presentation.models.Movie
 
 interface MoviesRepository {
 
-    fun getMoviesEntity(): ResultOf<Failure, List<Movie>>
+    fun getMovies(): ResultOf<Failure, List<Movie>>
 
     fun getFavoriteMovies(): ResultOf<Failure, List<Movie>>
 
@@ -23,7 +23,7 @@ interface MoviesRepository {
         private val movieRequest: MoviesRequest,
     ) : MoviesRepository {
 
-        override fun getMoviesEntity(): ResultOf<Failure, List<Movie>> {
+        override fun getMovies(): ResultOf<Failure, List<Movie>> {
             val movies = moviesDao.getMovies().map { it.toMovie() }
             return if (movies.isEmpty()) {
                 loadNewMovie()

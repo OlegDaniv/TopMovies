@@ -16,7 +16,7 @@ class UpdateFavoriteMovieUseCase(
 
     override fun run(params: Params): ResultOf<Failure, List<Movie>> {
         repository.updateMovie(params)
-        return repository.getMoviesEntity()
+        return repository.getMovies()
     }
 
     data class Params(val id: String, val isFavorite: Boolean)
