@@ -13,5 +13,5 @@ class LoadNewMoviesUseCase(
     override val handler: Handler,
 ) : UseCase<Unit, List<Movie>>() {
 
-    override fun run(params: Unit): ResultOf<Failure, List<Movie>> = repository.loadNewMovie()
+    override fun execute(params: Unit): ResultOf<Failure, List<Movie>> = repository.loadNewMovie()
 }

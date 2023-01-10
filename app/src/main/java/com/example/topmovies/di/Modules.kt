@@ -73,11 +73,12 @@ val useCaseModule = module {
     single { GetFavoriteMovieUseCase(get(), get(), get()) }
     single { LoadNewMoviesUseCase(get(), get(), get()) }
     single { UpdateFavoriteMovieUseCase(get(), get(), get()) }
+    single { GetPairMoviesUseCase(get(),get(),get()) }
 }
 
 val viewModelModule = module {
     viewModel { MovieDetailsViewModel(get()) }
-    viewModel { MovieViewModel(get(), get(), get(), get()) }
+    viewModel { MovieViewModel(get(), get(), get(), get(),get()) }
 }
 
 val appModule = module {

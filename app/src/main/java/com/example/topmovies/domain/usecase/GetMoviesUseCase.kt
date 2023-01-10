@@ -13,6 +13,6 @@ class GetMoviesUseCase(
     override val handler: Handler,
 ) : UseCase<Unit, List<Movie>>() {
 
-    override fun run(params: Unit): ResultOf<Failure, List<Movie>> =
+    override fun execute(params: Unit): ResultOf<Failure, List<Movie>> =
         repository.getMovies()
 }

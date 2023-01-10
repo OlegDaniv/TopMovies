@@ -13,6 +13,6 @@ class GetMovieDetailsUseCase(
     override val handler: Handler
 ) : UseCase<String, MovieDetails>() {
 
-    override fun run(params: String): ResultOf<Failure, MovieDetails> =
+    override fun execute(params: String): ResultOf<Failure, MovieDetails> =
         repository.getMovieDetails(params)
 }
