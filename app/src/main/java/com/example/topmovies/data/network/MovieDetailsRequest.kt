@@ -1,10 +1,9 @@
 package com.example.topmovies.data.network
 
-import com.example.topmovies.data.models.response.MovieDetailsResponse
 import com.example.topmovies.data.utils.NetworkHandler
 import com.example.topmovies.domain.usecase.GetPreferenceUseCase
 import com.example.topmovies.domain.utils.Failure
-import com.example.topmovies.domain.utils.ResultOf
+import com.example.topmovies.domain.utils.Result
 import com.example.topmovies.presentation.models.MovieDetails
 
 class MovieDetailsRequest(
@@ -15,16 +14,14 @@ class MovieDetailsRequest(
 
     fun loadMovieDetails(
         movieId: String,
-    ): ResultOf<Failure, MovieDetails> {
+    ): Result<Failure, MovieDetails> {
         return if (networkHandler.isNetworkAvailable()) {
             request(
                 /** use parameter in api.getMovieDetails() to use IMDB api   **/
                 api.getMovieDetails(),
-                { it.toMovieDetails() },
-                MovieDetailsResponse.empty
-            )
+            ) { it.toMovieDetails() }
         } else {
-            ResultOf.Failed(Failure.NetworkConnection)
+            Result.Error(Failure.NetworkConnection)
         }
     }
 }

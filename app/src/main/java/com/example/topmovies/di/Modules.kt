@@ -12,7 +12,7 @@ import com.example.topmovies.data.network.MoviesRequest
 import com.example.topmovies.data.repository.MovieDetailsRepository
 import com.example.topmovies.data.repository.MovieDetailsRepository.MovieDetailsRepositoryImp
 import com.example.topmovies.data.repository.MoviesRepository
-import com.example.topmovies.data.repository.MoviesRepository.MoviesRepositoryImp
+import com.example.topmovies.data.repository.MoviesRepository.MoviesRepositoryImpl
 import com.example.topmovies.data.utils.NetworkHandler
 import com.example.topmovies.domain.usecase.*
 import com.example.topmovies.presentation.viewmodel.MovieDetailsViewModel
@@ -62,15 +62,13 @@ val databaseModule = module {
     single { get<MovieDatabase>().movieDetails() }
 }
 val repositoryModule = module {
-    single<MoviesRepository> { MoviesRepositoryImp(get(), get()) }
+    single<MoviesRepository> { MoviesRepositoryImpl(get(), get()) }
     single<MovieDetailsRepository> { MovieDetailsRepositoryImp(get(), get()) }
 }
 
 val useCaseModule = module {
-    single { GetMoviesUseCase(get(), get(), get()) }
     single { GetMovieDetailsUseCase(get(), get(), get()) }
     single { GetPreferenceUseCase(get()) }
-    single { GetFavoriteMovieUseCase(get(), get(), get()) }
     single { LoadNewMoviesUseCase(get(), get(), get()) }
     single { UpdateFavoriteMovieUseCase(get(), get(), get()) }
     single { GetPairMoviesUseCase(get(),get(),get()) }
@@ -78,7 +76,7 @@ val useCaseModule = module {
 
 val viewModelModule = module {
     viewModel { MovieDetailsViewModel(get()) }
-    viewModel { MovieViewModel(get(), get(), get(), get(),get()) }
+    viewModel { MovieViewModel(get(), get(), get()) }
 }
 
 val appModule = module {

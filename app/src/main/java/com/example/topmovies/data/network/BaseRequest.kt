@@ -1,9 +1,9 @@
 package com.example.topmovies.data.network
 
 import com.example.topmovies.domain.utils.Failure
-import com.example.topmovies.domain.utils.ResultOf
-import com.example.topmovies.domain.utils.ResultOf.Failed
-import com.example.topmovies.domain.utils.ResultOf.Success
+import com.example.topmovies.domain.utils.Result.Error
+import com.example.topmovies.domain.utils.Result.Success
+import okio.IOException
 import retrofit2.Call
 
 abstract class BaseRequest {
@@ -11,17 +11,17 @@ abstract class BaseRequest {
     fun <Type, Result> request(
         call: Call<Type>,
         transform: (Type) -> Result,
-        default: Type
-    ): ResultOf<Failure, Result> {
+    ): com.example.topmovies.domain.utils.Result<Failure, Result> {
         return try {
             val response = call.execute()
-            if (response.isSuccessful) {
-                Success(transform((response.body() ?: default)))
+            val body = response.body()
+            if (response.isSuccessful && body != null) {
+                Success(transform((body)))
             } else {
-                Failed(Failure.ServerError)
+                Error(Failure.ServerError)
             }
-        } catch (exception: Throwable) {
-            Failed(Failure.ServerError)
+        } catch (exception: IOException) {
+            Error(Failure.ServerError)
         }
     }
 }

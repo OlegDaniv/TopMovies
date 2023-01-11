@@ -2,15 +2,21 @@ package com.example.topmovies.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.topmovies.domain.usecase.*
+import com.example.topmovies.domain.usecase.GetPairMoviesUseCase
+import com.example.topmovies.domain.usecase.LoadNewMoviesUseCase
+import com.example.topmovies.domain.usecase.UpdateFavoriteMovieUseCase
 import com.example.topmovies.domain.usecase.UpdateFavoriteMovieUseCase.Params
+import com.example.topmovies.domain.utils.Failure
+import com.example.topmovies.domain.utils.Result
+import com.example.topmovies.domain.utils.Result.Error
+import com.example.topmovies.domain.utils.Result.Success
 import com.example.topmovies.presentation.models.Movie
 import com.example.topmovies.presentation.utils.EnumScreen
+import com.example.topmovies.presentation.utils.EnumScreen.FAVORITE
+import com.example.topmovies.presentation.utils.EnumScreen.MOVIES
 
 class MovieViewModel constructor(
-    private val getMovies: GetMoviesUseCase,
     private val getPairMovies: GetPairMoviesUseCase,
-    private val getFavoriteMovie: GetFavoriteMovieUseCase,
     private val loadNewMovies: LoadNewMoviesUseCase,
     private val updateFavoriteMovie: UpdateFavoriteMovieUseCase
 ) : BaseViewModel() {
@@ -20,42 +26,44 @@ class MovieViewModel constructor(
 
     fun getObservableList(screen: EnumScreen): LiveData<List<Movie>> {
         return when (screen) {
-            EnumScreen.MOVIES -> movies
-            EnumScreen.FAVORITE -> favoriteMovies
+            MOVIES -> movies
+            FAVORITE -> favoriteMovies
         }
     }
 
     fun getMovies() {
-        getPairMovies(Unit) { result ->
-            val pair = result.getSuccess()
-            pair?.first?.let { movies -> handleMovies(movies) }
-            pair?.second?.let { favoriteMovies -> handleFavoriteMovies(favoriteMovies) }
+        getPairMovies(Unit) {
+            handleResultOf(it)
         }
     }
 
     fun loadNewMovies() {
-        loadNewMovies(Unit) { resultOfMovies ->
-            resultOfMovies.fold(
-                onFailed = { handledErrors(it) },
-                onSuccess = { handleMovies(it) }
-            )
+        loadNewMovies(Unit) { result ->
+            handleMovies(result.asSuccess().result)
+            handledErrors(result.asErrors().error)
         }
     }
 
     fun addFavoriteMovie(id: String, favorite: Boolean, screen: EnumScreen) {
         when (screen) {
-            EnumScreen.MOVIES ->
-                shiftMovieToFavorites(id, !favorite)
-            EnumScreen.FAVORITE ->
-                shiftMovieToFavorites(id, false)
+            MOVIES -> shiftMovieToFavorites(id, !favorite)
+            FAVORITE -> shiftMovieToFavorites(id, false)
         }
     }
 
     private fun shiftMovieToFavorites(id: String, isFavorite: Boolean) {
         updateFavoriteMovie(Params(id, isFavorite)) {
-            val pair = it.getSuccess()
-            pair?.first?.let { it1 -> handleMovies(it1) }
-            pair?.second?.let { it1 -> handleFavoriteMovies(it1) }
+            handleResultOf(it)
+        }
+    }
+
+    private fun handleResultOf(result: Result<Failure, Pair<List<Movie>, List<Movie>>>) {
+        when (result) {
+            is Error -> handledErrors(result.error)
+            is Success -> {
+                handleMovies(result.result.first)
+                handleFavoriteMovies(result.result.second)
+            }
         }
     }
 

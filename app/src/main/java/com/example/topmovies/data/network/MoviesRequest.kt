@@ -1,10 +1,10 @@
 package com.example.topmovies.data.network
 
-import com.example.topmovies.data.models.response.MovieObjectResponse
 import com.example.topmovies.data.utils.NetworkHandler
 import com.example.topmovies.domain.usecase.GetPreferenceUseCase
 import com.example.topmovies.domain.utils.Failure
-import com.example.topmovies.domain.utils.ResultOf
+import com.example.topmovies.domain.utils.Result
+import com.example.topmovies.domain.utils.Result.Error
 import com.example.topmovies.presentation.models.Movie
 
 class MoviesRequest(
@@ -18,15 +18,15 @@ class MoviesRequest(
         const val DEF_API_KEY = "k_efexam0h"
     }
 
-    fun getNewMovies(): ResultOf<Failure, List<Movie>> {
+    fun getNewMovies(): Result<Failure, List<Movie>> {
         return if (networkHandler.isNetworkAvailable()) {
             request(
                 api.getMovies(),
-                { it.items.map { movieApi -> movieApi.toMovie() } },
-                MovieObjectResponse.empty
-            )
+            ) {
+                it.items.map { movieApi -> movieApi.toMovie() }
+            }
         } else {
-            ResultOf.Failed(Failure.NetworkConnection)
+            Error(Failure.NetworkConnection)
         }
     }
 }

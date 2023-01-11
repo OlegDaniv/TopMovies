@@ -18,13 +18,6 @@ data class MovieDetailsResponse(
     val errorMessage: String? = null
 ) {
 
-    companion object {
-        val empty = MovieDetailsResponse(
-            "", "", "", "", "", "", "",
-            "", "", null
-        )
-    }
-
     fun toMovieDetails(): MovieDetails {
         return MovieDetails(
             id, title, year, plot, imageUrl, releaseDate,
