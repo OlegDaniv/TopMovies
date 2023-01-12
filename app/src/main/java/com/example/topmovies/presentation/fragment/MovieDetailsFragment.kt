@@ -35,15 +35,15 @@ class MovieDetailsFragment : BaseFragment() {
 
     private fun setupUI() {
         viewModel.errorMessage.observe(viewLifecycleOwner) {
-            handleFailure(it)
+            handleError(it)
         }
         viewModel.movieDetails.observe(
             viewLifecycleOwner,
-            ::giveMovieDetails
+            ::showMovieDetails
         )
     }
 
-    private fun giveMovieDetails(movieDetails: MovieDetails) = with(binding) {
+    private fun showMovieDetails(movieDetails: MovieDetails) = with(binding) {
         textviewMovieDetailsDescription.text = movieDetails.plot
         GlideApp.with(imageviewMovieDetailsImage).asBitmap().load(movieDetails.imageUrl)
             .into(imageviewMovieDetailsImage)

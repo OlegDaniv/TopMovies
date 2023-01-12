@@ -7,7 +7,7 @@ import retrofit2.http.Path
 
 interface MovieDetailsApi {
 
-    @GET("${MOVIE_DETAILED}/{apiKey}/{movieId}")
+    @GET("${MOVIE_DETAILS_API}/{apiKey}/{movieId}")
     fun getMovieDetails(@Path("apiKey") apiKey: String, @Path("movieId") movieId: String):
             Call<MovieDetailsResponse>
 
@@ -16,6 +16,6 @@ interface MovieDetailsApi {
     fun getMovieDetails(): Call<MovieDetailsResponse>
 
     companion object {
-        private const val MOVIE_DETAILED = "/en/API/Title"
+        private const val MOVIE_DETAILS_API = "/en/API/Title"
     }
 }

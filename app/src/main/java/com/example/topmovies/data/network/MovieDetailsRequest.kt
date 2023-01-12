@@ -10,6 +10,7 @@ import com.example.topmovies.presentation.models.MovieDetails
 
 class MovieDetailsRequest(
     private val api: MovieDetailsApi,
+    /** Because the IMDB API has a limited number of requests (only 100), we use the mock server to test our app. You can use the IMDB API when you pass the key into the API. getMovies() function, like that api.getMovies(getApiKey(),movieId) **/
     private val getPreference: GetPreference,
     private val networkHandler: NetworkHandler
 ) {
@@ -19,7 +20,6 @@ class MovieDetailsRequest(
     ): Result<Error, MovieDetails> {
         return if (networkHandler.isNetworkAvailable()) {
             api.getMovieDetails().unwrap {
-                /** Use parameter in api.getMovieDetails() to use IMDB api   **/
                 it.toMovieDetails()
             }
         } else {

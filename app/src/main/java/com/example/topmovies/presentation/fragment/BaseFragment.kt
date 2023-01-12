@@ -8,8 +8,8 @@ import com.example.topmovies.domain.utils.Error.ServerError
 
 abstract class BaseFragment : Fragment() {
 
-    fun handleFailure(failure: Error) {
-        when (failure) {
+    fun handleError(error: Error) {
+        when (error) {
             is ServerError -> Toast.makeText(context, "ServerError", Toast.LENGTH_SHORT).show()
             is NetworkConnection -> NetworkDialogFragment().show(parentFragmentManager, null)
         }
