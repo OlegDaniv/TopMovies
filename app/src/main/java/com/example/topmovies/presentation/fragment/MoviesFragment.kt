@@ -62,7 +62,7 @@ class MoviesFragment : BaseFragment() {
 
         errorMessage.observe(viewLifecycleOwner) {
             it?.let {
-                handlerFailure(it)
+                handleFailure(it)
                 binding.swipeRefresh.isRefreshing = false
             }
         }

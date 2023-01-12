@@ -8,17 +8,10 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.example.topmovies.R
-import com.example.topmovies.presentation.view.ImageViewPreference
 import com.example.topmovies.presentation.utils.ThemeHandler.Companion.checkNightMode
+import com.example.topmovies.presentation.view.ImageViewPreference
 
 class SettingsFragment : PreferenceFragmentCompat() {
-
-    companion object {
-        const val INTENT_TYPE = "image/*"
-        const val SETTING_PREF_THEME = "switch_theme"
-        const val SETTING_PREF_PROFILE_IMAGE = "image_preference"
-        const val SETTING_PREF_DIALOG_ABOUT = "dialog_preference"
-    }
 
     private val activityResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -31,14 +24,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 }
             }
         }
-    
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
         setProfileImage()
         showAbout()
         setTheme()
     }
-    
+
     private fun setTheme() {
         findPreference<ListPreference>(SETTING_PREF_THEME)?.onPreferenceChangeListener =
             Preference.OnPreferenceChangeListener { preference, newValue ->
@@ -48,7 +41,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 true
             }
     }
-    
+
     private fun setProfileImage() {
         findPreference<ImageViewPreference>(SETTING_PREF_PROFILE_IMAGE)?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
@@ -56,7 +49,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 true
             }
     }
-    
+
     private fun getImageFromPhone() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = INTENT_TYPE
@@ -68,7 +61,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             )
         )
     }
-    
+
     private fun showAbout() {
         findPreference<Preference>(SETTING_PREF_DIALOG_ABOUT)?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
@@ -78,5 +71,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 )
                 true
             }
+    }
+
+    companion object {
+        const val SETTING_PREF_THEME = "switch_theme"
+        const val SETTING_PREF_PROFILE_IMAGE = "image_preference"
+        private const val INTENT_TYPE = "image/*"
+        private const val SETTING_PREF_DIALOG_ABOUT = "dialog_preference"
     }
 }

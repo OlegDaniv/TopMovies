@@ -15,9 +15,7 @@ class NetworkHandler(private val context: Context) {
                 connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
             (capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET))
         } else {
-            @Suppress("DEPRECATION")
             val activeNetworkInfo = connectivityManager.activeNetworkInfo
-            @Suppress("DEPRECATION")
             activeNetworkInfo != null && activeNetworkInfo.isConnected
         }
     }

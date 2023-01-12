@@ -8,8 +8,6 @@ import com.example.topmovies.R
 import kotlin.math.min
 import kotlin.properties.Delegates.notNull
 
-const val DEF_SIZE_VIEW = 200
-
 class CircleAvatarView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
@@ -110,5 +108,9 @@ class CircleAvatarView @JvmOverloads constructor(
 
     private fun setHeightLabel(height: Float): Float {
         return height - ((labelPaint.descent() + labelPaint.ascent()) / 2)
+    }
+
+    companion object {
+        private const val DEF_SIZE_VIEW = 200
     }
 }

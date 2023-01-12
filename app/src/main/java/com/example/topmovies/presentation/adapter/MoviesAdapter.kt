@@ -16,18 +16,10 @@ import com.example.topmovies.databinding.ItemLayoutBinding
 import com.example.topmovies.presentation.models.Movie
 import com.example.topmovies.presentation.utils.GlideApp
 
-
 class MoviesAdapter(
     private val onItemClickListener: (String) -> Unit,
     private val onFavoriteMovieClick: (String, Boolean) -> Unit
 ) : ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(MovieDiffCallBack()) {
-
-    companion object {
-        const val IMAGE_SIZE = "UX126_CR6,0,126,126_AL_.jpg"
-        const val REPLACE_AFTER = "._V1_"
-        const val RANK_UP = '+'
-        const val RANK_DOWN = '-'
-    }
 
     fun submitMoviesList(movies: List<Movie>) {
         submitList(movies)
@@ -61,7 +53,6 @@ class MoviesAdapter(
         private val onItemClickListener: (String) -> Unit,
         private val onFavoriteMovieClick: (String, Boolean) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
-
         private val avatarCustomTarget = object : CustomTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                 binding.circleAvatarViewItemLayoutMovieImage.setAvatarImage(resource)
@@ -139,7 +130,6 @@ class MoviesAdapter(
     }
 
     private class MovieDiffCallBack : DiffUtil.ItemCallback<Movie>() {
-
         override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
             return oldItem.id == newItem.id
         }
@@ -170,5 +160,12 @@ class MoviesAdapter(
         class Rank(val rankUpDown: String) : PayloadChange()
         class Both(val id: String, val isFavorite: Boolean, val rankUpDown: String) :
             PayloadChange()
+    }
+
+    companion object {
+        private const val IMAGE_SIZE = "UX126_CR6,0,126,126_AL_.jpg"
+        private const val REPLACE_AFTER = "._V1_"
+        private const val RANK_UP = '+'
+        private const val RANK_DOWN = '-'
     }
 }

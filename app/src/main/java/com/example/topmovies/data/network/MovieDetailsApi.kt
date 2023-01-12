@@ -5,11 +5,7 @@ import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-interface MovieDetailsAPi {
-
-    companion object {
-        const val MOVIE_DETAILED = "/en/API/Title"
-    }
+interface MovieDetailsApi {
 
     @GET("${MOVIE_DETAILED}/{apiKey}/{movieId}")
     fun getMovieDetails(@Path("apiKey") apiKey: String, @Path("movieId") movieId: String):
@@ -18,4 +14,8 @@ interface MovieDetailsAPi {
     /** This method is for test, because 100 responses are not enough **/
     @GET("https://86e6737b-9ab8-444a-9c53-bdfa86309d8f.mock.pstmn.io/details")
     fun getMovieDetails(): Call<MovieDetailsResponse>
+
+    companion object {
+        private const val MOVIE_DETAILED = "/en/API/Title"
+    }
 }

@@ -12,10 +12,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MovieDetailsFragment : BaseFragment() {
 
-    companion object {
-        const val ID_ARGUMENT_KEY = "id_argument_key"
-    }
-
     private var _binding: FragmentDetailsMovieBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MovieDetailsViewModel by viewModel()
@@ -39,15 +35,15 @@ class MovieDetailsFragment : BaseFragment() {
 
     private fun setupUI() {
         viewModel.errorMessage.observe(viewLifecycleOwner) {
-            handlerFailure(it)
+            handleFailure(it)
         }
         viewModel.movieDetails.observe(
             viewLifecycleOwner,
-            ::renderMovieDetails
+            ::giveMovieDetails
         )
     }
 
-    private fun renderMovieDetails(movieDetails: MovieDetails) = with(binding) {
+    private fun giveMovieDetails(movieDetails: MovieDetails) = with(binding) {
         textviewMovieDetailsDescription.text = movieDetails.plot
         GlideApp.with(imageviewMovieDetailsImage).asBitmap().load(movieDetails.imageUrl)
             .into(imageviewMovieDetailsImage)
@@ -60,5 +56,9 @@ class MovieDetailsFragment : BaseFragment() {
 
     private fun loadMovieDetailsById(movieId: String) {
         viewModel.resolveMovieDetails(movieId)
+    }
+
+    companion object {
+        const val ID_ARGUMENT_KEY = "id_argument_key"
     }
 }

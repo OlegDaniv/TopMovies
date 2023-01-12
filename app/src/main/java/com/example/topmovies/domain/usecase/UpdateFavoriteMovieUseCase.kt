@@ -3,8 +3,8 @@ package com.example.topmovies.domain.usecase
 import android.os.Handler
 import com.example.topmovies.data.repository.MoviesRepository
 import com.example.topmovies.domain.usecase.UpdateFavoriteMovieUseCase.Params
-import com.example.topmovies.domain.utils.Failure
-import com.example.topmovies.domain.utils.Failure.*
+import com.example.topmovies.domain.utils.Error
+import com.example.topmovies.domain.utils.Error.*
 import com.example.topmovies.domain.utils.Result
 import com.example.topmovies.domain.utils.Result.*
 import com.example.topmovies.presentation.models.Movie
@@ -16,7 +16,7 @@ class UpdateFavoriteMovieUseCase(
     override val handler: Handler
 ) : UseCase<Params, Pair<List<Movie>, List<Movie>>>() {
 
-    override fun execute(params: Params): Result<Failure, Pair<List<Movie>, List<Movie>>> {
+    override fun execute(params: Params): Result<Error, Pair<List<Movie>, List<Movie>>> {
         repository.updateMovie(params)
         val movies = repository.getMovies().asSuccess().result
         val favoriteMoves = repository.getFavoriteMovies().asSuccess().result
@@ -26,7 +26,7 @@ class UpdateFavoriteMovieUseCase(
         return if (pair != null) {
             Success(pair)
         } else {
-            Error(ServerError)
+            Failure(ServerError)
         }
     }
 

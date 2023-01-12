@@ -5,10 +5,6 @@ import androidx.appcompat.app.AppCompatDelegate
 class ThemeHandler {
 
     companion object {
-        private const val THEME_MODE_AUTO = "Auto"
-        private const val THEME_MODE_LIGHT = "Light"
-        private const val THEME_MODE_DARK = "Dark"
-
         fun checkNightMode(mode: String?) {
             AppCompatDelegate.setDefaultNightMode(
                 when (mode) {
@@ -19,5 +15,9 @@ class ThemeHandler {
                 }
             )
         }
+
+        private const val THEME_MODE_AUTO = "Auto"
+        private const val THEME_MODE_LIGHT = "Light"
+        private const val THEME_MODE_DARK = "Dark"
     }
 }

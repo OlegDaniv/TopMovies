@@ -3,7 +3,7 @@ package com.example.topmovies.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.topmovies.domain.usecase.GetMovieDetailsUseCase
-import com.example.topmovies.domain.utils.Result.Error
+import com.example.topmovies.domain.utils.Result.Failure
 import com.example.topmovies.domain.utils.Result.Success
 import com.example.topmovies.presentation.models.MovieDetails
 
@@ -17,7 +17,7 @@ class MovieDetailsViewModel(
     fun resolveMovieDetails(id: String) {
         getMovieDetailsUseCase(id) {
             when (it) {
-                is Error -> handledErrors(it.error)
+                is Failure -> handledErrors(it.error)
                 is Success -> handleMovieDetails(it.result)
             }
         }

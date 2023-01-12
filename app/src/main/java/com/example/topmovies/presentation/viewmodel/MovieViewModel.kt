@@ -2,13 +2,13 @@ package com.example.topmovies.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.topmovies.domain.usecase.GetPairMoviesUseCase
+import com.example.topmovies.domain.usecase.GetMoviesPairUseCase
 import com.example.topmovies.domain.usecase.LoadNewMoviesUseCase
 import com.example.topmovies.domain.usecase.UpdateFavoriteMovieUseCase
 import com.example.topmovies.domain.usecase.UpdateFavoriteMovieUseCase.Params
-import com.example.topmovies.domain.utils.Failure
+import com.example.topmovies.domain.utils.Error
 import com.example.topmovies.domain.utils.Result
-import com.example.topmovies.domain.utils.Result.Error
+import com.example.topmovies.domain.utils.Result.Failure
 import com.example.topmovies.domain.utils.Result.Success
 import com.example.topmovies.presentation.models.Movie
 import com.example.topmovies.presentation.utils.EnumScreen
@@ -16,7 +16,7 @@ import com.example.topmovies.presentation.utils.EnumScreen.FAVORITE
 import com.example.topmovies.presentation.utils.EnumScreen.MOVIES
 
 class MovieViewModel constructor(
-    private val getPairMovies: GetPairMoviesUseCase,
+    private val getMoviesPair: GetMoviesPairUseCase,
     private val loadNewMovies: LoadNewMoviesUseCase,
     private val updateFavoriteMovie: UpdateFavoriteMovieUseCase
 ) : BaseViewModel() {
@@ -32,8 +32,8 @@ class MovieViewModel constructor(
     }
 
     fun getMovies() {
-        getPairMovies(Unit) {
-            handleResultOf(it)
+        getMoviesPair(Unit) {
+            handleResult(it)
         }
     }
 
@@ -46,20 +46,20 @@ class MovieViewModel constructor(
 
     fun addFavoriteMovie(id: String, favorite: Boolean, screen: EnumScreen) {
         when (screen) {
-            MOVIES -> shiftMovieToFavorites(id, !favorite)
-            FAVORITE -> shiftMovieToFavorites(id, false)
+            MOVIES -> switchMovieToFavorites(id, !favorite)
+            FAVORITE -> switchMovieToFavorites(id, false)
         }
     }
 
-    private fun shiftMovieToFavorites(id: String, isFavorite: Boolean) {
+    private fun switchMovieToFavorites(id: String, isFavorite: Boolean) {
         updateFavoriteMovie(Params(id, isFavorite)) {
-            handleResultOf(it)
+            handleResult(it)
         }
     }
 
-    private fun handleResultOf(result: Result<Failure, Pair<List<Movie>, List<Movie>>>) {
+    private fun handleResult(result: Result<Error, Pair<List<Movie>, List<Movie>>>) {
         when (result) {
-            is Error -> handledErrors(result.error)
+            is Failure -> handledErrors(result.error)
             is Success -> {
                 handleMovies(result.result.first)
                 handleFavoriteMovies(result.result.second)
