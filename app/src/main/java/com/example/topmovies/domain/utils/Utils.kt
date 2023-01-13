@@ -1,6 +1,6 @@
 package com.example.topmovies.domain.utils
 
-    fun <TFirst, TSecond, Result> assent(
+    fun <TFirst, TSecond, Result> safeLet(
         first: TFirst?,
         second: TSecond?,
         block: (TFirst, TSecond) -> Result?

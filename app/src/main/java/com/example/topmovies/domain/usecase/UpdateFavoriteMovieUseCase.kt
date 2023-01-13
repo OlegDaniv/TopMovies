@@ -8,7 +8,7 @@ import com.example.topmovies.domain.utils.Error.ServerError
 import com.example.topmovies.domain.utils.Result
 import com.example.topmovies.domain.utils.Result.Failure
 import com.example.topmovies.domain.utils.Result.Success
-import com.example.topmovies.domain.utils.assent
+import com.example.topmovies.domain.utils.safeLet
 import com.example.topmovies.presentation.models.Movie
 import java.util.concurrent.ExecutorService
 
@@ -22,7 +22,7 @@ class UpdateFavoriteMovieUseCase(
         repository.updateMovie(params)
         val movies = repository.getMovies().asSuccess()
         val favoriteMoves = repository.getFavoriteMovies().asSuccess()
-        val pair = assent(movies, favoriteMoves) { movies, favoriteMovies ->
+        val pair = safeLet(movies, favoriteMoves) { movies, favoriteMovies ->
             Pair(movies.result, favoriteMovies.result)
         }
         return pair?.let { Success(pair) }
