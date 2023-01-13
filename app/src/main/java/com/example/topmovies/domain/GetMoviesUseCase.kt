@@ -2,7 +2,9 @@ package com.example.topmovies.domain
 
 import android.os.Handler
 import com.example.topmovies.domain.UseCase.None
-import com.example.topmovies.models.Movie
+import com.example.topmovies.models.domain.Movie
+import com.example.topmovies.models.entity.toMovie
+import com.example.topmovies.models.response.toMovie
 import com.example.topmovies.repository.MovieRepository
 import java.util.concurrent.ExecutorService
 

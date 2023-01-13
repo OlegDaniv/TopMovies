@@ -2,7 +2,8 @@ package com.example.topmovies.domain
 
 import android.os.Handler
 import com.example.topmovies.domain.UpdateFavoriteMovieUseCase.Params
-import com.example.topmovies.models.Movie
+import com.example.topmovies.models.domain.Movie
+import com.example.topmovies.models.entity.toMovie
 import com.example.topmovies.repository.MovieRepository
 import java.util.concurrent.ExecutorService
 

@@ -4,7 +4,12 @@ import android.content.SharedPreferences
 import com.example.topmovies.database.dao.MovieDetailsDao
 import com.example.topmovies.database.dao.MoviesDao
 import com.example.topmovies.domain.UseCase.Result
-import com.example.topmovies.models.*
+import com.example.topmovies.models.domain.Movie
+import com.example.topmovies.models.domain.MovieDetails
+import com.example.topmovies.models.entity.MovieDetailsEntity
+import com.example.topmovies.models.entity.MovieEntity
+import com.example.topmovies.models.response.MovieResponse
+import com.example.topmovies.models.response.toMovieDetails
 import com.example.topmovies.retrofit.MoviesApi
 import com.example.topmovies.unit.DEF_API_KEY
 import com.example.topmovies.unit.SETTING_PREF_USER_API_KEY
@@ -43,7 +48,7 @@ class MovieRepository constructor(
             ?.takeIf { it.isNotBlank() }
             ?: DEF_API_KEY
 
-    fun loadNewMovies(): Result<List<MovieApi>> {
+    fun loadNewMovies(): Result<List<MovieResponse>> {
         return try {
             val response = api.getMovies().execute()
             when (response.isSuccessful) {
