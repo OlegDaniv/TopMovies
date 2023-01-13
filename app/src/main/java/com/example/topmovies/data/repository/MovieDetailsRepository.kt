@@ -20,16 +20,16 @@ interface MovieDetailsRepository {
 
         override fun getMovieDetails(id: String): Result<Error, MovieDetails> {
             val movieDetails = movieDetailsDao.getMovieDetailsById(id)
-            return if (movieDetails == null) {
-                 loadNewMovieDetailsById(id)
-            } else {
-                Success(movieDetails.toMovieDetails())
-            }
+            return movieDetails
+                ?.let { Success(movieDetails.toMovieDetails()) }
+                ?: loadNewMovieDetailsById(id)
         }
 
         override fun loadNewMovieDetailsById(id: String): Result<Error, MovieDetails> {
             val newMovieDetails = movieDetailsRequest.loadMovieDetails(id)
-            movieDetailsDao.insertMovieDetails(newMovieDetails.asSuccess().result.toMovieDetailsEntity())
+            newMovieDetails.process {
+                movieDetailsDao.insertMovieDetails(it.toMovieDetailsEntity())
+            }
             return newMovieDetails
         }
     }

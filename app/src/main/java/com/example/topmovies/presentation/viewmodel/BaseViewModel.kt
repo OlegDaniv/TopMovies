@@ -10,7 +10,7 @@ abstract class BaseViewModel : ViewModel() {
     private val _errorMessage = SingleEventLiveData<Error>()
     val errorMessage: LiveData<Error> = _errorMessage
 
-    protected fun handledErrors(error: Error) {
+    protected fun handleError(error: Error) {
         _errorMessage.value = error
     }
 }

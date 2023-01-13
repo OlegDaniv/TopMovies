@@ -39,8 +39,10 @@ class MovieViewModel constructor(
 
     fun loadNewMovies() {
         loadNewMovies(Unit) { result ->
-            handleMovies(result.asSuccess().result)
-            handledErrors(result.asErrors().error)
+            result.process(
+                { handleError(it) },
+                { handleMovies(it) }
+            )
         }
     }
 
@@ -59,7 +61,7 @@ class MovieViewModel constructor(
 
     private fun handleResult(result: Result<Error, Pair<List<Movie>, List<Movie>>>) {
         when (result) {
-            is Failure -> handledErrors(result.error)
+            is Failure -> handleError(result.error)
             is Success -> {
                 handleMovies(result.result.first)
                 handleFavoriteMovies(result.result.second)

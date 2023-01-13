@@ -34,7 +34,9 @@ interface MoviesRepository {
 
         override fun loadNewMovie(): Result<Error, List<Movie>> {
             val newMovies = movieRequest.getNewMovies()
-            newMovies.asSuccess().let { moviesDao.upsertMovies(it.result) }
+            newMovies.process(
+                onSuccess = { moviesDao.upsertMovies(it) }
+            )
             return newMovies
         }
 

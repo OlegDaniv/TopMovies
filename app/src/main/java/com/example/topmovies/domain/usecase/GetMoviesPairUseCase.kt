@@ -7,6 +7,7 @@ import com.example.topmovies.domain.utils.Error.ServerError
 import com.example.topmovies.domain.utils.Result
 import com.example.topmovies.domain.utils.Result.Failure
 import com.example.topmovies.domain.utils.Result.Success
+import com.example.topmovies.domain.utils.assent
 import com.example.topmovies.presentation.models.Movie
 import java.util.concurrent.ExecutorService
 
@@ -17,16 +18,12 @@ class GetMoviesPairUseCase(
 ) : UseCase<Unit, Pair<List<Movie>, List<Movie>>>() {
 
     override fun execute(params: Unit): Result<Error, Pair<List<Movie>, List<Movie>>> {
-
-        val movies = repository.getMovies().asSuccess().result
-        val favoriteMoves = repository.getFavoriteMovies().asSuccess().result
-        val pair = let(movies, favoriteMoves) { movies, favoriteMovies ->
-            Pair(movies, favoriteMovies)
+        val movies = repository.getMovies().asSuccess()
+        val favoriteMoves = repository.getFavoriteMovies().asSuccess()
+        val pair = assent(movies, favoriteMoves) { movies, favoriteMovies ->
+            Pair(movies.result, favoriteMovies.result)
         }
-        return if (pair != null) {
-            Success(pair)
-        } else {
-            Failure(ServerError)
-        }
+        return pair?.let { Success(pair) }
+            ?: Failure(ServerError)
     }
 }

@@ -2,18 +2,19 @@ package com.example.topmovies.domain.usecase
 
 import android.os.Handler
 import com.example.topmovies.domain.utils.Error
+import com.example.topmovies.domain.utils.Result
 import java.util.concurrent.ExecutorService
 
-abstract class UseCase<Params, Result> {
+abstract class UseCase<Params, Data> {
 
     abstract val executor: ExecutorService
     abstract val handler: Handler
 
-    abstract fun execute(params: Params): com.example.topmovies.domain.utils.Result<Error, Result>
+    abstract fun execute(params: Params): Result<Error, Data>
 
     operator fun invoke(
         params: Params,
-        onSuccess: (com.example.topmovies.domain.utils.Result<Error, Result>) -> Unit = {}
+        onSuccess: (Result<Error, Data>) -> Unit = {}
     ) {
         executor.execute {
             val result = execute(params)
@@ -21,11 +22,5 @@ abstract class UseCase<Params, Result> {
         }
     }
 
-    fun <TFirst, TSecond, Result> let(
-        first: TFirst?,
-        second: TSecond?,
-        block: (TFirst, TSecond) -> Result?
-    ): Result? {
-        return if (first != null && second != null) block(first, second) else null
-    }
+
 }

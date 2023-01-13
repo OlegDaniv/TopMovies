@@ -17,7 +17,7 @@ class MovieDetailsViewModel(
     fun resolveMovieDetails(id: String) {
         getMovieDetailsUseCase(id) {
             when (it) {
-                is Failure -> handledErrors(it.error)
+                is Failure -> handleError(it.error)
                 is Success -> handleMovieDetails(it.result)
             }
         }
