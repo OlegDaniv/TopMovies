@@ -13,7 +13,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.topmovies.R
 import com.example.topmovies.databinding.ItemLayoutBinding
-import com.example.topmovies.models.Movie
+import com.example.topmovies.models.domain.Movie
 import com.example.topmovies.unit.IMAGE_SIZE
 import com.example.topmovies.unit.RANK_DOWN
 import com.example.topmovies.unit.RANK_UP

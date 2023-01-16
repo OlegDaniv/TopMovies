@@ -37,13 +37,10 @@ val networkModule = module {
     }
     single {
         OkHttpClient.Builder().addInterceptor(get<HttpLoggingInterceptor>())
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS).build()
+            .connectTimeout(15, TimeUnit.SECONDS).readTimeout(15, TimeUnit.SECONDS).build()
     }
     single {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+        Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create())
             .client(get()).build()
     }
     single { get<Retrofit>().create(MoviesApi::class.java) }

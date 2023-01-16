@@ -3,7 +3,7 @@ package com.example.topmovies.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.topmovies.domain.GetMovieDetailsUseCase
-import com.example.topmovies.models.MovieDetails
+import com.example.topmovies.models.domain.MovieDetails
 
 class MovieDetailsViewModel(
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase

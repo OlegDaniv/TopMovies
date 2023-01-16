@@ -13,18 +13,18 @@ class GetMoviesUseCase(
 ) : UseCase<None, Pair<List<Movie>, List<Movie>>>() {
 
     override fun run(params: None): Result<Pair<List<Movie>, List<Movie>>> {
-        var movies = repository.getMovies().map { it.toMovie() }
+        var movies = repository.getMovies()
         var error = ""
         movies.ifEmpty {
             val newMovie = repository.loadNewMovies()
             if (newMovie.error.isNotEmpty()) {
                 error = newMovie.error
             } else {
-                repository.upsertMovies(newMovie.value.map { it.toMovie() })
-                movies = newMovie.value.map { it.toMovie() }
+                repository.upsertMovies(newMovie.value)
+                movies = newMovie.value
             }
         }
-        val favoriteMovies = repository.getFavoriteMovies(true).map { it.toMovie() }
+        val favoriteMovies = repository.getFavoriteMovies(true)
         return Result(Pair(movies, favoriteMovies), error)
     }
 

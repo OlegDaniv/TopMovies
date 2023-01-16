@@ -18,11 +18,11 @@ class GetMovieDetailsUseCase(
             if (resultApi.error.isNotEmpty()) {
                 resultApi
             } else {
-                repository.insertMovieDetails(resultApi.value.toMovieDetailsEntity())
+                repository.insertMovieDetails(resultApi.value)
                 Result(resultApi.value)
             }
         } else {
-            Result(detailsEntity.toMovieDetails())
+            Result(detailsEntity)
         }
     }
 }
