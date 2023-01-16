@@ -8,5 +8,5 @@ import com.example.topmovies.models.MovieDetailsEntity
 abstract class MovieDetailsDao : BaseDao<MovieDetailsEntity> {
 
     @Query("Select * from tb_movie_details where id = :id")
-    abstract fun getMovieDetailsEntityById(id: String): MovieDetailsEntity?
+    abstract fun getMovieDetails(id: String): MovieDetailsEntity?
 }
