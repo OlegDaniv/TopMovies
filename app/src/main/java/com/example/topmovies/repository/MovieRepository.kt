@@ -19,30 +19,26 @@ class MovieRepository constructor(
     private val moviesDao: MoviesDao,
     private val movieDetailsDao: MovieDetailsDao,
     private val sharedPreferences: SharedPreferences,
-    private val movieEntityMapper: MovieEntityMapper,
-    private val detailsEntityMapper: MovieDetailsEntityMapper,
-    private val detailsResponseMapper: MovieDetailsResponseMapper,
-    private val movieResponseMapper: MovieResponseMapper
 ) {
 
-    fun getMoviesEntity() = moviesDao.getMoviesEntity().map { movieEntityMapper.toModel(it) }
+    fun getMoviesEntity() = moviesDao.getMoviesEntity().map { MovieEntityMapper.toModel(it) }
 
     fun getFavoriteMoviesEntity(isFavorite: Boolean) =
-        moviesDao.getFavoriteMoviesEntity(isFavorite).map { movieEntityMapper.toModel(it) }
+        moviesDao.getFavoriteMoviesEntity(isFavorite).map { MovieEntityMapper.toModel(it) }
 
     fun getMovieDetailsEntityById(id: String) = movieDetailsDao.getMovieDetailsEntityById(id)
-        ?.let { detailsEntityMapper.toModel(it) }
+        ?.let { MovieDetailsEntityMapper.toModel(it) }
 
     fun updateMovieEntity(id: String, isFavorite: Boolean) {
         moviesDao.updateMovieEntity(id, isFavorite)
     }
 
     fun upsertMoviesEntity(movies: List<Movie>) {
-        moviesDao.upsertMoviesEntity(movies.map { movieEntityMapper.fromModel(it) })
+        moviesDao.upsertMoviesEntity(movies.map { MovieEntityMapper.fromModel(it) })
     }
 
     fun insertMovieDetailsEntity(entity: MovieDetails) {
-        movieDetailsDao.insert(detailsEntityMapper.fromModel(entity))
+        movieDetailsDao.insert(MovieDetailsEntityMapper.fromModel(entity))
     }
 
     /** when using api.getMovies() and api.getMovieDetails() without any parameters, it connects to a mock server.
@@ -58,7 +54,7 @@ class MovieRepository constructor(
         return try {
             val response = api.getMovies().execute()
             when (response.isSuccessful) {
-                true -> response.body()?.items?.map { movieResponseMapper.toModel(it) }
+                true -> response.body()?.items?.map { MovieResponseMapper.toModel(it) }
                     ?.let { Result(it) }
                     ?: Result(emptyList(), "The list is Empty")
                 false -> Result(emptyList(), response.code().toString())
@@ -72,7 +68,7 @@ class MovieRepository constructor(
         return try {
             val response = api.getMovieDetails().execute()
             when (response.isSuccessful) {
-                true -> response.body()?.let { Result(detailsResponseMapper.toModel(it)) }
+                true -> response.body()?.let { Result(MovieDetailsResponseMapper.toModel(it)) }
                     ?: Result(MovieDetails.empty, "Body is empty")
                 false -> Result(MovieDetails.empty, response.code().toString())
             }

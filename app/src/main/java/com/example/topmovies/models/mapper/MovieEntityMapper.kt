@@ -3,7 +3,7 @@ package com.example.topmovies.models.mapper
 import com.example.topmovies.models.domain.Movie
 import com.example.topmovies.models.entity.MovieEntity
 
-class MovieEntityMapper : Mapper<MovieEntity, Movie> {
+object MovieEntityMapper : Mapper<MovieEntity, Movie> {
 
     override fun toModel(value: MovieEntity) = with(value) {
         Movie(
