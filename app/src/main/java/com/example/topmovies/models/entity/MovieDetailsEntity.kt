@@ -14,5 +14,5 @@ data class MovieDetailsEntity(
     val runtimeStr: String,
     val genres: String,
     val imDbRating: String,
-    val errorMessage: String? = null
+    val errorMessage: String?
 )

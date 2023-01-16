@@ -10,7 +10,7 @@ data class MovieDetails(
     val runtimeStr: String,
     val genres: String,
     val imDbRating: String,
-    val errorMessage: String? = null
+    val errorMessage: String?
 ) {
     companion object {
         val empty = MovieDetails(
