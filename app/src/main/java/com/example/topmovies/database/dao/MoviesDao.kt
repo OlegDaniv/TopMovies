@@ -26,7 +26,7 @@ abstract class MoviesDao : BaseDao<MovieEntity> {
     @Transaction
     open fun upsertMovies(movies: List<MovieEntity>) {
         movies.forEach { movie ->
-            getMovieEntityById(movie.id)?.let {
+            getMovie(movie.id)?.let {
                 updateMovie(
                     movie.id,
                     movie.rank,

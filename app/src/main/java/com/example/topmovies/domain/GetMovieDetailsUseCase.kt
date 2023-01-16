@@ -1,7 +1,7 @@
 package com.example.topmovies.domain
 
 import android.os.Handler
-import com.example.topmovies.models.MovieDetails
+import com.example.topmovies.models.domain.MovieDetails
 import com.example.topmovies.repository.MovieDetailsRepository
 import java.util.concurrent.ExecutorService
 
