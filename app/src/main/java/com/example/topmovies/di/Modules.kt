@@ -9,7 +9,10 @@ import com.example.topmovies.domain.GetMovieDetailsUseCase
 import com.example.topmovies.domain.GetMoviesUseCase
 import com.example.topmovies.domain.LoadMoviesUseCase
 import com.example.topmovies.domain.UpdateFavoriteMovieUseCase
-import com.example.topmovies.repository.MovieRepository
+import com.example.topmovies.repository.MovieDetailsRepository
+import com.example.topmovies.repository.MovieDetailsRepositoryImpl
+import com.example.topmovies.repository.MoviesRepository
+import com.example.topmovies.repository.MoviesRepositoryImpl
 import com.example.topmovies.retrofit.MoviesApi
 import com.example.topmovies.unit.BASE_URL
 import com.example.topmovies.viewmodel.MovieDetailsViewModel
@@ -64,7 +67,8 @@ val databaseModule = module {
 }
 
 val repositoryModule = module {
-    single { MovieRepository(get(), get(), get(), get()) }
+    single<MoviesRepository> { MoviesRepositoryImpl(get(), get()) }
+    single<MovieDetailsRepository> { MovieDetailsRepositoryImpl(get(),get()) }
 }
 
 val appModule = module {
