@@ -1,7 +1,7 @@
 package com.example.topmovies.domain
 
 import android.os.Handler
-import com.example.topmovies.models.MovieDetails
+import com.example.topmovies.models.domain.MovieDetails
 import com.example.topmovies.repository.MovieRepository
 import java.util.concurrent.ExecutorService
 
@@ -18,11 +18,11 @@ class GetMovieDetailsUseCase(
             if (resultApi.error.isNotEmpty()) {
                 resultApi
             } else {
-                repository.insertMovieDetailsEntity(resultApi.value.toMovieDetailsEntity())
+                repository.insertMovieDetailsEntity(resultApi.value)
                 Result(resultApi.value)
             }
         } else {
-            Result(detailsEntity.toMovieDetails())
+            Result(detailsEntity)
         }
     }
 }

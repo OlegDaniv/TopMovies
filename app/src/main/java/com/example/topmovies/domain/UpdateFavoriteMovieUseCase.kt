@@ -2,7 +2,7 @@ package com.example.topmovies.domain
 
 import android.os.Handler
 import com.example.topmovies.domain.UpdateFavoriteMovieUseCase.Params
-import com.example.topmovies.models.Movie
+import com.example.topmovies.models.domain.Movie
 import com.example.topmovies.repository.MovieRepository
 import java.util.concurrent.ExecutorService
 
@@ -14,8 +14,8 @@ class UpdateFavoriteMovieUseCase(
 
     override fun run(params: Params): Result<Pair<List<Movie>, List<Movie>>> {
         repository.updateMovieEntity(params.id, params.isFavorite)
-        val movies = repository.getMoviesEntity().map { it.toMovie() }
-        val favoriteMovies = repository.getFavoriteMoviesEntity(true).map { it.toMovie() }
+        val movies = repository.getMoviesEntity()
+        val favoriteMovies = repository.getFavoriteMoviesEntity(true)
         return Result(Pair(movies, favoriteMovies))
     }
 
