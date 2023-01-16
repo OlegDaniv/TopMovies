@@ -3,8 +3,6 @@ package com.example.topmovies.database.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import com.example.topmovies.models.domain.Movie
-import com.example.topmovies.models.domain.toMovieEntity
 import com.example.topmovies.models.entity.MovieEntity
 
 @Dao
@@ -26,7 +24,7 @@ abstract class MoviesDao : BaseDao<MovieEntity> {
     abstract fun updateMovie(id: String, rank: String, rankUpDown: String)
 
     @Transaction
-    open fun upsertMoviesEntity(movies: List<Movie>) {
+    open fun upsertMoviesEntity(movies: List<MovieEntity>) {
         movies.forEach { movie ->
             getMovieEntityById(movie.id)?.let {
                 updateMovie(
@@ -35,7 +33,7 @@ abstract class MoviesDao : BaseDao<MovieEntity> {
                     movie.rankUpDown
                 )
             }
-                ?: insert(movie.toMovieEntity())
+                ?: insert(movie)
         }
     }
 }

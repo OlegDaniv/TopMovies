@@ -1,7 +1,5 @@
 package com.example.topmovies.models.domain
 
-import com.example.topmovies.models.entity.MovieEntity
-
 data class Movie(
     val id: String,
     val rank: String,
@@ -14,10 +12,4 @@ data class Movie(
     val imDbRating: String,
     val imDbRatingCount: String,
     var isFavorite: Boolean = false
-)
-
-fun Movie.toMovieEntity() = MovieEntity(
-    id, rank, rankUpDown, title, fullTitle,
-    year, imageUrl, crew, imDbRating,
-    imDbRatingCount, isFavorite
 )

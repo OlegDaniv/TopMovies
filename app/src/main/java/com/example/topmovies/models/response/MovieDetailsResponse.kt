@@ -1,6 +1,5 @@
 package com.example.topmovies.models.response
 
-import com.example.topmovies.models.domain.MovieDetails
 import com.google.gson.annotations.SerializedName
 
 data class MovieDetailsResponse(
@@ -15,9 +14,4 @@ data class MovieDetailsResponse(
     val genres: String,
     val imDbRating: String,
     val errorMessage: String?
-)
-
-fun MovieDetailsResponse.toMovieDetails() = MovieDetails(
-    id, title, year, plot, imageUrl, releaseDate,
-    runtimeStr, genres, imDbRating, errorMessage
 )

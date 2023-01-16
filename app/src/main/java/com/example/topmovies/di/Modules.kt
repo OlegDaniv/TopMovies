@@ -9,6 +9,10 @@ import com.example.topmovies.domain.GetMovieDetailsUseCase
 import com.example.topmovies.domain.GetMoviesUseCase
 import com.example.topmovies.domain.LoadMoviesUseCase
 import com.example.topmovies.domain.UpdateFavoriteMovieUseCase
+import com.example.topmovies.models.mapper.MovieDetailsEntityMapper
+import com.example.topmovies.models.mapper.MovieEntityMapper
+import com.example.topmovies.models.mapper.MovieDetailsResponseMapper
+import com.example.topmovies.models.mapper.MovieResponseMapper
 import com.example.topmovies.repository.MovieRepository
 import com.example.topmovies.retrofit.MoviesApi
 import com.example.topmovies.unit.BASE_URL
@@ -64,10 +68,14 @@ val databaseModule = module {
     }
     single { get<MovieDatabase>().movieDao() }
     single { get<MovieDatabase>().movieDetails() }
+    single { MovieDetailsEntityMapper() }
+    single { MovieEntityMapper() }
+    single { MovieDetailsResponseMapper() }
+    single { MovieResponseMapper() }
 }
 
 val repositoryModule = module {
-    single { MovieRepository(get(), get(), get(), get()) }
+    single { MovieRepository(get(), get(), get(), get(), get(), get(), get(), get()) }
 }
 
 val appModule = module {
