@@ -13,14 +13,19 @@ import com.example.topmovies.repository.MovieDetailsRepository
 import com.example.topmovies.repository.MovieDetailsRepositoryImpl
 import com.example.topmovies.repository.MoviesRepository
 import com.example.topmovies.repository.MoviesRepositoryImpl
+import com.example.topmovies.retrofit.MovieDetailsApi
+import com.example.topmovies.retrofit.MovieDetailsRequest
 import com.example.topmovies.retrofit.MoviesApi
+import com.example.topmovies.retrofit.MoviesRequest
 import com.example.topmovies.unit.BASE_URL
+import com.example.topmovies.utils.NetworkHandler
 import com.example.topmovies.viewmodel.MovieDetailsViewModel
 import com.example.topmovies.viewmodel.MovieViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -43,7 +48,10 @@ val networkModule = module {
         Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create())
             .client(get()).build()
     }
-    single { get<Retrofit>().create(MoviesApi::class.java) }
+    single(named("movieApi")) { get<Retrofit>().create(MoviesApi::class.java) }
+    single(named("detailsApi")) { get<Retrofit>().create(MovieDetailsApi::class.java) }
+    single { MoviesRequest(get(named("movieApi")), get()) }
+    single { MovieDetailsRequest(get(named("detailsApi")), get()) }
 }
 
 val viewModelModule = module {
@@ -68,11 +76,12 @@ val databaseModule = module {
 
 val repositoryModule = module {
     single<MoviesRepository> { MoviesRepositoryImpl(get(), get()) }
-    single<MovieDetailsRepository> { MovieDetailsRepositoryImpl(get(),get()) }
+    single<MovieDetailsRepository> { MovieDetailsRepositoryImpl(get(), get()) }
 }
 
 val appModule = module {
     single { Handler(Looper.getMainLooper()) }
     single { Executors.newFixedThreadPool(4) }
     single { getDefaultSharedPreferences(androidApplication()) }
+    single { NetworkHandler(androidApplication()) }
 }
