@@ -1,7 +1,8 @@
 package com.example.topmovies.repository
 
-import com.example.topmovies.domain.UseCase.Result
 import com.example.topmovies.models.domain.MovieDetails
+import com.example.topmovies.utils.Error
+import com.example.topmovies.utils.Result
 
 interface MovieDetailsRepository {
 
@@ -9,5 +10,5 @@ interface MovieDetailsRepository {
 
     fun insertMovieDetails(entity: MovieDetails)
 
-    fun loadNewMovieDetails(id: String): Result<MovieDetails>
+    fun loadNewMovieDetails(id: String): Result<Error, MovieDetails>
 }

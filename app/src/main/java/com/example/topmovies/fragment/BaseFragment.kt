@@ -6,12 +6,13 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.example.topmovies.utils.Error
 
 abstract class BaseFragment : Fragment() {
     
-    fun showErrorMassage(errorMassage: String) {
+    fun showErrorMassage(errorMassage: Error) {
         if (isNetworkAvailable()) {
-            Toast.makeText(context, errorMassage, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,"errorMassage.", Toast.LENGTH_SHORT).show()
         } else {
             NetworkDialogFragment().show(parentFragmentManager, null)
         }
