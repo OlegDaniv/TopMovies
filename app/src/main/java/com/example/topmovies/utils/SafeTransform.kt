@@ -5,7 +5,7 @@ import com.example.topmovies.utils.Result.Success
 import retrofit2.Call
 import java.io.IOException
 
-fun <T, R> Call<T>.safeResponse(transform: (T) -> R): Result<Error, R> {
+fun <T, R> Call<T>.safeTransform(transform: (T) -> R): Result<Error, R> {
     return try {
         val response = execute()
         val body = response.body()

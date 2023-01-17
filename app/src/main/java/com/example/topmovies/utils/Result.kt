@@ -7,9 +7,8 @@ sealed class Result<out Error, out Data> {
     fun process(
         onError: (Error) -> Any = {},
         onSuccess: (Data) -> Any
-    ) =
-        when (this) {
-            is Failure -> onError(error)
-            is Success -> onSuccess(result)
-        }
+    ) = when (this) {
+        is Failure -> onError(error)
+        is Success -> onSuccess(result)
+    }
 }

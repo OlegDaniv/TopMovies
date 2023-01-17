@@ -12,7 +12,7 @@ abstract class BaseFragment : Fragment() {
     fun showErrorMessage(errorMassage: Error) {
         when (errorMassage) {
             is ServerError -> Toast.makeText(
-                context, getString(R.string.ServerError), Toast.LENGTH_SHORT
+                context, getString(R.string.server_error), Toast.LENGTH_SHORT
             ).show()
             is NetworkConnectionError -> NetworkDialogFragment().show(parentFragmentManager, null)
         }
