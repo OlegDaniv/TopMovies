@@ -3,17 +3,13 @@ package com.example.topmovies.repository
 import com.example.topmovies.database.dao.MoviesDao
 import com.example.topmovies.models.domain.Movie
 import com.example.topmovies.models.mapper.MovieEntityMapper
-import com.example.topmovies.models.mapper.MovieResponseMapper
-import com.example.topmovies.retrofit.MoviesApi
+import com.example.topmovies.retrofit.MoviesRequest
 import com.example.topmovies.utils.Error
-import com.example.topmovies.utils.Error.ServerError
 import com.example.topmovies.utils.Result
-import com.example.topmovies.utils.Result.Failure
-import com.example.topmovies.utils.Result.Success
 
 class MoviesRepositoryImpl constructor(
-    private val api: MoviesApi,
     private val moviesDao: MoviesDao,
+    private val movieRequest: MoviesRequest
 ) : MoviesRepository {
 
     override fun getMovies(): List<Movie> =
@@ -31,17 +27,12 @@ class MoviesRepositoryImpl constructor(
     }
 
     override fun loadNewMovies(): Result<Error, List<Movie>> {
-        return try {
-            val response = api.getMovies().execute()
-            if (response.isSuccessful) {
-                response.body()?.items?.map { MovieResponseMapper.toModel(it) }
-                    ?.let { Success(it) }
-                    ?: Failure(ServerError)
-            } else {
-                Failure(ServerError)
-            }
-        } catch (e: Exception) {
-            Failure(ServerError)
+        val newMovies = movieRequest.loadNewMovies()
+        newMovies.process { movies ->
+            moviesDao.upsertMovies(
+                movies.map { MovieEntityMapper.fromModel(it) }
+            )
         }
+        return newMovies
     }
 }

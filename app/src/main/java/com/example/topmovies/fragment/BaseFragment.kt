@@ -1,34 +1,20 @@
 package com.example.topmovies.fragment
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.Build
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.topmovies.R
 import com.example.topmovies.utils.Error
+import com.example.topmovies.utils.Error.NetworkConnectionError
+import com.example.topmovies.utils.Error.ServerError
 
 abstract class BaseFragment : Fragment() {
 
     fun showErrorMessage(errorMassage: Error) {
-        if (isNetworkAvailable()) {
-            Toast.makeText(context, getString(R.string.ServerError), Toast.LENGTH_SHORT).show()
-        } else {
-            NetworkDialogFragment().show(parentFragmentManager, null)
-        }
-    }
-
-    private fun isNetworkAvailable(): Boolean {
-        val connectivityManager =
-            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val capabilities =
-                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-            (capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET))
-        } else {
-            val activeNetworkInfo = connectivityManager.activeNetworkInfo
-            activeNetworkInfo != null && activeNetworkInfo.isConnected
+        when (errorMassage) {
+            is ServerError -> Toast.makeText(
+                context, getString(R.string.ServerError), Toast.LENGTH_SHORT
+            ).show()
+            is NetworkConnectionError -> NetworkDialogFragment().show(parentFragmentManager, null)
         }
     }
 }
