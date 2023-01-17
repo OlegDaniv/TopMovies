@@ -33,8 +33,8 @@ class MovieViewModel constructor(
         getMovies(Unit) {
             when (it) {
                 is Success -> {
-                    handledMovie(it.result.first)
-                    handledFavoriteMovie(it.result.second)
+                    handleMovie(it.result.first)
+                    handleFavoriteMovie(it.result.second)
                 }
                 is Failure -> {
                     Failure(it.error)
@@ -46,7 +46,7 @@ class MovieViewModel constructor(
     fun loadNewMovies() {
         loadMovies(Unit) {
             when (it) {
-                is Success -> handledMovie(it.result)
+                is Success -> handleMovie(it.result)
                 is Failure -> Failure(it.error)
             }
         }
@@ -62,11 +62,11 @@ class MovieViewModel constructor(
         }
     }
 
-    private fun handledMovie(list: List<Movie>) {
+    private fun handleMovie(list: List<Movie>) {
         movies.value = list
     }
 
-    private fun handledFavoriteMovie(list: List<Movie>) {
+    private fun handleFavoriteMovie(list: List<Movie>) {
         favoriteMovies.value = list
     }
 
@@ -74,10 +74,10 @@ class MovieViewModel constructor(
         updateMovie(Params(id, true)) {
             when (it) {
                 is Success -> {
-                    handledMovie(it.result.first)
-                    handledFavoriteMovie(it.result.second)
+                    handleMovie(it.result.first)
+                    handleFavoriteMovie(it.result.second)
                 }
-                is Failure -> Failure(it.error)
+                is Failure -> handleError(it.error)
             }
         }
     }
@@ -86,10 +86,10 @@ class MovieViewModel constructor(
         updateMovie(Params(id, false)) {
             when (it) {
                 is Success -> {
-                    handledMovie(it.result.first)
-                    handledFavoriteMovie(it.result.second)
+                    handleMovie(it.result.first)
+                    handleFavoriteMovie(it.result.second)
                 }
-                is Failure -> Failure(it.error)
+                is Failure -> handleError(it.error)
             }
         }
     }

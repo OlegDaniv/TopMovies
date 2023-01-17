@@ -37,7 +37,7 @@ class MovieDetailsFragment : BaseFragment() {
     
     private fun setupViewModel() {
         movieViewModel.errorMessage.observe(viewLifecycleOwner) {
-            showErrorMassage(it)
+            showErrorMessage(it)
         }
     }
     

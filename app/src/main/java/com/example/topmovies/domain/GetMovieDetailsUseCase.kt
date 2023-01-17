@@ -20,7 +20,7 @@ class GetMovieDetailsUseCase(
         val detailsEntity = repository.getMovieDetails(params)
         return if (detailsEntity == null) {
             when (val resultApi = repository.loadNewMovieDetails(params)) {
-                is Failure -> Failure(ServerError)
+                is Failure -> Failure(resultApi.error)
                 is Success -> {
                     repository.insertMovieDetails(resultApi.result)
                     resultApi

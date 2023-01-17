@@ -23,6 +23,5 @@ class LoadMoviesUseCase(
                 Success(data.result)
             }
         }
-
     }
 }

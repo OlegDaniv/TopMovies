@@ -43,4 +43,5 @@
     <string name="movies_massage_no_movies">Please refresh movies</string>
     <string name="intent_select_picture">Select Picture</string>
     <string name="notification_argument_name">Screen</string>
+    <string name="ServerError">Something off about the server, please refresh</string>
 </resources>
