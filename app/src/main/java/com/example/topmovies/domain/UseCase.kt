@@ -1,26 +1,24 @@
 package com.example.topmovies.domain
 
 import android.os.Handler
+import com.example.topmovies.utils.Error
+import com.example.topmovies.utils.Result
 import java.util.concurrent.ExecutorService
 
-abstract class UseCase<Params, R> {
+abstract class UseCase<Params, Data> {
 
     abstract val executor: ExecutorService
     abstract val handler: Handler
 
-    abstract fun run(params: Params): Result<R>
+    abstract fun execute(params: Params): Result<Error, Data>
 
     operator fun invoke(
         params: Params,
-        onSuccess: (Result<R>) -> Unit = {}
+        onExecute: (Result<Error, Data>) -> Unit = {}
     ) {
         executor.execute {
-            val result = run(params)
-            handler.post { onSuccess(result) }
+            val result = execute(params)
+            handler.post { onExecute(result) }
         }
     }
-
-    class None
-
-    data class Result<T>(val value: T, val error: String = "")
 }

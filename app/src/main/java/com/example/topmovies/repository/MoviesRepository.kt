@@ -1,7 +1,8 @@
 package com.example.topmovies.repository
 
-import com.example.topmovies.domain.UseCase.Result
 import com.example.topmovies.models.domain.Movie
+import com.example.topmovies.utils.Error
+import com.example.topmovies.utils.Result
 
 interface MoviesRepository {
 
@@ -13,5 +14,5 @@ interface MoviesRepository {
 
     fun updateMovie(id: String, isFavorite: Boolean)
 
-    fun loadNewMovies(): Result<List<Movie>>
+    fun loadNewMovies(): Result<Error, List<Movie>>
 }

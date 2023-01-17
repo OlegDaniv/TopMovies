@@ -1,11 +1,15 @@
 package com.example.topmovies.repository
 
 import com.example.topmovies.database.dao.MoviesDao
-import com.example.topmovies.domain.UseCase.Result
 import com.example.topmovies.models.domain.Movie
 import com.example.topmovies.models.mapper.MovieEntityMapper
 import com.example.topmovies.models.mapper.MovieResponseMapper
 import com.example.topmovies.retrofit.MoviesApi
+import com.example.topmovies.utils.Error
+import com.example.topmovies.utils.Error.ServerError
+import com.example.topmovies.utils.Result
+import com.example.topmovies.utils.Result.Failure
+import com.example.topmovies.utils.Result.Success
 
 class MoviesRepositoryImpl constructor(
     private val api: MoviesApi,
@@ -26,18 +30,18 @@ class MoviesRepositoryImpl constructor(
         moviesDao.upsertMovies(movies.map { MovieEntityMapper.fromModel(it) })
     }
 
-    override fun loadNewMovies(): Result<List<Movie>> {
+    override fun loadNewMovies(): Result<Error, List<Movie>> {
         return try {
             val response = api.getMovies().execute()
             if (response.isSuccessful) {
                 response.body()?.items?.map { MovieResponseMapper.toModel(it) }
-                    ?.let { Result(it) }
-                    ?: Result(emptyList(), "The list is Empty")
+                    ?.let { Success(it) }
+                    ?: Failure(ServerError)
             } else {
-                Result(emptyList(), response.code().toString())
+                Failure(ServerError)
             }
         } catch (e: Exception) {
-            Result(emptyList(), e.message.toString())
+            Failure(ServerError)
         }
     }
 }

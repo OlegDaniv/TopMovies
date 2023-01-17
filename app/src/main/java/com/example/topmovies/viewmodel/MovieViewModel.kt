@@ -6,9 +6,12 @@ import com.example.topmovies.domain.GetMoviesUseCase
 import com.example.topmovies.domain.LoadMoviesUseCase
 import com.example.topmovies.domain.UpdateFavoriteMovieUseCase
 import com.example.topmovies.domain.UpdateFavoriteMovieUseCase.Params
-import com.example.topmovies.domain.UseCase.None
 import com.example.topmovies.models.domain.Movie
 import com.example.topmovies.unit.EnumScreen
+import com.example.topmovies.unit.EnumScreen.FAVORITE
+import com.example.topmovies.unit.EnumScreen.MOVIES
+import com.example.topmovies.utils.Result.Failure
+import com.example.topmovies.utils.Result.Success
 
 class MovieViewModel constructor(
     private val getMovies: GetMoviesUseCase,
@@ -21,68 +24,72 @@ class MovieViewModel constructor(
 
     fun getObservableList(screen: EnumScreen): LiveData<List<Movie>> {
         return when (screen) {
-            EnumScreen.MOVIES -> movies
-            EnumScreen.FAVORITE -> favoriteMovies
+            MOVIES -> movies
+            FAVORITE -> favoriteMovies
         }
     }
 
     fun getMovies() {
-        getMovies(None()) {
-            if (it.error.isNotEmpty()) {
-                handledErrors(it.error)
-            } else {
-                handledMovie(it.value.first)
-                handledFavoriteMovie(it.value.second)
+        getMovies(Unit) {
+            when (it) {
+                is Success -> {
+                    handleMovie(it.result.first)
+                    handleFavoriteMovie(it.result.second)
+                }
+                is Failure -> {
+                    Failure(it.error)
+                }
             }
         }
     }
 
     fun loadNewMovies() {
-        loadMovies(None()) {
-            if (it.error.isNotEmpty()) {
-                handledErrors(it.error)
-            } else {
-                handledMovie(it.value)
+        loadMovies(Unit) {
+            when (it) {
+                is Success -> handleMovie(it.result)
+                is Failure -> Failure(it.error)
             }
         }
     }
 
     fun addFavoriteMovie(id: String, favorite: Boolean, screen: EnumScreen) {
         when (screen) {
-            EnumScreen.MOVIES ->
+            MOVIES ->
                 if (favorite) removeMovieFromFavorites(id)
                 else addMovieToFavorites(id)
-            EnumScreen.FAVORITE ->
+            FAVORITE ->
                 removeMovieFromFavorites(id)
         }
     }
 
-    private fun handledMovie(list: List<Movie>) {
+    private fun handleMovie(list: List<Movie>) {
         movies.value = list
     }
 
-    private fun handledFavoriteMovie(list: List<Movie>) {
+    private fun handleFavoriteMovie(list: List<Movie>) {
         favoriteMovies.value = list
     }
 
     private fun addMovieToFavorites(id: String) {
         updateMovie(Params(id, true)) {
-            if (it.error.isNotEmpty()) {
-                handledErrors(it.error)
-            } else {
-                handledMovie(it.value.first)
-                handledFavoriteMovie(it.value.second)
+            when (it) {
+                is Success -> {
+                    handleMovie(it.result.first)
+                    handleFavoriteMovie(it.result.second)
+                }
+                is Failure -> handleError(it.error)
             }
         }
     }
 
     private fun removeMovieFromFavorites(id: String) {
         updateMovie(Params(id, false)) {
-            if (it.error.isNotEmpty()) {
-                handledErrors(it.error)
-            } else {
-                handledMovie(it.value.first)
-                handledFavoriteMovie(it.value.second)
+            when (it) {
+                is Success -> {
+                    handleMovie(it.result.first)
+                    handleFavoriteMovie(it.result.second)
+                }
+                is Failure -> handleError(it.error)
             }
         }
     }
