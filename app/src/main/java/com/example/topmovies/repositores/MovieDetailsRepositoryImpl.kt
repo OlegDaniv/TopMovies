@@ -16,13 +16,7 @@ class MovieDetailsRepositoryImpl(
 
     override fun getMovieDetails(id: String): Result<Error, MovieDetails> {
         val movieDetails = movieDetailsDao.getMovieDetails(id)
-        return movieDetails?.let {
-            Success(
-                MovieDetailsEntityMapper.toModel(
-                    it
-                )
-            )
-        }
+        return movieDetails?.let { Success(MovieDetailsEntityMapper.toModel(it)) }
             ?: loadNewMovieDetails(id)
     }
 
