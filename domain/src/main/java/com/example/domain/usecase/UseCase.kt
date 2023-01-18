@@ -1,14 +1,14 @@
-package com.example.topmovies.domain
+package com.example.domain.usecase
 
-import android.os.Handler
-import com.example.topmovies.utils.Error
-import com.example.topmovies.utils.Result
+import com.example.domain.utils.Error
+import com.example.domain.utils.HandlerWrapper
+import com.example.domain.utils.Result
 import java.util.concurrent.ExecutorService
 
 abstract class UseCase<Params, Data> {
 
     abstract val executor: ExecutorService
-    abstract val handler: Handler
+    abstract val handler: HandlerWrapper
 
     abstract fun execute(params: Params): Result<Error, Data>
 

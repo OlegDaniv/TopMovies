@@ -2,16 +2,16 @@ package com.example.topmovies.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.topmovies.domain.GetMoviesPairUseCase
-import com.example.topmovies.domain.LoadMoviesUseCase
-import com.example.topmovies.domain.UpdateFavoriteMovieUseCase
-import com.example.topmovies.domain.UpdateFavoriteMovieUseCase.Params
-import com.example.topmovies.models.domain.Movie
+import com.example.domain.models.Movie
+import com.example.domain.usecase.GetMoviesPairUseCase
+import com.example.domain.usecase.LoadMoviesUseCase
+import com.example.domain.usecase.UpdateFavoriteMovieUseCase
+import com.example.domain.usecase.UpdateFavoriteMovieUseCase.Params
+import com.example.domain.utils.Result.Failure
+import com.example.domain.utils.Result.Success
 import com.example.topmovies.unit.EnumScreen
 import com.example.topmovies.unit.EnumScreen.FAVORITE
 import com.example.topmovies.unit.EnumScreen.MOVIES
-import com.example.topmovies.utils.Result.Failure
-import com.example.topmovies.utils.Result.Success
 
 class MovieViewModel constructor(
     private val getMovies: GetMoviesPairUseCase,

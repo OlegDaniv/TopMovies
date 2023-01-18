@@ -1,11 +1,12 @@
 package com.example.topmovies.retrofit
 
-import com.example.topmovies.models.domain.Movie
+import com.example.domain.models.Movie
+import com.example.domain.utils.Error
+import com.example.domain.utils.Error.NetworkConnectionError
+import com.example.domain.utils.Result
+import com.example.domain.utils.Result.Failure
 import com.example.topmovies.models.mapper.MovieResponseMapper
-import com.example.topmovies.utils.Error
-import com.example.topmovies.utils.Error.NetworkConnectionError
 import com.example.topmovies.utils.NetworkHandler
-import com.example.topmovies.utils.Result
 import com.example.topmovies.utils.safeTransform
 
 class MoviesRequest(
@@ -18,7 +19,7 @@ class MoviesRequest(
                 movieObject.items.map { MovieResponseMapper.toModel(it) }
             }
         } else {
-            Result.Failure(NetworkConnectionError)
+            Failure(NetworkConnectionError)
         }
     }
 }

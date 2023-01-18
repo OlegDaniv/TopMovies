@@ -1,12 +1,13 @@
-package com.example.topmovies.repository
+package com.example.topmovies.repositores
 
+import com.example.domain.models.MovieDetails
+import com.example.domain.repositores.MovieDetailsRepository
+import com.example.domain.utils.Error
+import com.example.domain.utils.Result
+import com.example.domain.utils.Result.Success
 import com.example.topmovies.database.dao.MovieDetailsDao
-import com.example.topmovies.models.domain.MovieDetails
 import com.example.topmovies.models.mapper.MovieDetailsEntityMapper
 import com.example.topmovies.retrofit.MovieDetailsRequest
-import com.example.topmovies.utils.Error
-import com.example.topmovies.utils.Result
-import com.example.topmovies.utils.Result.Success
 
 class MovieDetailsRepositoryImpl(
     private val movieDetailsDao: MovieDetailsDao,
@@ -15,7 +16,13 @@ class MovieDetailsRepositoryImpl(
 
     override fun getMovieDetails(id: String): Result<Error, MovieDetails> {
         val movieDetails = movieDetailsDao.getMovieDetails(id)
-        return movieDetails?.let { Success(MovieDetailsEntityMapper.toModel(it)) }
+        return movieDetails?.let {
+            Success(
+                MovieDetailsEntityMapper.toModel(
+                    it
+                )
+            )
+        }
             ?: loadNewMovieDetails(id)
     }
 

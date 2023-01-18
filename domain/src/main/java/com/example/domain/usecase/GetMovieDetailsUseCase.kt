@@ -1,16 +1,16 @@
-package com.example.topmovies.domain
+package com.example.domain.usecase
 
-import android.os.Handler
-import com.example.topmovies.models.domain.MovieDetails
-import com.example.topmovies.repository.MovieDetailsRepository
-import com.example.topmovies.utils.Error
-import com.example.topmovies.utils.Result
+import com.example.domain.models.MovieDetails
+import com.example.domain.repositores.MovieDetailsRepository
+import com.example.domain.utils.Error
+import com.example.domain.utils.HandlerWrapper
+import com.example.domain.utils.Result
 import java.util.concurrent.ExecutorService
 
 class GetMovieDetailsUseCase(
     private val repository: MovieDetailsRepository,
     override val executor: ExecutorService,
-    override val handler: Handler
+    override val handler: HandlerWrapper
 ) : UseCase<String, MovieDetails>() {
 
     override fun execute(params: String): Result<Error, MovieDetails> =
