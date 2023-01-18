@@ -6,9 +6,7 @@ import com.example.topmovies.utils.Result
 
 interface MovieDetailsRepository {
 
-    fun getMovieDetails(id: String): MovieDetails?
-
-    fun insertMovieDetails(entity: MovieDetails)
+    fun getMovieDetails(id: String): Result<Error, MovieDetails>
 
     fun loadNewMovieDetails(id: String): Result<Error, MovieDetails>
 }

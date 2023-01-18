@@ -2,7 +2,7 @@ package com.example.topmovies.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.topmovies.domain.GetMoviesUseCase
+import com.example.topmovies.domain.GetMoviesPairUseCase
 import com.example.topmovies.domain.LoadMoviesUseCase
 import com.example.topmovies.domain.UpdateFavoriteMovieUseCase
 import com.example.topmovies.domain.UpdateFavoriteMovieUseCase.Params
@@ -14,7 +14,7 @@ import com.example.topmovies.utils.Result.Failure
 import com.example.topmovies.utils.Result.Success
 
 class MovieViewModel constructor(
-    private val getMovies: GetMoviesUseCase,
+    private val getMovies: GetMoviesPairUseCase,
     private val loadMovies: LoadMoviesUseCase,
     private val updateMovie: UpdateFavoriteMovieUseCase,
 ) : BaseViewModel() {

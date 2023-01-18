@@ -6,9 +6,9 @@ import com.example.topmovies.utils.Result
 
 interface MoviesRepository {
 
-    fun getMovies(): List<Movie>
+    fun getMovies(): Result<Error, List<Movie>>
 
-    fun getFavoriteMovies(isFavorite: Boolean): List<Movie>
+    fun getFavoriteMovies(): List<Movie>
 
     fun upsertMovies(movies: List<Movie>)
 
