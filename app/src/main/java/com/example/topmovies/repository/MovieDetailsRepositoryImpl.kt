@@ -6,23 +6,23 @@ import com.example.topmovies.models.mapper.MovieDetailsEntityMapper
 import com.example.topmovies.retrofit.MovieDetailsRequest
 import com.example.topmovies.utils.Error
 import com.example.topmovies.utils.Result
+import com.example.topmovies.utils.Result.Success
 
 class MovieDetailsRepositoryImpl(
     private val movieDetailsDao: MovieDetailsDao,
     private val movieDetailsRequest: MovieDetailsRequest
 ) : MovieDetailsRepository {
 
-    override fun getMovieDetails(id: String): MovieDetails? = movieDetailsDao.getMovieDetails(id)
-        ?.let { MovieDetailsEntityMapper.toModel(it) }
-
-    override fun insertMovieDetails(entity: MovieDetails) {
-        movieDetailsDao.insert(MovieDetailsEntityMapper.fromModel(entity))
+    override fun getMovieDetails(id: String): Result<Error, MovieDetails> {
+        val movieDetails = movieDetailsDao.getMovieDetails(id)
+        return movieDetails?.let { Success(MovieDetailsEntityMapper.toModel(it)) }
+            ?: loadNewMovieDetails(id)
     }
 
     override fun loadNewMovieDetails(id: String): Result<Error, MovieDetails> {
         val newMovieDetails = movieDetailsRequest.loadNewMovieDetails()
         newMovieDetails.process {
-            movieDetailsDao.insert(MovieDetailsEntityMapper.fromModel(it))
+            movieDetailsDao.insertMovieDetails(MovieDetailsEntityMapper.fromModel(it))
         }
         return newMovieDetails
     }

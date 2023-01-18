@@ -6,7 +6,7 @@ import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import androidx.room.Room
 import com.example.topmovies.database.MovieDatabase
 import com.example.topmovies.domain.GetMovieDetailsUseCase
-import com.example.topmovies.domain.GetMoviesUseCase
+import com.example.topmovies.domain.GetMoviesPairUseCase
 import com.example.topmovies.domain.LoadMoviesUseCase
 import com.example.topmovies.domain.UpdateFavoriteMovieUseCase
 import com.example.topmovies.repository.MovieDetailsRepository
@@ -60,7 +60,7 @@ val viewModelModule = module {
 }
 
 val useCaseModule = module {
-    single { GetMoviesUseCase(get(), get(), get()) }
+    single { GetMoviesPairUseCase(get(), get(), get()) }
     single { UpdateFavoriteMovieUseCase(get(), get(), get()) }
     single { LoadMoviesUseCase(get(), get(), get()) }
     single { GetMovieDetailsUseCase(get(), get(), get()) }

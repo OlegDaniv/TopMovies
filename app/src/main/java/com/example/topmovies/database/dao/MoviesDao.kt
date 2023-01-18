@@ -1,12 +1,10 @@
 package com.example.topmovies.database.dao
 
-import androidx.room.Dao
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
 import com.example.topmovies.models.entity.MovieEntity
 
 @Dao
-abstract class MoviesDao : BaseDao<MovieEntity> {
+abstract class MoviesDao {
 
     @Query("SELECT * From tb_movies")
     abstract fun getMovies(): List<MovieEntity>
@@ -14,14 +12,17 @@ abstract class MoviesDao : BaseDao<MovieEntity> {
     @Query("Select * from tb_movies where id = :id")
     abstract fun getMovie(id: String): MovieEntity?
 
-    @Query("select * from tb_movies where isFavorite = :isFavorite ")
-    abstract fun getFavoriteMovies(isFavorite: Boolean): List<MovieEntity>
+    @Query("select * from tb_movies where isFavorite = 1")
+    abstract fun getFavoriteMovies(): List<MovieEntity>
 
     @Query("UPDATE tb_movies SET isFavorite = :isFavorite WHERE id = :id")
     abstract fun updateMovie(id: String, isFavorite: Boolean)
 
     @Query("UPDATE tb_movies SET rank = :rank,rankUpDown = :rankUpDown  WHERE id = :id")
     abstract fun updateMovie(id: String, rank: String, rankUpDown: String)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract fun insertMovie(entity: MovieEntity)
 
     @Transaction
     open fun upsertMovies(movies: List<MovieEntity>) {
@@ -33,7 +34,7 @@ abstract class MoviesDao : BaseDao<MovieEntity> {
                     movie.rankUpDown
                 )
             }
-                ?: insert(movie)
+                ?: insertMovie(movie)
         }
     }
 }

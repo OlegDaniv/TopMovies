@@ -14,7 +14,7 @@ abstract class UseCase<Params, Data> {
 
     operator fun invoke(
         params: Params,
-        onExecute: (Result<Error, Data>) -> Unit = {}
+        onExecute: (Result<Error, Data>) -> Unit
     ) {
         executor.execute {
             val result = execute(params)
