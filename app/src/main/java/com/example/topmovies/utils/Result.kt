@@ -5,7 +5,7 @@ sealed class Result<out Error, out Data> {
     data class Success<out Data>(val result: Data) : Result<Nothing, Data>()
 
     fun asSuccess() = this as? Success<Data>
-    fun asError() = this as? Failure<Error>
+
     fun process(
         onError: (Error) -> Any = {},
         onSuccess: (Data) -> Any

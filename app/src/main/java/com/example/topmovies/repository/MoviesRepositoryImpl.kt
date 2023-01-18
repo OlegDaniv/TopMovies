@@ -14,10 +14,10 @@ class MoviesRepositoryImpl constructor(
 ) : MoviesRepository {
 
     override fun getMovies(): Result<Error, List<Movie>> {
-       val movies =  moviesDao.getMovies().map { MovieEntityMapper.toModel(it) }
-        return if (movies.isEmpty()){
+        val movies = moviesDao.getMovies().map { MovieEntityMapper.toModel(it) }
+        return if (movies.isEmpty()) {
             loadNewMovies()
-        }else{
+        } else {
             Success(movies)
         }
     }
