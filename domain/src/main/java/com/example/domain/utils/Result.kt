@@ -2,7 +2,7 @@ package com.example.domain.utils
 
 sealed class Result<out Error, out Data> {
     data class Failure<out Error>(val error: Error) : Result<Error, Nothing>()
-    data class Success<out Data>(val result: Data) : Result<Nothing, Data>()
+    data class Success<out Data>(val data: Data) : Result<Nothing, Data>()
 
     fun asSuccess() = this as? Success<Data>
 
@@ -11,7 +11,7 @@ sealed class Result<out Error, out Data> {
         onSuccess: (Data) -> Any
     ) = when (this) {
         is Failure -> onError(error)
-        is Success -> onSuccess(result)
+        is Success -> onSuccess(data)
     }
 }
 
