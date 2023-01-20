@@ -6,7 +6,7 @@ import com.example.domain.utils.Result
 
 interface MovieDetailsRepository {
 
-    fun getMovieDetails(id: String): Result<Error, MovieDetails>
+    suspend fun getMovieDetails(id: String): Result<Error, MovieDetails>
 
-    fun loadNewMovieDetails(id: String): Result<Error, MovieDetails>
+    suspend fun loadNewMovieDetails(id: String): Result<Error, MovieDetails>
 }

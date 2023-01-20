@@ -2,6 +2,7 @@ package com.example.topmovies.presentation.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.domain.models.Movie
 import com.example.domain.usecase.GetMoviesPairUseCase
 import com.example.domain.usecase.LoadMoviesUseCase
@@ -14,6 +15,9 @@ import com.example.domain.utils.Result.Success
 import com.example.topmovies.presentation.utils.EnumScreen
 import com.example.topmovies.presentation.utils.EnumScreen.FAVORITE
 import com.example.topmovies.presentation.utils.EnumScreen.MOVIES
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MovieViewModel constructor(
     private val getMoviesPair: GetMoviesPairUseCase,
@@ -32,8 +36,14 @@ class MovieViewModel constructor(
     }
 
     fun getMovies() {
-        getMoviesPair(Unit) {
-            handlePairResult(it)
+        viewModelScope.launch(Dispatchers.IO) {
+            val r = getMoviesPair(Unit)
+            withContext(Dispatchers.Main) {
+                when (r) {
+                    is Success -> handlePairResult(r)
+                    is Failure -> handleError(r.error)
+                }
+            }
         }
     }
 
