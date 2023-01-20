@@ -1,6 +1,6 @@
 package com.example.topmovies.models.mapper
 
-import com.example.topmovies.models.domain.MovieDetails
+import com.example.domain.models.MovieDetails
 import com.example.topmovies.models.entity.MovieDetailsEntity
 
 object MovieDetailsEntityMapper : Mapper<MovieDetailsEntity, MovieDetails> {

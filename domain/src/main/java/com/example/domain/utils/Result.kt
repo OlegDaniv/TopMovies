@@ -1,4 +1,4 @@
-package com.example.topmovies.utils
+package com.example.domain.utils
 
 sealed class Result<out Error, out Data> {
     data class Failure<out Error>(val error: Error) : Result<Error, Nothing>()

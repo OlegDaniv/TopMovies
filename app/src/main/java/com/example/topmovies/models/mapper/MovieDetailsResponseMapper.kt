@@ -1,6 +1,6 @@
 package com.example.topmovies.models.mapper
 
-import com.example.topmovies.models.domain.MovieDetails
+import com.example.domain.models.MovieDetails
 import com.example.topmovies.models.response.MovieDetailsResponse
 
 object MovieDetailsResponseMapper : Mapper<MovieDetailsResponse, MovieDetails> {

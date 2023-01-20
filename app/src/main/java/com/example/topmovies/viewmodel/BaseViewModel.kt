@@ -2,7 +2,7 @@ package com.example.topmovies.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.topmovies.utils.Error
+import com.example.domain.utils.Error
 import com.example.topmovies.utils.SingleEventLiveData
 
 abstract class BaseViewModel : ViewModel() {

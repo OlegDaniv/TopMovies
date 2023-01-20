@@ -1,8 +1,10 @@
 package com.example.topmovies.utils
 
-import com.example.topmovies.utils.Error.ServerError
-import com.example.topmovies.utils.Result.Failure
-import com.example.topmovies.utils.Result.Success
+import com.example.domain.utils.Error
+import com.example.domain.utils.Error.ServerError
+import com.example.domain.utils.Result
+import com.example.domain.utils.Result.Failure
+import com.example.domain.utils.Result.Success
 import retrofit2.Call
 import java.io.IOException
 

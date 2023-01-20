@@ -1,12 +1,13 @@
-package com.example.topmovies.repository
+package com.example.topmovies.repositores
 
+import com.example.domain.models.Movie
+import com.example.domain.repositores.MoviesRepository
+import com.example.domain.utils.Error
+import com.example.domain.utils.Result
+import com.example.domain.utils.Result.Success
 import com.example.topmovies.database.dao.MoviesDao
-import com.example.topmovies.models.domain.Movie
 import com.example.topmovies.models.mapper.MovieEntityMapper
 import com.example.topmovies.retrofit.MoviesRequest
-import com.example.topmovies.utils.Error
-import com.example.topmovies.utils.Result
-import com.example.topmovies.utils.Result.Success
 
 class MoviesRepositoryImpl constructor(
     private val moviesDao: MoviesDao, private val movieRequest: MoviesRequest

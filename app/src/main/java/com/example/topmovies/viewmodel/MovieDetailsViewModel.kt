@@ -2,10 +2,10 @@ package com.example.topmovies.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.topmovies.domain.GetMovieDetailsUseCase
-import com.example.topmovies.models.domain.MovieDetails
-import com.example.topmovies.utils.Result.Failure
-import com.example.topmovies.utils.Result.Success
+import com.example.domain.models.MovieDetails
+import com.example.domain.usecase.GetMovieDetailsUseCase
+import com.example.domain.utils.Result.Failure
+import com.example.domain.utils.Result.Success
 
 class MovieDetailsViewModel(
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase

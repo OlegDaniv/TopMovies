@@ -1,4 +1,4 @@
-package com.example.topmovies.utils
+package com.example.domain.utils
 
 sealed class Error {
     object NetworkConnectionError : Error()

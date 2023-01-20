@@ -2,10 +2,10 @@ package com.example.topmovies.fragment
 
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.example.domain.utils.Error
+import com.example.domain.utils.Error.NetworkConnectionError
+import com.example.domain.utils.Error.ServerError
 import com.example.topmovies.R
-import com.example.topmovies.utils.Error
-import com.example.topmovies.utils.Error.NetworkConnectionError
-import com.example.topmovies.utils.Error.ServerError
 
 abstract class BaseFragment : Fragment() {
 

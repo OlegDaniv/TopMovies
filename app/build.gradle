@@ -30,7 +30,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    buildFeatures{
+    buildFeatures {
         viewBinding = true
     }
 }
@@ -47,6 +47,7 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.github.bumptech.glide:glide:$glide_verison"
+    implementation project(path: ':domain')
     kapt "com.github.bumptech.glide:compiler:$glide_verison"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"

@@ -4,20 +4,22 @@ import android.os.Handler
 import android.os.Looper
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import androidx.room.Room
+import com.example.domain.repositores.MovieDetailsRepository
+import com.example.domain.repositores.MoviesRepository
+import com.example.domain.usecase.GetMovieDetailsUseCase
+import com.example.domain.usecase.GetMoviesPairUseCase
+import com.example.domain.usecase.LoadMoviesUseCase
+import com.example.domain.usecase.UpdateFavoriteMovieUseCase
+import com.example.domain.utils.HandlerWrapper
 import com.example.topmovies.database.MovieDatabase
-import com.example.topmovies.domain.GetMovieDetailsUseCase
-import com.example.topmovies.domain.GetMoviesPairUseCase
-import com.example.topmovies.domain.LoadMoviesUseCase
-import com.example.topmovies.domain.UpdateFavoriteMovieUseCase
-import com.example.topmovies.repository.MovieDetailsRepository
-import com.example.topmovies.repository.MovieDetailsRepositoryImpl
-import com.example.topmovies.repository.MoviesRepository
-import com.example.topmovies.repository.MoviesRepositoryImpl
+import com.example.topmovies.repositores.MovieDetailsRepositoryImpl
+import com.example.topmovies.repositores.MoviesRepositoryImpl
 import com.example.topmovies.retrofit.MovieDetailsApi
 import com.example.topmovies.retrofit.MovieDetailsRequest
 import com.example.topmovies.retrofit.MoviesApi
 import com.example.topmovies.retrofit.MoviesRequest
 import com.example.topmovies.unit.BASE_URL
+import com.example.topmovies.utils.HandlerWrapperImpl
 import com.example.topmovies.utils.NetworkHandler
 import com.example.topmovies.viewmodel.MovieDetailsViewModel
 import com.example.topmovies.viewmodel.MovieViewModel
@@ -84,4 +86,5 @@ val appModule = module {
     single { Executors.newFixedThreadPool(4) }
     single { getDefaultSharedPreferences(androidApplication()) }
     single { NetworkHandler(androidApplication()) }
+    single<HandlerWrapper> { HandlerWrapperImpl(Handler(Looper.getMainLooper())) }
 }

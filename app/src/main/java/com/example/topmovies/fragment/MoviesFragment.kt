@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
+import com.example.domain.models.Movie
 import com.example.topmovies.R
 import com.example.topmovies.adapter.MoviesAdapter
 import com.example.topmovies.databinding.FragmentMoviesBinding
-import com.example.topmovies.models.domain.Movie
 import com.example.topmovies.unit.EnumScreen
 import com.example.topmovies.viewmodel.MovieViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel

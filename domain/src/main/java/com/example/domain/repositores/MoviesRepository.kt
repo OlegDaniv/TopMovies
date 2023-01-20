@@ -1,8 +1,8 @@
-package com.example.topmovies.repository
+package com.example.domain.repositores
 
-import com.example.topmovies.models.domain.Movie
-import com.example.topmovies.utils.Error
-import com.example.topmovies.utils.Result
+import com.example.domain.models.Movie
+import com.example.domain.utils.Error
+import com.example.domain.utils.Result
 
 interface MoviesRepository {
 
