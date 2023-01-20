@@ -9,8 +9,7 @@ import com.example.topmovies.utils.Result
 import com.example.topmovies.utils.Result.Success
 
 class MoviesRepositoryImpl constructor(
-    private val moviesDao: MoviesDao,
-    private val movieRequest: MoviesRequest
+    private val moviesDao: MoviesDao, private val movieRequest: MoviesRequest
 ) : MoviesRepository {
 
     override fun getMovies(): Result<Error, List<Movie>> {
@@ -35,11 +34,11 @@ class MoviesRepositoryImpl constructor(
 
     override fun loadNewMovies(): Result<Error, List<Movie>> {
         val newMovies = movieRequest.loadNewMovies()
-        newMovies.process { movies ->
-            moviesDao.upsertMovies(
-                movies.map { MovieEntityMapper.fromModel(it) }
-            )
+        return if (newMovies is Success) {
+            moviesDao.upsertMovies(newMovies.result.map { MovieEntityMapper.fromModel(it) })
+            Success(moviesDao.getMovies().map { MovieEntityMapper.toModel(it) })
+        } else {
+            newMovies
         }
-        return Success(moviesDao.getMovies().map { MovieEntityMapper.toModel(it) })
     }
 }
