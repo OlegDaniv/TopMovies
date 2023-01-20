@@ -6,8 +6,8 @@ import com.example.domain.utils.Error
 import com.example.domain.utils.Result
 import com.example.domain.utils.Result.Success
 import com.example.topmovies.data.database.dao.MoviesDao
-import com.example.topmovies.data.models.mapper.MovieEntityMapper
-import com.example.topmovies.data.network.MoviesRequest
+import com.example.topmovies.data.mappers.MovieEntityMapper
+import com.example.topmovies.data.network.requests.MoviesRequest
 
 class MoviesRepositoryImpl constructor(
     private val moviesDao: MoviesDao,

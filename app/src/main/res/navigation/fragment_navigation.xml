@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/navigation_top_movies"
-        android:name="com.example.topmovies.presentation.fragment.MoviesFragment"
+        android:name="com.example.topmovies.presentation.fragments.MoviesFragment"
         android:label="@string/nav_fragment_label_top_movies"
         tools:layout="@layout/fragment_movies">
         <argument
@@ -20,13 +20,13 @@
 
     <fragment
         android:id="@+id/navigation_movie_details"
-        android:name="com.example.topmovies.presentation.fragment.MovieDetailsFragment"
+        android:name="com.example.topmovies.presentation.fragments.MovieDetailsFragment"
         android:label="@string/nav_fragment_label_movie_details"
         tools:layout="@layout/fragment_details_movie" />
 
     <fragment
         android:id="@+id/navigation_favorite_movies"
-        android:name="com.example.topmovies.presentation.fragment.MoviesFragment"
+        android:name="com.example.topmovies.presentation.fragments.MoviesFragment"
         android:label="@string/nav_fragment_label_favorite_movies">
         <argument
                 android:name="@string/notification_argument_name"
@@ -39,6 +39,6 @@
 
     <fragment
         android:id="@+id/navigation_setting"
-        android:name="com.example.topmovies.presentation.fragment.SettingsFragment"
+        android:name="com.example.topmovies.presentation.fragments.SettingsFragment"
         android:label="Settings" />
 </navigation>

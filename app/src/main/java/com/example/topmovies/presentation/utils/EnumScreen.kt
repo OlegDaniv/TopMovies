@@ -1,5 +1,5 @@
 package com.example.topmovies.presentation.utils
 
-enum class EnumScreen{
+enum class EnumScreen {
     MOVIES, FAVORITE
 }

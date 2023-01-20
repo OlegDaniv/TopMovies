@@ -12,16 +12,16 @@ import com.example.domain.usecase.LoadMoviesUseCase
 import com.example.domain.usecase.UpdateFavoriteMovieUseCase
 import com.example.domain.utils.HandlerWrapper
 import com.example.topmovies.data.database.MovieDatabase
-import com.example.topmovies.data.network.MovieDetailsApi
-import com.example.topmovies.data.network.MovieDetailsRequest
-import com.example.topmovies.data.network.MoviesApi
-import com.example.topmovies.data.network.MoviesRequest
+import com.example.topmovies.data.network.requests.MovieDetailsApi
+import com.example.topmovies.data.network.requests.MovieDetailsRequest
+import com.example.topmovies.data.network.requests.MoviesApi
+import com.example.topmovies.data.network.requests.MoviesRequest
 import com.example.topmovies.data.repositores.MovieDetailsRepositoryImpl
 import com.example.topmovies.data.repositores.MoviesRepositoryImpl
 import com.example.topmovies.data.utils.HandlerWrapperImpl
 import com.example.topmovies.data.utils.NetworkHandler
-import com.example.topmovies.presentation.viewmodel.MovieDetailsViewModel
-import com.example.topmovies.presentation.viewmodel.MovieViewModel
+import com.example.topmovies.presentation.viewmodels.MovieDetailsViewModel
+import com.example.topmovies.presentation.viewmodels.MovieViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
@@ -32,6 +32,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+
+private const val BASE_URL = "https://imdb-api.com"
+private const val DATABASE_NAME: String = "movie_database"
 
 val networkModule = module {
     single {
@@ -85,6 +88,3 @@ val appModule = module {
     single { NetworkHandler(androidApplication()) }
     single<HandlerWrapper> { HandlerWrapperImpl(Handler(Looper.getMainLooper())) }
 }
-
-private const val BASE_URL = "https://imdb-api.com"
-private const val DATABASE_NAME: String = "movie_database"

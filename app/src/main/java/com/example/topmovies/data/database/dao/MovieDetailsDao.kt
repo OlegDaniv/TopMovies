@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.topmovies.data.models.entites.MovieDetailsEntity
+import com.example.topmovies.data.database.models.MovieDetailsEntity
 
 @Dao
 abstract class MovieDetailsDao {

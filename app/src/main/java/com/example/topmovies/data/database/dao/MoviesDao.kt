@@ -1,7 +1,7 @@
 package com.example.topmovies.data.database.dao
 
 import androidx.room.*
-import com.example.topmovies.data.models.entites.MovieEntity
+import com.example.topmovies.data.database.models.MovieEntity
 
 @Dao
 abstract class MoviesDao {
