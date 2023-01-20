@@ -41,6 +41,6 @@ class MoviesRepositoryImpl constructor(
                 movies.map { MovieEntityMapper.fromModel(it) }
             )
         }
-        return newMovies
+        return Success(moviesDao.getMovies().map { MovieEntityMapper.toModel(it) })
     }
 }
