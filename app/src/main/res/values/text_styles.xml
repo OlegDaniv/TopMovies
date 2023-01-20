@@ -5,36 +5,12 @@
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="text_small.bold">
-        <item name="android:textStyle">bold</item>
-    </style>
-
     <style name="text_medium">
         <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="text_medium.bold">
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="text_medium.bold.serif">
-        <item name="android:typeface">serif</item>
-    </style>
-
-    <style name="text_small.serif">
-        <item name="android:typeface">serif</item>
-    </style>
-
     <style name="text_large">
         <item name="android:textSize">20sp</item>
-    </style>
-
-    <style name="text_large.bold">
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="text_large.serif">
-        <item name="android:typeface">serif</item>
     </style>
 
 </resources>

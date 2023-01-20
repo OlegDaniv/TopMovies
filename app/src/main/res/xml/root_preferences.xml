@@ -4,7 +4,7 @@
         app:iconSpaceReserved="false"
         app:title="@string/profile_header">
 
-        <com.example.topmovies.view.ImageViewPreference
+        <com.example.topmovies.presentation.views.ImageViewPreference
             app:icon="@drawable/def_profile_image"
             app:key="image_preference"
             app:layout="@layout/setting_item_layout" />

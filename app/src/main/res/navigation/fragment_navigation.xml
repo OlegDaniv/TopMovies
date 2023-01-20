@@ -2,18 +2,17 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_navigation"
-    app:startDestination="@id/navigation_top_movies">
+        app:startDestination="@id/navigation_top_movies">
 
     <fragment
         android:id="@+id/navigation_top_movies"
-        android:name="com.example.topmovies.fragment.MoviesFragment"
+        android:name="com.example.topmovies.presentation.fragments.MoviesFragment"
         android:label="@string/nav_fragment_label_top_movies"
         tools:layout="@layout/fragment_movies">
         <argument
                 android:name="@string/notification_argument_name"
                 android:defaultValue="MOVIES"
-                app:argType="com.example.topmovies.unit.EnumScreen" />
+                app:argType="com.example.topmovies.presentation.utils.EnumScreen" />
         <action
             android:id="@+id/action_top_movies_to_movie_details"
             app:destination="@id/navigation_movie_details" />
@@ -21,18 +20,18 @@
 
     <fragment
         android:id="@+id/navigation_movie_details"
-        android:name="com.example.topmovies.fragment.MovieDetailsFragment"
+        android:name="com.example.topmovies.presentation.fragments.MovieDetailsFragment"
         android:label="@string/nav_fragment_label_movie_details"
         tools:layout="@layout/fragment_details_movie" />
 
     <fragment
         android:id="@+id/navigation_favorite_movies"
-        android:name="com.example.topmovies.fragment.MoviesFragment"
+        android:name="com.example.topmovies.presentation.fragments.MoviesFragment"
         android:label="@string/nav_fragment_label_favorite_movies">
         <argument
                 android:name="@string/notification_argument_name"
                 android:defaultValue="FAVORITE"
-                app:argType="com.example.topmovies.unit.EnumScreen" />
+                app:argType="com.example.topmovies.presentation.utils.EnumScreen" />
         <action
             android:id="@+id/action_top_movies_to_movie_details"
             app:destination="@id/navigation_movie_details" />
@@ -40,6 +39,6 @@
 
     <fragment
         android:id="@+id/navigation_setting"
-        android:name="com.example.topmovies.fragment.SettingsFragment"
+        android:name="com.example.topmovies.presentation.fragments.SettingsFragment"
         android:label="Settings" />
 </navigation>

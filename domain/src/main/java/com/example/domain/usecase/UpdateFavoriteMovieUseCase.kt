@@ -23,7 +23,7 @@ class UpdateFavoriteMovieUseCase(
         val movies = repository.getMovies().asSuccess()
         val favoriteMovies = repository.getFavoriteMovies()
         return safeLet(movies, favoriteMovies) { moviesResult, favoriteMoviesResult ->
-            Pair(moviesResult.result, favoriteMoviesResult)
+            Pair(moviesResult.data, favoriteMoviesResult)
         }?.let { Success(it) } ?: Failure(ServerError)
     }
 
