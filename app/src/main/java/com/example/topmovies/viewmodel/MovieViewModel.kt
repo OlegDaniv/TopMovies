@@ -36,9 +36,7 @@ class MovieViewModel constructor(
                     handleMovie(it.result.first)
                     handleFavoriteMovie(it.result.second)
                 }
-                is Failure -> {
-                    Failure(it.error)
-                }
+                is Failure -> handleError(it.error)
             }
         }
     }
@@ -47,7 +45,7 @@ class MovieViewModel constructor(
         loadMovies(Unit) {
             when (it) {
                 is Success -> handleMovie(it.result)
-                is Failure -> Failure(it.error)
+                is Failure -> handleError(it.error)
             }
         }
     }
