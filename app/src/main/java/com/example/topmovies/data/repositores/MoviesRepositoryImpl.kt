@@ -36,7 +36,7 @@ class MoviesRepositoryImpl constructor(
     override fun loadNewMovies(): Result<Error, List<Movie>> {
         val newMovies = movieRequest.loadNewMovies()
         return if (newMovies is Success) {
-            moviesDao.upsertMovies(newMovies.result.map { MovieEntityMapper.fromModel(it) })
+            moviesDao.upsertMovies(newMovies.data.map { MovieEntityMapper.fromModel(it) })
             Success(moviesDao.getMovies().map { MovieEntityMapper.toModel(it) })
         } else {
             newMovies
