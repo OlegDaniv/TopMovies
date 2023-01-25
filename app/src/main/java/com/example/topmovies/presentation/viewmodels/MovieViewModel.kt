@@ -6,16 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.models.Movie
 import com.example.domain.usecase.GetMoviesPairUseCase
 import com.example.domain.usecase.LoadMoviesUseCase
+import com.example.domain.usecase.Params
 import com.example.domain.usecase.UpdateFavoriteMovieUseCase
-import com.example.domain.usecase.UpdateFavoriteMovieUseCase.Params
-import com.example.domain.utils.Error
-import com.example.domain.utils.Result
 import com.example.domain.utils.Result.Failure
 import com.example.domain.utils.Result.Success
+import com.example.topmovies.presentation.utils.AppDispatchers
 import com.example.topmovies.presentation.utils.EnumScreen
 import com.example.topmovies.presentation.utils.EnumScreen.FAVORITE
 import com.example.topmovies.presentation.utils.EnumScreen.MOVIES
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -23,6 +21,7 @@ class MovieViewModel constructor(
     private val getMoviesPair: GetMoviesPairUseCase,
     private val loadMovies: LoadMoviesUseCase,
     private val updateMovie: UpdateFavoriteMovieUseCase,
+    private val appDispatchers: AppDispatchers
 ) : BaseViewModel() {
 
     private val movies = MutableLiveData<List<Movie>>()
@@ -35,23 +34,22 @@ class MovieViewModel constructor(
         }
     }
 
-    fun getMovies() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val r = getMoviesPair(Unit)
-            withContext(Dispatchers.Main) {
-                when (r) {
-                    is Success -> handlePairResult(r)
-                    is Failure -> handleError(r.error)
-                }
+    fun getMovies() = viewModelScope.launch(appDispatchers.io) {
+        val result = getMoviesPair(Unit)
+        withContext(appDispatchers.main) {
+            when (result) {
+                is Success -> handlePairResult(result.data)
+                is Failure -> handleError(result.error)
             }
         }
     }
 
-    fun loadNewMovies() {
-        loadMovies(Unit) {
-            when (it) {
-                is Success -> handleMovie(it.data)
-                is Failure -> handleError(it.error)
+    fun loadNewMovies() = viewModelScope.launch(appDispatchers.io) {
+        val r = loadMovies(Unit)
+        withContext(appDispatchers.main) {
+            when (r) {
+                is Success -> handleMovie(r.data)
+                is Failure -> handleError(r.error)
             }
         }
     }
@@ -64,6 +62,26 @@ class MovieViewModel constructor(
         }
     }
 
+    private fun addMovieToFavorites(id: String) = viewModelScope.launch {
+        val result = updateMovie(Params(id, true))
+        withContext(appDispatchers.main) {
+            when (result) {
+                is Success -> handlePairResult(result.data)
+                is Failure -> handleError(result.error)
+            }
+        }
+    }
+
+    private fun removeMovieFromFavorites(id: String) = viewModelScope.launch {
+        val result = updateMovie(Params(id, false))
+        withContext(appDispatchers.main) {
+            when (result) {
+                is Success -> handlePairResult(result.data)
+                is Failure -> handleError(result.error)
+            }
+        }
+    }
+
     private fun handleMovie(list: List<Movie>) {
         movies.value = list
     }
@@ -72,25 +90,8 @@ class MovieViewModel constructor(
         favoriteMovies.value = list
     }
 
-    private fun addMovieToFavorites(id: String) {
-        updateMovie(Params(id, true)) {
-            handlePairResult(it)
-        }
-    }
-
-    private fun removeMovieFromFavorites(id: String) {
-        updateMovie(Params(id, false)) {
-            handlePairResult(it)
-        }
-    }
-
-    private fun handlePairResult(result: Result<Error, Pair<List<Movie>, List<Movie>>>) {
-        when (result) {
-            is Success -> {
-                handleMovie(result.data.first)
-                handleFavoriteMovie(result.data.second)
-            }
-            is Failure -> handleError(result.error)
-        }
+    private fun handlePairResult(result: Pair<List<Movie>, List<Movie>>) {
+        handleMovie(result.first)
+        handleFavoriteMovie(result.second)
     }
 }

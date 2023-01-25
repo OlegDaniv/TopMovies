@@ -8,8 +8,8 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.example.topmovies.R
+import com.example.topmovies.presentation.utils.ThemeHandler.checkNightMode
 import com.example.topmovies.presentation.views.ImageViewPreference
-import com.example.topmovies.presentation.utils.ThemeHandler.Companion.checkNightMode
 
 class SettingsFragment : PreferenceFragmentCompat() {
 

@@ -20,6 +20,7 @@ import com.example.topmovies.data.repositores.MovieDetailsRepositoryImpl
 import com.example.topmovies.data.repositores.MoviesRepositoryImpl
 import com.example.topmovies.data.utils.HandlerWrapperImpl
 import com.example.topmovies.data.utils.NetworkHandler
+import com.example.topmovies.presentation.utils.AppDispatchers
 import com.example.topmovies.presentation.viewmodels.MovieDetailsViewModel
 import com.example.topmovies.presentation.viewmodels.MovieViewModel
 import okhttp3.OkHttpClient
@@ -57,15 +58,15 @@ val networkModule = module {
 }
 
 val viewModelModule = module {
-    viewModel { MovieDetailsViewModel(get()) }
-    viewModel { MovieViewModel(get(), get(), get()) }
+    viewModel { MovieDetailsViewModel(get(),get()) }
+    viewModel { MovieViewModel(get(), get(), get(), get()) }
 }
 
 val useCaseModule = module {
-    single { GetMoviesPairUseCase(get(), get(), get()) }
-    single { UpdateFavoriteMovieUseCase(get(), get(), get()) }
-    single { LoadMoviesUseCase(get(), get(), get()) }
-    single { GetMovieDetailsUseCase(get(), get(), get()) }
+    single { GetMoviesPairUseCase(get()) }
+    single { UpdateFavoriteMovieUseCase(get()) }
+    single { LoadMoviesUseCase(get()) }
+    single { GetMovieDetailsUseCase(get()) }
 }
 
 val databaseModule = module {
@@ -87,4 +88,5 @@ val appModule = module {
     single { getDefaultSharedPreferences(androidApplication()) }
     single { NetworkHandler(androidApplication()) }
     single<HandlerWrapper> { HandlerWrapperImpl(Handler(Looper.getMainLooper())) }
+    single { AppDispatchers() }
 }

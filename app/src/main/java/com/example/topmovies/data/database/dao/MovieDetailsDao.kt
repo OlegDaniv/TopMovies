@@ -10,7 +10,7 @@ import com.example.topmovies.data.database.models.MovieDetailsEntity
 abstract class MovieDetailsDao {
 
     @Query("Select * from tb_movie_details where id = :id")
-    abstract fun getMovieDetails(id: String): MovieDetailsEntity?
+    abstract suspend fun getMovieDetails(id: String): MovieDetailsEntity?
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insertMovieDetails(entity: MovieDetailsEntity)

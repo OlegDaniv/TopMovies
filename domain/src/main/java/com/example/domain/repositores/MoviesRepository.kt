@@ -6,13 +6,13 @@ import com.example.domain.utils.Result
 
 interface MoviesRepository {
 
-    fun getMovies(): Result<Error, List<Movie>>
+    suspend fun getMovies(): Result<Error, List<Movie>>
 
-    fun getFavoriteMovies(): List<Movie>
+    suspend fun getFavoriteMovies(): List<Movie>
 
-    fun upsertMovies(movies: List<Movie>)
+    suspend fun upsertMovies(movies: List<Movie>)
 
-    fun updateMovie(id: String, isFavorite: Boolean)
+    suspend fun updateMovie(id: String, isFavorite: Boolean)
 
-    fun loadNewMovies(): Result<Error, List<Movie>>
+    suspend fun loadNewMovies(): Result<Error, List<Movie>>
 }
