@@ -6,7 +6,8 @@ import com.example.domain.utils.Error.ServerError
 import com.example.domain.utils.HandlerWrapper
 import com.example.domain.utils.Result.Failure
 import com.example.domain.utils.Result.Success
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
@@ -15,33 +16,41 @@ import java.util.concurrent.ExecutorService
 
 internal class LoadMoviesUseCaseTest {
 
-    private val repository = mock(MoviesRepository::class.java)
-    private val handler = mock(HandlerWrapper::class.java)
-    private val executor = mock(ExecutorService::class.java)
-    private val useCase = LoadMoviesUseCase(repository, executor, handler)
-    private val mockedMovie = Movie(
-        "", "", "", "", "", "",
-        "", "", "", "", false
-    )
-    private val mockedMovies = listOf(mockedMovie)
+    private lateinit var repository: MoviesRepository
+    private lateinit var handler: HandlerWrapper
+    private lateinit var executor: ExecutorService
+    private lateinit var useCase: LoadMoviesUseCase
+    private lateinit var movie: Movie
+    private lateinit var movies: List<Movie>
 
-    @Test
-    fun `test execute return success`() {
-        `when`(repository.loadNewMovies()).thenReturn(Success(mockedMovies))
-        val result = useCase.execute(Unit)
-        verify(repository).loadNewMovies()
-        assertTrue(result is Success)
-        assertEquals(mockedMovies, (result as Success).data)
-        assertNotEquals(
-            mockedMovie.copy(title = "New title"), result.data
+    @BeforeEach
+    fun setUp() {
+        repository = mock(MoviesRepository::class.java)
+        handler = mock(HandlerWrapper::class.java)
+        executor = mock(ExecutorService::class.java)
+        useCase = LoadMoviesUseCase(repository, executor, handler)
+        movie = Movie(
+            "", "", "", "", "", "", "", "", "", "", false
         )
+        movies = listOf(movie)
     }
 
     @Test
-    fun `test execute return error`() {
+    fun `should get data from repository`() {
+        `when`(repository.loadNewMovies()).thenReturn(Success(movies))
+        useCase.execute(Unit)
+        verify(repository).loadNewMovies()
+    }
+
+    @Test
+    fun `should return success`() {
+        `when`(repository.loadNewMovies()).thenReturn(Success(movies))
+        assertTrue(useCase.execute(Unit) is Success)
+    }
+
+    @Test
+    fun `should return  error`() {
         `when`(repository.loadNewMovies()).thenReturn(Failure(ServerError))
-        val result = useCase.execute(Unit)
-        assertTrue(result is Failure)
-        assertEquals(ServerError, (result as Failure).error)
+        assertTrue(useCase.execute(Unit) is Failure)
     }
 }

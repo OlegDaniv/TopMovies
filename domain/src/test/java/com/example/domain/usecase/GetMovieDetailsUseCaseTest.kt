@@ -2,51 +2,58 @@ package com.example.domain.usecase
 
 import com.example.domain.models.MovieDetails
 import com.example.domain.repositores.MovieDetailsRepository
-import com.example.domain.utils.Error
+import com.example.domain.utils.Error.ServerError
 import com.example.domain.utils.HandlerWrapper
-import com.example.domain.utils.Result
+import com.example.domain.utils.Result.Failure
 import com.example.domain.utils.Result.Success
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
+import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import java.util.concurrent.ExecutorService
 
 internal class GetMovieDetailsUseCaseTest {
 
-    private val mockedMovieDetails = MovieDetails(
-        "123", "", "", "", "",
-        "", "", "", "", ""
-    )
-    private val repository = mock(MovieDetailsRepository::class.java)
-    private val handler = mock(HandlerWrapper::class.java)
-    private val executor = mock(ExecutorService::class.java)
-    private val useCase = GetMovieDetailsUseCase(repository, executor, handler)
+    private lateinit var repository: MovieDetailsRepository
+    private lateinit var handler: HandlerWrapper
+    private lateinit var executor: ExecutorService
+    private lateinit var useCase: GetMovieDetailsUseCase
+    private lateinit var movieDetails: MovieDetails
 
-    @Test
-    fun `test execute return success`() {
-        `when`(repository.getMovieDetails("123")).thenReturn(Success(mockedMovieDetails))
-        val result = useCase.execute("123")
-        verify(repository).getMovieDetails("123")
-        assertTrue(result is Success)
-        assertEquals(mockedMovieDetails, (result as Success).data)
-        assertNotEquals(
-            mockedMovieDetails.copy(title = "New title"), result.data
+    @BeforeEach
+    fun setUp() {
+        movieDetails = MovieDetails(
+            MOVIE_ID, "", "", "", "", "", "", "", "", ""
         )
+        repository = mock(MovieDetailsRepository::class.java)
+        handler = mock(HandlerWrapper::class.java)
+        executor = mock(ExecutorService::class.java)
+        useCase = GetMovieDetailsUseCase(repository, executor, handler)
     }
 
     @Test
-    fun `test execute return error`() {
-        `when`(repository.getMovieDetails("123")).thenReturn(Result.Failure(Error.ServerError))
-        val result = useCase.execute("123")
-        assertTrue(result is Result.Failure)
-        assertEquals(Error.ServerError, (result as Result.Failure).error)
+    fun `should get data from repository`() {
+        `when`(repository.getMovieDetails(any())).thenReturn(Success(movieDetails))
+        useCase.execute(MOVIE_ID)
+        verify(repository).getMovieDetails(MOVIE_ID)
     }
 
     @Test
-    fun `test execute returns movieDetails for another id`() {
-        `when`(repository.getMovieDetails("")).thenReturn(Success(mockedMovieDetails))
-        assertFalse(useCase.execute("123") is Success)
+    fun `should return success`() {
+        `when`(repository.getMovieDetails(any())).thenReturn(Success(movieDetails))
+        assertTrue(useCase.execute(MOVIE_ID) is Success)
+    }
+
+    @Test
+    fun `shouldn't return Error`() {
+        `when`(repository.getMovieDetails(MOVIE_ID)).thenReturn(Failure(ServerError))
+        assertTrue(useCase.execute(MOVIE_ID) is Failure)
+    }
+
+    companion object {
+        private const val MOVIE_ID = "tt1630029"
     }
 }

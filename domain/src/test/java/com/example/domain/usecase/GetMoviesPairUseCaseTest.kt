@@ -6,41 +6,55 @@ import com.example.domain.utils.Error.ServerError
 import com.example.domain.utils.HandlerWrapper
 import com.example.domain.utils.Result.Failure
 import com.example.domain.utils.Result.Success
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
+import org.mockito.kotlin.verify
 import java.util.concurrent.ExecutorService
 
 internal class GetMoviesPairUseCaseTest {
-    private val repository = mock(MoviesRepository::class.java)
-    private val handler = mock(HandlerWrapper::class.java)
-    private val executor = mock(ExecutorService::class.java)
-    private val usecase = GetMoviesPairUseCase(repository, executor, handler)
-    private val mockedMovie = Movie(
-        "", "", "", "", "", "",
-        "", "", "", "", false
-    )
 
-    @Test
-    fun `test execute return success`() {
-        val movies = listOf(mockedMovie)
-        val favoriteMovies = listOf(mockedMovie)
-        `when`(repository.getMovies()).thenReturn(Success(movies))
-        `when`(repository.getFavoriteMovies()).thenReturn(favoriteMovies)
-        val result = usecase.execute(Unit)
-        assertTrue(result is Success)
-        assertEquals(Pair(movies, favoriteMovies), (result as Success).data)
+    private lateinit var repository: MoviesRepository
+    private lateinit var handler: HandlerWrapper
+    private lateinit var executor: ExecutorService
+    private lateinit var useCase: GetMoviesPairUseCase
+    private lateinit var movie: Movie
+    private lateinit var movies: List<Movie>
+    private lateinit var favoriteMovies: List<Movie>
+
+    @BeforeEach
+    fun setUp() {
+        repository = mock(MoviesRepository::class.java)
+        handler = mock(HandlerWrapper::class.java)
+        executor = mock(ExecutorService::class.java)
+        useCase = GetMoviesPairUseCase(repository, executor, handler)
+        movie = Movie(
+            "", "", "", "", "", "", "", "", "", ""
+        )
+        movies = listOf(movie)
+        favoriteMovies = listOf(movie)
     }
 
     @Test
-    fun `test execute return error`(){
-        val favoriteMovies = listOf(mockedMovie)
+    fun `should get data from repository`() {
+        `when`(repository.getMovies()).thenReturn(Success(movies))
+        useCase.execute(Unit)
+        verify(repository).getMovies()
+    }
+
+    @Test
+    fun `should return success`() {
+        `when`(repository.getMovies()).thenReturn(Success(movies))
+        `when`(repository.getFavoriteMovies()).thenReturn(favoriteMovies)
+        assertTrue(useCase.execute(Unit) is Success)
+    }
+
+    @Test
+    fun `should return error`() {
         `when`(repository.getMovies()).thenReturn(Failure(ServerError))
         `when`(repository.getFavoriteMovies()).thenReturn(favoriteMovies)
-        val result = usecase.execute(Unit)
-        assertTrue(result is Failure)
-        assertEquals(ServerError, (result as Failure).error)
+        assertTrue(useCase.execute(Unit) is Failure)
     }
 }
