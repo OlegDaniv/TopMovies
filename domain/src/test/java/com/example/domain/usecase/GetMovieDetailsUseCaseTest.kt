@@ -25,17 +25,17 @@ internal class GetMovieDetailsUseCaseTest {
 
     @BeforeEach
     fun setUp() {
-        movieDetails = MovieDetails(
-            MOVIE_ID, "", "", "", "", "", "", "", "", ""
-        )
         repository = mock(MovieDetailsRepository::class.java)
         handler = mock(HandlerWrapper::class.java)
         executor = mock(ExecutorService::class.java)
         useCase = GetMovieDetailsUseCase(repository, executor, handler)
+        movieDetails = MovieDetails(
+            MOVIE_ID, "", "", "", "", "", "", "", "", ""
+        )
     }
 
     @Test
-    fun `should get data from repository`() {
+    fun `should invoke correct method from repository`() {
         `when`(repository.getMovieDetails(any())).thenReturn(Success(movieDetails))
         useCase.execute(MOVIE_ID)
         verify(repository).getMovieDetails(MOVIE_ID)

@@ -38,10 +38,12 @@ internal class GetMoviesPairUseCaseTest {
     }
 
     @Test
-    fun `should get data from repository`() {
+    fun `should invoke correct methods from repository`() {
         `when`(repository.getMovies()).thenReturn(Success(movies))
+        `when`(repository.getFavoriteMovies()).thenReturn(favoriteMovies)
         useCase.execute(Unit)
         verify(repository).getMovies()
+        verify(repository).getFavoriteMovies()
     }
 
     @Test

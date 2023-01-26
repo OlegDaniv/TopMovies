@@ -36,7 +36,7 @@ internal class LoadMoviesUseCaseTest {
     }
 
     @Test
-    fun `should get data from repository`() {
+    fun `should invoke correct method from repository`() {
         `when`(repository.loadNewMovies()).thenReturn(Success(movies))
         useCase.execute(Unit)
         verify(repository).loadNewMovies()
@@ -49,7 +49,7 @@ internal class LoadMoviesUseCaseTest {
     }
 
     @Test
-    fun `should return  error`() {
+    fun `should return error`() {
         `when`(repository.loadNewMovies()).thenReturn(Failure(ServerError))
         assertTrue(useCase.execute(Unit) is Failure)
     }

@@ -16,6 +16,7 @@ import org.mockito.kotlin.verify
 import java.util.concurrent.ExecutorService
 
 internal class UpdateFavoriteMovieUseCaseTest {
+
     private lateinit var repository: MoviesRepository
     private lateinit var handler: HandlerWrapper
     private lateinit var executor: ExecutorService
@@ -26,22 +27,21 @@ internal class UpdateFavoriteMovieUseCaseTest {
 
     @BeforeEach
     fun setUp() {
-        movie = Movie(
-            MOVIES_ID, "", "", "", "", "", "", "", "", "", false
-        )
         repository = mock(MoviesRepository::class.java)
         handler = mock(HandlerWrapper::class.java)
         executor = mock(ExecutorService::class.java)
         useCase = UpdateFavoriteMovieUseCase(repository, executor, handler)
+        movie = Movie(
+            MOVIES_ID, "", "", "", "", "", "", "", "", "", false
+        )
         movies = listOf(movie)
         favoriteMovies = listOf(movie)
     }
 
     @Test
-    fun `should get data from repository`() {
+    fun `should invoke correct methods from repository`() {
         `when`(repository.getMovies()).thenReturn(Success(movies))
         `when`(repository.getFavoriteMovies()).thenReturn(favoriteMovies)
-
         useCase.execute(Params(MOVIES_ID, true))
         verify(repository).updateMovie(MOVIES_ID, true)
         verify(repository).getMovies()
