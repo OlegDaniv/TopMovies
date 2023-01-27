@@ -26,7 +26,7 @@ class MovieDetailsRepositoryImpl(
             movieDetailsDao.insertMovieDetails(MovieDetailsEntityMapper.fromModel(newMovieDetails.data))
             Success(newMovieDetails.data)
         } else {
-            getMovieDetails(id)
+            newMovieDetails
         }
     }
 }
