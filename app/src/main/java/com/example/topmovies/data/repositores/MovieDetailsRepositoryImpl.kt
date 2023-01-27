@@ -22,9 +22,11 @@ class MovieDetailsRepositoryImpl(
 
     override suspend fun loadNewMovieDetails(id: String): Result<Error, MovieDetails> {
         val newMovieDetails = movieDetailsRequest.loadNewMovieDetails()
-        newMovieDetails.process {
-            movieDetailsDao.insertMovieDetails(MovieDetailsEntityMapper.fromModel(it))
+        return if (newMovieDetails is Success) {
+            movieDetailsDao.insertMovieDetails(MovieDetailsEntityMapper.fromModel(newMovieDetails.data))
+            Success(newMovieDetails.data)
+        } else {
+            getMovieDetails(id)
         }
-        return newMovieDetails
     }
 }

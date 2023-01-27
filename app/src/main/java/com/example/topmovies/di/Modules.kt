@@ -31,7 +31,6 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 private const val BASE_URL = "https://imdb-api.com"
@@ -58,7 +57,7 @@ val networkModule = module {
 }
 
 val viewModelModule = module {
-    viewModel { MovieDetailsViewModel(get(),get()) }
+    viewModel { MovieDetailsViewModel(get(), get()) }
     viewModel { MovieViewModel(get(), get(), get(), get()) }
 }
 
@@ -83,8 +82,6 @@ val repositoryModule = module {
 }
 
 val appModule = module {
-    single { Handler(Looper.getMainLooper()) }
-    single { Executors.newFixedThreadPool(4) }
     single { getDefaultSharedPreferences(androidApplication()) }
     single { NetworkHandler(androidApplication()) }
     single<HandlerWrapper> { HandlerWrapperImpl(Handler(Looper.getMainLooper())) }
