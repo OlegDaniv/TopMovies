@@ -12,7 +12,8 @@ import com.example.domain.utils.safeLet
 import kotlinx.coroutines.withContext
 
 class GetMoviesPairUseCase(
-    private val repository: MoviesRepository, private val dispatchers: AppDispatchers
+    private val repository: MoviesRepository,
+    private val dispatchers: AppDispatchers
 ) : UseCase<Unit, Pair<List<Movie>, List<Movie>>>() {
 
     override suspend fun execute(params: Unit): Result<Error, Pair<List<Movie>, List<Movie>>> =
