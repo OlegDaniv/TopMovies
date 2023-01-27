@@ -10,8 +10,7 @@ import com.example.topmovies.data.mappers.MovieEntityMapper
 import com.example.topmovies.data.network.requests.MoviesRequest
 
 class MoviesRepositoryImpl constructor(
-    private val moviesDao: MoviesDao,
-    private val movieRequest: MoviesRequest
+    private val moviesDao: MoviesDao, private val movieRequest: MoviesRequest
 ) : MoviesRepository {
 
     override suspend fun getMovies(): Result<Error, List<Movie>> {

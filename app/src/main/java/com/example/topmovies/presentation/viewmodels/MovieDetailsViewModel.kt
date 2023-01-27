@@ -5,11 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.domain.models.MovieDetails
 import com.example.domain.usecase.GetMovieDetailsUseCase
+import com.example.domain.utils.AppDispatchers
 import com.example.domain.utils.Result.Failure
 import com.example.domain.utils.Result.Success
-import com.example.topmovies.presentation.utils.AppDispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MovieDetailsViewModel(
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
@@ -19,18 +18,14 @@ class MovieDetailsViewModel(
     private val _movieDetails = MutableLiveData<MovieDetails>()
     val movieDetails: LiveData<MovieDetails> = _movieDetails
 
-    fun resolveMovieDetails(movieId: String) = viewModelScope.launch(appDispatchers.io) {
-        val result = getMovieDetailsUseCase(movieId)
-        withContext(appDispatchers.main) {
-            when (result) {
-                is Success -> handleMovieDetails(result.data)
-                is Failure -> handleError(result.error)
-            }
+    fun resolveMovieDetails(movieId: String) = viewModelScope.launch(appDispatchers.main) {
+        when (val result = getMovieDetailsUseCase(movieId)) {
+            is Success -> handleMovieDetails(result.data)
+            is Failure -> handleError(result.error)
         }
     }
 
     private fun handleMovieDetails(data: MovieDetails) {
         _movieDetails.value = data
-
     }
 }

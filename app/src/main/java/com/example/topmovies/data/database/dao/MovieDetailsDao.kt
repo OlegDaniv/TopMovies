@@ -13,5 +13,5 @@ abstract class MovieDetailsDao {
     abstract suspend fun getMovieDetails(id: String): MovieDetailsEntity?
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract fun insertMovieDetails(entity: MovieDetailsEntity)
+    abstract suspend fun insertMovieDetails(entity: MovieDetailsEntity)
 }
