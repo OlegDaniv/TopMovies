@@ -9,6 +9,7 @@ import com.example.domain.utils.Result
 import com.example.domain.utils.Result.Failure
 import com.example.domain.utils.Result.Success
 import com.example.domain.utils.safeLet
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
 class UpdateFavoriteMovieUseCase(
@@ -17,12 +18,12 @@ class UpdateFavoriteMovieUseCase(
 ) : UseCase<Params, Pair<List<Movie>, List<Movie>>>() {
 
     override suspend fun execute(params: Params): Result<Error, Pair<List<Movie>, List<Movie>>> =
-        withContext(dispatchers.io) {
+        withContext(dispatchers.default) {
             repository.updateMovie(params.id, params.isFavorite)
-            val movies = repository.getMovies().asSuccess()
-            val favoriteMovies = repository.getFavoriteMovies()
+            val movies = async(dispatchers.io) { repository.getMovies().asSuccess() }
+            val favoriteMovies = async(dispatchers.io) { repository.getFavoriteMovies() }
             return@withContext safeLet(
-                movies, favoriteMovies
+                movies.await(), favoriteMovies.await()
             ) { moviesResult, favoriteMoviesResult ->
                 Pair(moviesResult.data, favoriteMoviesResult)
             }?.let { Success(it) } ?: Failure(ServerError)
