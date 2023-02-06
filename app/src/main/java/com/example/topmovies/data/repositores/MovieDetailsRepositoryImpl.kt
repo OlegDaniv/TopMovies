@@ -14,17 +14,19 @@ class MovieDetailsRepositoryImpl(
     private val movieDetailsRequest: MovieDetailsRequest
 ) : MovieDetailsRepository {
 
-    override fun getMovieDetails(id: String): Result<Error, MovieDetails> {
+    override suspend fun getMovieDetails(id: String): Result<Error, MovieDetails> {
         val movieDetails = movieDetailsDao.getMovieDetails(id)
         return movieDetails?.let { Success(MovieDetailsEntityMapper.toModel(it)) }
             ?: loadNewMovieDetails(id)
     }
 
-    override fun loadNewMovieDetails(id: String): Result<Error, MovieDetails> {
+    override suspend fun loadNewMovieDetails(id: String): Result<Error, MovieDetails> {
         val newMovieDetails = movieDetailsRequest.loadNewMovieDetails()
-        newMovieDetails.process {
-            movieDetailsDao.insertMovieDetails(MovieDetailsEntityMapper.fromModel(it))
+        return if (newMovieDetails is Success) {
+            movieDetailsDao.insertMovieDetails(MovieDetailsEntityMapper.fromModel(newMovieDetails.data))
+            Success(newMovieDetails.data)
+        } else {
+            newMovieDetails
         }
-        return newMovieDetails
     }
 }

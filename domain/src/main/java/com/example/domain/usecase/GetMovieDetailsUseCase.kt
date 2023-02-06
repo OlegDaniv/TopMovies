@@ -2,17 +2,18 @@ package com.example.domain.usecase
 
 import com.example.domain.models.MovieDetails
 import com.example.domain.repositores.MovieDetailsRepository
+import com.example.domain.utils.AppDispatchers
 import com.example.domain.utils.Error
-import com.example.domain.utils.HandlerWrapper
 import com.example.domain.utils.Result
-import java.util.concurrent.ExecutorService
+import kotlinx.coroutines.withContext
 
 class GetMovieDetailsUseCase(
     private val repository: MovieDetailsRepository,
-    override val executor: ExecutorService,
-    override val handler: HandlerWrapper
+    private val dispatchers: AppDispatchers
 ) : UseCase<String, MovieDetails>() {
 
-    override fun execute(params: String): Result<Error, MovieDetails> =
-        repository.getMovieDetails(params)
+    override suspend fun execute(params: String): Result<Error, MovieDetails> =
+        withContext(dispatchers.io) {
+            repository.getMovieDetails(params)
+        }
 }
