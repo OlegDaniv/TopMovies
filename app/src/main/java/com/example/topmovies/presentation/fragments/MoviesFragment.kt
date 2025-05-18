@@ -16,6 +16,7 @@ import com.example.topmovies.presentation.utils.EnumScreen
 import com.example.topmovies.presentation.utils.EnumScreen.FAVORITE
 import com.example.topmovies.presentation.utils.EnumScreen.MOVIES
 import com.example.topmovies.presentation.viewmodels.MovieViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class MoviesFragment : BaseFragment() {
@@ -25,7 +26,7 @@ class MoviesFragment : BaseFragment() {
         arguments?.getSerializable(resources.getString(R.string.notification_argument_name)) as EnumScreen
     }
     private val binding get() = _binding!!
-    private val moviesViewModel by sharedViewModel<MovieViewModel>()
+    private val moviesViewModel  by activityViewModel<MovieViewModel>()
     private val moviesAdapter by lazy {
         MoviesAdapter(
             ::startMovieDetailsFragment,
