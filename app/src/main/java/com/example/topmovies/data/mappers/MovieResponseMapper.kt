@@ -3,19 +3,37 @@ package com.example.topmovies.data.mappers
 import com.example.domain.models.Movie
 import com.example.topmovies.data.network.models.MovieResponse
 
-object MovieResponseMapper : Mapper<MovieResponse, Movie> {
+class MovieResponseMapper : Mapper<MovieResponse, Movie> {
 
     override fun toModel(value: MovieResponse) = with(value) {
         Movie(
-            id, rank, rankUpDown, title, fullTitle, year, imageUrl,
-            crew, imDbRating, imDbRatingCount, isFavorite
+            id = id,
+            rank = rank,
+            rankUpDown = rankUpDown,
+            title = title,
+            fullTitle = fullTitle,
+            year = year,
+            imageUrl = imageUrl,
+            crew = crew,
+            imDbRating = imDbRating,
+            imDbRatingCount = imDbRatingCount,
+            isFavorite = isFavorite
         )
     }
 
     override fun fromModel(value: Movie) = with(value) {
         MovieResponse(
-            id, rank, rankUpDown, title, fullTitle, year, imageUrl,
-            crew, imDbRating, imDbRatingCount, isFavorite
+            id = id,
+            rank = rank,
+            rankUpDown = rankUpDown,
+            title = title,
+            fullTitle = fullTitle,
+            year = year,
+            imageUrl = imageUrl,
+            crew = crew,
+            imDbRating = imDbRating,
+            imDbRatingCount = imDbRatingCount,
+            isFavorite = isFavorite
         )
     }
 }

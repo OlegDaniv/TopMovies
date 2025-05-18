@@ -11,12 +11,13 @@ import com.example.topmovies.data.utils.safeTransform
 
 class MoviesRequest(
     private val api: MoviesApi,
-    private val networkHandler: NetworkHandler
+    private val networkHandler: NetworkHandler,
+    private val movieResponseMapper: MovieResponseMapper
 ) {
     fun loadNewMovies(): Result<Error, List<Movie>> {
         return if (networkHandler.isNetworkAvailable()) {
             api.getMovies().safeTransform { movieObject ->
-                movieObject.items.map { MovieResponseMapper.toModel(it) }
+                movieObject.items.map { movieResponseMapper.toModel(it) }
             }
         } else {
             Failure(NetworkConnectionError)

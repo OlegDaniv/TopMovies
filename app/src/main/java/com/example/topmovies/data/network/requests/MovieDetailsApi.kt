@@ -14,7 +14,6 @@ interface MovieDetailsApi {
     /** This method is for test, because 100 responses are not enough **/
     @GET("https://86e6737b-9ab8-444a-9c53-bdfa86309d8f.mock.pstmn.io/details")
     fun getMovieDetails(): Call<MovieDetailsResponse>
-
     companion object {
         private const val MOVIE_DETAILS_END_POINT = "/en/API/Title"
     }

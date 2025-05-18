@@ -9,12 +9,14 @@ import com.example.topmovies.data.database.dao.MoviesDao
 import com.example.topmovies.data.mappers.MovieEntityMapper
 import com.example.topmovies.data.network.requests.MoviesRequest
 
-class MoviesRepositoryImpl constructor(
-    private val moviesDao: MoviesDao, private val movieRequest: MoviesRequest
+class MoviesRepositoryImpl(
+    private val moviesDao: MoviesDao,
+    private val movieRequest: MoviesRequest,
+    private val movieEntityMapper: MovieEntityMapper
 ) : MoviesRepository {
 
     override suspend fun getMovies(): Result<Error, List<Movie>> {
-        val movies = moviesDao.getMovies().map { MovieEntityMapper.toModel(it) }
+        val movies = moviesDao.getMovies().map { movieEntityMapper.toModel(it) }
         return if (movies.isEmpty()) {
             loadNewMovies()
         } else {
@@ -23,21 +25,21 @@ class MoviesRepositoryImpl constructor(
     }
 
     override suspend fun getFavoriteMovies() =
-        moviesDao.getFavoriteMovies().map { MovieEntityMapper.toModel(it) }
+        moviesDao.getFavoriteMovies().map { movieEntityMapper.toModel(it) }
 
     override suspend fun updateMovie(id: String, isFavorite: Boolean) {
         moviesDao.updateMovie(id, isFavorite)
     }
 
     override suspend fun upsertMovies(movies: List<Movie>) {
-        moviesDao.upsertMovies(movies.map { MovieEntityMapper.fromModel(it) })
+        moviesDao.upsertMovies(movies.map { movieEntityMapper.fromModel(it) })
     }
 
     override suspend fun loadNewMovies(): Result<Error, List<Movie>> {
         val newMovies = movieRequest.loadNewMovies()
         return if (newMovies is Success) {
-            moviesDao.upsertMovies(newMovies.data.map { MovieEntityMapper.fromModel(it) })
-            Success(moviesDao.getMovies().map { MovieEntityMapper.toModel(it) })
+            moviesDao.upsertMovies(newMovies.data.map { movieEntityMapper.fromModel(it) })
+            Success(moviesDao.getMovies().map { movieEntityMapper.toModel(it) })
         } else {
             newMovies
         }

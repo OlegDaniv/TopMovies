@@ -11,19 +11,20 @@ import com.example.topmovies.data.network.requests.MovieDetailsRequest
 
 class MovieDetailsRepositoryImpl(
     private val movieDetailsDao: MovieDetailsDao,
-    private val movieDetailsRequest: MovieDetailsRequest
+    private val movieDetailsRequest: MovieDetailsRequest,
+    private val movieDetailsEntityMapper: MovieDetailsEntityMapper
 ) : MovieDetailsRepository {
 
     override suspend fun getMovieDetails(id: String): Result<Error, MovieDetails> {
         val movieDetails = movieDetailsDao.getMovieDetails(id)
-        return movieDetails?.let { Success(MovieDetailsEntityMapper.toModel(it)) }
+        return movieDetails?.let { Success(movieDetailsEntityMapper.toModel(it)) }
             ?: loadNewMovieDetails(id)
     }
 
     override suspend fun loadNewMovieDetails(id: String): Result<Error, MovieDetails> {
         val newMovieDetails = movieDetailsRequest.loadNewMovieDetails()
         return if (newMovieDetails is Success) {
-            movieDetailsDao.insertMovieDetails(MovieDetailsEntityMapper.fromModel(newMovieDetails.data))
+            movieDetailsDao.insertMovieDetails(movieDetailsEntityMapper.fromModel(newMovieDetails.data))
             Success(newMovieDetails.data)
         } else {
             newMovieDetails

@@ -13,6 +13,10 @@ import com.example.domain.usecase.UpdateFavoriteMovieUseCase
 import com.example.domain.utils.AppDispatchers
 import com.example.domain.utils.HandlerWrapper
 import com.example.topmovies.data.database.MovieDatabase
+import com.example.topmovies.data.mappers.MovieDetailsEntityMapper
+import com.example.topmovies.data.mappers.MovieDetailsResponseMapper
+import com.example.topmovies.data.mappers.MovieEntityMapper
+import com.example.topmovies.data.mappers.MovieResponseMapper
 import com.example.topmovies.data.network.requests.MovieDetailsApi
 import com.example.topmovies.data.network.requests.MovieDetailsRequest
 import com.example.topmovies.data.network.requests.MoviesApi
@@ -27,7 +31,7 @@ import com.example.topmovies.presentation.viewmodels.MovieViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -53,8 +57,27 @@ val networkModule = module {
     }
     single(named("movieApi")) { get<Retrofit>().create(MoviesApi::class.java) }
     single(named("detailsApi")) { get<Retrofit>().create(MovieDetailsApi::class.java) }
-    single { MoviesRequest(get(named("movieApi")), get()) }
-    single { MovieDetailsRequest(get(named("detailsApi")), get()) }
+    single {
+        MoviesRequest(
+            api = get(named("movieApi")),
+            networkHandler = get(),
+            movieResponseMapper = get()
+        )
+    }
+    single {
+        MovieDetailsRequest(
+            api = get(named("detailsApi")),
+            networkHandler = get(),
+            movieDetailsResponseMapper = get()
+        )
+    }
+}
+
+val mapperModule = module {
+    single { MovieDetailsEntityMapper() }
+    single { MovieDetailsResponseMapper() }
+    single { MovieEntityMapper() }
+    single { MovieResponseMapper() }
 }
 
 val viewModelModule = module {
@@ -78,8 +101,8 @@ val databaseModule = module {
 }
 
 val repositoryModule = module {
-    single<MoviesRepository> { MoviesRepositoryImpl(get(), get()) }
-    single<MovieDetailsRepository> { MovieDetailsRepositoryImpl(get(), get()) }
+    single<MoviesRepository> { MoviesRepositoryImpl(get(), get(), get()) }
+    single<MovieDetailsRepository> { MovieDetailsRepositoryImpl(get(), get(), get()) }
 }
 
 val appModule = module {

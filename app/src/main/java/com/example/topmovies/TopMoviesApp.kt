@@ -29,7 +29,8 @@ class TopMoviesApp : Application() {
                 databaseModule,
                 viewModelModule,
                 networkModule,
-                useCaseModule
+                useCaseModule,
+                mapperModule
             )
         }
     }
